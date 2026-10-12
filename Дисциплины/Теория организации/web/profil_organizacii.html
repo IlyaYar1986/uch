@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр «Профиль организации по Дафту»</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--border:#e2e8f0;--acc:#7c3aed;--acc-dk:#5b21b6;--acc-lt:#f5f3ff;--gold:#d97706;--gold-dk:#92400e;--gold-lt:#fffbeb;--red:#dc2626;--red-lt:#fef2f2;--text:#0f172a;--muted:#64748b}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.45;padding:14px 18px 16px}
+h1{font-size:clamp(1.05rem,2.4vw,1.3rem);font-weight:800}
+.sub{color:var(--muted);font-size:.84rem;margin:2px 0 10px;max-width:960px}
+.layout{display:grid;grid-template-columns:minmax(330px,1.1fr) minmax(300px,1fr);gap:16px}
+@media (max-width:780px){.layout{grid-template-columns:1fr}}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.preset{padding:5px 10px;border-radius:9px;border:1px solid var(--border);background:#fff;font-size:.75rem;font-weight:700;color:var(--muted);cursor:pointer}
+.preset:hover{border-color:#ddd6fe;color:var(--acc)}
+.preset.mine{border-color:#ddd6fe;color:var(--acc-dk)}
+table{width:100%;border-collapse:collapse;font-size:.79rem}
+th{font-size:.68rem;text-transform:uppercase;letter-spacing:.3px;color:var(--muted);text-align:left;padding:2px 4px;font-weight:800}
+th.doc{color:var(--acc-dk)} th.fact{color:var(--gold-dk)}
+td{padding:2px 4px;vertical-align:middle}
+td.name{font-weight:700;white-space:nowrap}
+tr.grp td{font-size:.68rem;font-weight:800;text-transform:uppercase;color:var(--muted);padding-top:6px;letter-spacing:.3px}
+tr.row:hover td,tr.row.focus td{background:var(--acc-lt)}
+td.sl{width:34%}
+td.sl input{width:100%}
+input.doc{accent-color:var(--acc)} input.fact{accent-color:var(--gold)}
+td.v{width:22px;text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+td.v.doc{color:var(--acc-dk)} td.v.fact{color:var(--gold-dk)}
+input:focus-visible,button:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+.hint{margin-top:8px;font-size:.78rem;background:var(--acc-lt);border:1px solid #ddd6fe;border-radius:10px;padding:7px 10px;color:#3b0764;min-height:44px}
+.radar{border:1px solid var(--border);border-radius:14px;padding:6px;background:#fdfcff}
+.radar svg{width:100%;height:auto;max-height:440px;display:block}
+.legend{display:flex;gap:14px;justify-content:center;font-size:.76rem;font-weight:700;margin:4px 0}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.gaps{border:1px solid #fecaca;background:var(--red-lt);border-radius:12px;padding:8px 12px;margin-top:8px;font-size:.8rem}
+.gaps h2{font-size:.8rem;font-weight:800;color:#7f1d1d;margin-bottom:4px}
+.gaps ol{padding-left:18px}
+.foot{margin-top:6px;font-size:.72rem;color:var(--muted)}
+.back{display:inline-block;margin-bottom:8px;font-size:.8rem;font-weight:700;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--acc)}
+.back[hidden]{display:none}
+</style>
+</head>
+<body>
+<a class="back" id="back" href="../index.html" hidden>← Все уроки</a>
+<h1>Профиль организации по Дафту: мечта и действительность</h1>
+<p class="sub">Оцените свою организацию по 11 характеристикам от 1 до 10 дважды: <b style="color:#5b21b6">по документам</b> (устав, регламенты, оргструктура) и <b style="color:#92400e">на самом деле</b>. Самые большие расхождения — это слабые места и точки роста. Ваши оценки сохраняются в браузере.</p>
+
+<div class="layout">
+  <div>
+    <div class="presets" role="group" aria-label="Готовые профили">
+      <button type="button" class="preset mine" data-p="mine">Моя организация</button>
+      <button type="button" class="preset" data-p="plant">Машиностроительный завод</button>
+      <button type="button" class="preset" data-p="it">IT-компания, плоская структура</button>
+      <button type="button" class="preset" data-p="market">Маркетплейс</button>
+      <button type="button" class="preset" data-p="unitary">Госпредприятие</button>
+    </div>
+    <table>
+      <thead><tr><th>Характеристика</th><th class="doc" colspan="2">По документам</th><th class="fact" colspan="2">На самом деле</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p class="hint" id="hint">Наведите на характеристику или передвиньте ползунок — здесь появится подсказка, что значит 1 и что значит 10.</p>
+  </div>
+  <div>
+    <div class="radar"><svg id="svg" viewBox="-70 -6 560 392" role="img" aria-label="Радарная диаграмма профиля организации"></svg></div>
+    <div class="legend"><span><i style="background:#7c3aed"></i>по документам</span><span><i style="background:#d97706"></i>на самом деле</span></div>
+    <div class="gaps"><h2>Где мечта расходится с действительностью</h2><ol id="gaps"></ol></div>
+    <p class="foot">Характеристики — по Р. Дафту («Теория организации»), как их разбирали на занятии 09.10.2026. Шкала 1–10 — учебный приём для самоанализа, а не стандартная методика.</p>
+  </div>
+</div>
+
+<script>
+const CHARS = [
+  {id: "form", g: "s", name: "Формализация", lo: "почти нет письменных правил, «все умеют всё»", hi: "регламент на каждый шаг, полные должностные инструкции"},
+  {id: "spec", g: "s", name: "Специализация", lo: "каждый делает много разного", hi: "узкие роли, чёткое разделение труда"},
+  {id: "hier", g: "s", name: "Иерархия", lo: "1–2 уровня управления, плоско", hi: "много уровней, длинная скалярная цепь"},
+  {id: "cent", g: "s", name: "Централизация", lo: "решения принимают внизу, у исполнителей", hi: "все важные решения — только наверху"},
+  {id: "prof", g: "s", name: "Профессионализм", lo: "работа не требует подготовки", hi: "нужна высокая квалификация и долгое обучение"},
+  {id: "ratio", g: "s", name: "Доля управленцев и вспомогательных", lo: "почти все заняты основной работой", hi: "много управленцев и вспомогательного персонала"},
+  {id: "size", g: "c", name: "Размер", lo: "малая организация, один офис", hi: "тысячи людей, холдинг, много площадок"},
+  {id: "tech", g: "c", name: "Технология и цифровизация", lo: "ручной труд, бумага", hi: "автоматизация и цифровые процессы"},
+  {id: "env", g: "c", name: "Нестабильность среды", lo: "среда стабильна, ресурсы доступны", hi: "среда меняется, ресурсов не хватает"},
+  {id: "goals", g: "c", name: "Ясность целей и стратегии", lo: "цели размыты или только на бумаге", hi: "цели ясны, ими реально управляют"},
+  {id: "cult", g: "c", name: "Сила культуры", lo: "общих ценностей нет", hi: "сильные общие ценности и нормы поведения"}
+];
+// Профили: [по документам, на самом деле] для каждой характеристики в порядке CHARS
+const PRESETS = {
+  plant:   {doc: [9, 8, 8, 8, 6, 6, 9, 6, 6, 7, 6], fact: [7, 7, 8, 9, 5, 7, 9, 5, 8, 5, 5]},
+  it:      {doc: [3, 5, 2, 3, 9, 2, 4, 10, 8, 8, 8], fact: [3, 4, 3, 6, 9, 3, 4, 9, 9, 6, 7]},
+  market:  {doc: [8, 7, 4, 7, 6, 3, 10, 10, 9, 8, 6], fact: [7, 7, 5, 9, 5, 4, 10, 10, 9, 7, 5]},
+  unitary: {doc: [10, 8, 8, 9, 6, 7, 8, 5, 4, 8, 6], fact: [9, 6, 9, 10, 5, 9, 8, 4, 6, 3, 4]}
+};
+const STORE = "teoriya-org-profil";
+const rows = document.getElementById("rows");
+const hint = document.getElementById("hint");
+let current = "mine";
+
+let html = "";
+CHARS.forEach((c, i) => {
+  if (i === 0) html += `<tr class="grp"><td colspan="5">Структурные</td></tr>`;
+  if (i === 6) html += `<tr class="grp"><td colspan="5">Контекстные</td></tr>`;
+  html += `<tr class="row" data-i="${i}"><td class="name">${c.name}</td>
+    <td class="sl"><input type="range" class="doc" min="1" max="10" step="1" data-i="${i}" data-k="doc" aria-label="${c.name}: по документам"></td><td class="v doc" id="vd${i}"></td>
+    <td class="sl"><input type="range" class="fact" min="1" max="10" step="1" data-i="${i}" data-k="fact" aria-label="${c.name}: на самом деле"></td><td class="v fact" id="vf${i}"></td></tr>`;
+});
+rows.innerHTML = html;
+const inputs = [...rows.querySelectorAll("input")];
+
+function showHint(i) {
+  const c = CHARS[i];
+  hint.innerHTML = `<b>${c.name}.</b> 1 — ${c.lo}; 10 — ${c.hi}.`;
+  rows.querySelectorAll("tr.row").forEach((r) => r.classList.toggle("focus", Number(r.dataset.i) === i));
+}
+rows.querySelectorAll("tr.row").forEach((r) => r.addEventListener("mouseenter", () => showHint(Number(r.dataset.i))));
+
+function loadMine() {
+  try { return JSON.parse(localStorage.getItem(STORE)) || null; } catch { return null; }
+}
+function saveMine(state) {
+  try { localStorage.setItem(STORE, JSON.stringify(state)); } catch { /* приватный режим */ }
+}
+function readState() {
+  const state = {doc: [], fact: []};
+  inputs.forEach((inp) => { state[inp.dataset.k][Number(inp.dataset.i)] = Number(inp.value); });
+  return state;
+}
+function apply(state) {
+  inputs.forEach((inp) => { inp.value = state[inp.dataset.k][Number(inp.dataset.i)]; });
+  render();
+}
+inputs.forEach((inp) => inp.addEventListener("input", () => {
+  showHint(Number(inp.dataset.i));
+  if (current !== "mine") {
+    // Правка готового профиля превращает его в «мою организацию»
+    current = "mine";
+    markPreset();
+  }
+  saveMine(readState());
+  render();
+}));
+
+function markPreset() {
+  document.querySelectorAll(".preset").forEach((b) => b.classList.toggle("mine", b.dataset.p === current));
+}
+document.querySelectorAll(".preset").forEach((b) => b.addEventListener("click", () => {
+  current = b.dataset.p;
+  markPreset();
+  apply(current === "mine" ? (loadMine() || defaultMine()) : PRESETS[current]);
+}));
+function defaultMine() { return {doc: CHARS.map(() => 5), fact: CHARS.map(() => 5)}; }
+
+function render() {
+  const s = readState();
+  CHARS.forEach((c, i) => {
+    document.getElementById(`vd${i}`).textContent = s.doc[i];
+    document.getElementById(`vf${i}`).textContent = s.fact[i];
+  });
+  drawRadar(s);
+  const gaps = CHARS.map((c, i) => ({c, d: s.fact[i] - s.doc[i]}))
+    .filter((g) => g.d !== 0)
+    .sort((a, b) => Math.abs(b.d) - Math.abs(a.d))
+    .slice(0, 3);
+  document.getElementById("gaps").innerHTML = gaps.length
+    ? gaps.map((g) => `<li><b>${g.c.name}</b>: на самом деле ${g.d > 0 ? "выше" : "ниже"}, чем по документам, на ${Math.abs(g.d)}. ${gapAdvice(g.c.id, g.d)}</li>`).join("")
+    : "<li>Расхождений нет: документы совпадают с практикой. Проверьте оценки на интервью с сотрудниками.</li>";
+}
+
+function gapAdvice(id, d) {
+  const up = d > 0;
+  const map = {
+    form: up ? "Бюрократия разрослась сверх правил." : "Правила есть на бумаге, но не работают.",
+    spec: up ? "Роли сузились сильнее, чем задумано." : "Люди совмещают больше, чем записано в инструкциях.",
+    hier: up ? "Фактических уровней больше, чем в оргструктуре: ищите неформальных начальников." : "Часть уровней существует только на схеме.",
+    cent: up ? "Решения на деле уходят наверх: вертикаль медленнее, чем задумано." : "Решения принимают ниже, чем прописано: проверьте полномочия.",
+    prof: up ? "Люди квалифицированнее, чем требуют должности: риск, что уйдут." : "Квалификации не хватает для заявленных требований.",
+    ratio: up ? "Вспомогательных и управленцев больше нормы: низкая автоматизация?" : "Штат стройнее, чем по плану.",
+    size: up ? "Организация выросла быстрее структуры." : "Фактический масштаб меньше заявленного.",
+    tech: up ? "Практика ушла вперёд регламентов." : "Цифровизация есть на бумаге, а не в процессах.",
+    env: up ? "Среда менее стабильна, чем закладывали в планы: растёт цена деятельности." : "Среда спокойнее ожиданий.",
+    goals: up ? "Цели понятнее, чем записано." : "Декларативные цели расходятся с истинными.",
+    cult: up ? "Культура сильнее формальных правил: опирайтесь на неё." : "Ценности объявлены, но не разделяются."
+  };
+  return map[id];
+}
+
+function drawRadar(s) {
+  const svg = document.getElementById("svg");
+  const cx = 210, cy = 192, R = 128, n = CHARS.length;
+  const pt = (i, v) => {
+    const a = -Math.PI / 2 + i * 2 * Math.PI / n;
+    return [cx + R * v / 10 * Math.cos(a), cy + R * v / 10 * Math.sin(a)];
+  };
+  let h = "";
+  [2, 4, 6, 8, 10].forEach((v) => {
+    h += `<polygon points="${CHARS.map((c, i) => pt(i, v).join(",")).join(" ")}" fill="none" stroke="#e9e5f5" stroke-width="1"/>`;
+  });
+  CHARS.forEach((c, i) => {
+    const [x, y] = pt(i, 10);
+    h += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e9e5f5"/>`;
+    const [lx, ly] = pt(i, 11.4);
+    const anchor = Math.abs(lx - cx) < 12 ? "middle" : lx > cx ? "start" : "end";
+    const words = c.name.length > 16 ? c.name.split(" ").reduce((acc, w) => {
+      const last = acc[acc.length - 1];
+      if (last && (last + " " + w).length <= 16) acc[acc.length - 1] = last + " " + w; else acc.push(w);
+      return acc;
+    }, []) : [c.name];
+    h += `<text x="${lx}" y="${ly - (words.length - 1) * 5}" text-anchor="${anchor}" font-size="10.5" font-weight="700" fill="${c.g === "s" ? "#5b21b6" : "#334155"}">${words.map((w, k) => `<tspan x="${lx}" dy="${k ? 11 : 0}">${w}</tspan>`).join("")}</text>`;
+  });
+  const poly = (arr, color, op) => `<polygon points="${arr.map((v, i) => pt(i, v).join(",")).join(" ")}" fill="${color}" fill-opacity="${op}" stroke="${color}" stroke-width="2.2" stroke-linejoin="round"/>`;
+  h += poly(s.doc, "#7c3aed", 0.16) + poly(s.fact, "#d97706", 0.16);
+  s.fact.forEach((v, i) => {
+    const d = Math.abs(v - s.doc[i]);
+    if (d >= 3) {
+      const [x, y] = pt(i, v);
+      h += `<circle cx="${x}" cy="${y}" r="5" fill="#dc2626"/>`;
+    }
+  });
+  svg.innerHTML = h;
+}
+
+apply(loadMine() || PRESETS.plant);
+if (!loadMine()) { current = "plant"; markPreset(); }
+showHint(0);
+</script>
+<script>
+/* Ссылка «← Все уроки» видна, только когда тренажёр открыт отдельной страницей, а не внутри урока */
+if (window.self === window.top) document.getElementById("back").hidden = false;
+</script>
+</body>
+</html>

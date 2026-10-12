@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр «Пирамида управления»</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--border:#e2e8f0;--acc:#7c3aed;--acc-dk:#5b21b6;--acc-lt:#f5f3ff;--gold:#b45309;--gold-lt:#fffbeb;--red:#dc2626;--red-lt:#fef2f2;--green:#16a34a;--green-lt:#f0fdf4;--text:#0f172a;--muted:#64748b}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.5;padding:16px 20px 18px}
+h1{font-size:clamp(1.05rem,2.4vw,1.3rem);font-weight:800}
+.sub{color:var(--muted);font-size:.86rem;margin:2px 0 12px;max-width:900px}
+.layout{display:grid;grid-template-columns:minmax(280px,1fr) minmax(320px,1.35fr);gap:18px}
+@media (max-width:760px){.layout{grid-template-columns:1fr}}
+.group{border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.group h2{font-size:.84rem;font-weight:800;margin-bottom:8px}
+.ctrl{display:grid;grid-template-columns:1fr 84px;gap:2px 10px;align-items:center;margin-bottom:8px}
+.ctrl label{font-size:.8rem;font-weight:700}
+.ctrl label small{font-weight:500;color:var(--muted)}
+.ctrl input[type=range]{width:100%;accent-color:var(--acc)}
+.ctrl input[type=number]{grid-row:1 / 3;grid-column:2;width:84px;padding:6px;border:1px solid var(--border);border-radius:8px;font-size:.92rem;font-weight:800;text-align:right;color:var(--acc-dk)}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:.8rem;font-weight:700;margin-top:4px;cursor:pointer}
+.check input{accent-color:var(--acc);margin-top:3px}
+.check small{display:block;font-weight:500;color:var(--muted)}
+input:focus-visible,button:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.preset{padding:6px 10px;border-radius:9px;border:1px solid var(--border);background:#fff;font-size:.76rem;font-weight:700;color:var(--muted);cursor:pointer}
+.preset:hover{border-color:#ddd6fe;color:var(--acc)}
+.pyr{border:1px solid var(--border);border-radius:14px;padding:10px 12px;background:#faf9ff}
+.pyr svg{width:100%;height:auto;display:block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+@media (max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{border:1px solid var(--border);border-radius:12px;padding:8px 10px;background:#fff}
+.stat .l{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;line-height:1.3}
+.stat .v{font-size:1.4rem;font-weight:900;color:var(--acc-dk);line-height:1.2}
+.route{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.route div{border-radius:12px;padding:8px 10px;font-size:.8rem}
+.route .up{background:var(--red-lt);border:1px solid #fecaca;color:#7f1d1d}
+.route .dir{background:var(--green-lt);border:1px solid #bbf7d0;color:#14532d}
+.route b{font-size:1.05rem;display:block}
+.note{font-size:.8rem;color:#78350f;background:var(--gold-lt);border:1px solid #fcd34d;border-radius:12px;padding:9px 12px;margin-top:8px}
+.foot{margin-top:8px;font-size:.74rem;color:var(--muted)}
+.back{display:inline-block;margin-bottom:8px;font-size:.8rem;font-weight:700;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--acc)}
+.back[hidden]{display:none}
+</style>
+</head>
+<body>
+<a class="back" id="back" href="../index.html" hidden>← Все уроки</a>
+<h1>Пирамида управления: почему она растёт ввысь</h1>
+<p class="sub">Задайте число исполнителей и норму управляемости — сколько подчинённых у одного руководителя. Тренажёр строит иерархию и показывает, сколько звеньев скалярной цепи проходит вопрос «через верх».</p>
+
+<div class="layout">
+  <div>
+    <div class="presets" role="group" aria-label="Готовые ситуации">
+      <button type="button" class="preset" data-p="small">Малая фирма</button>
+      <button type="button" class="preset" data-p="plant">Завод</button>
+      <button type="button" class="preset" data-p="wide">Завод, широкая норма</button>
+      <button type="button" class="preset" data-p="flat">IT: производство на аутсорсинге</button>
+    </div>
+    <div class="group">
+      <h2>Организация</h2>
+      <div class="ctrl"><label for="n-r">Исполнителей <small>(всего в штате)</small></label><input type="range" id="n-r" min="10" max="5000" step="10"><input type="number" id="n" min="10" max="5000" step="10" aria-label="Исполнителей"></div>
+      <div class="ctrl"><label for="s-r">Норма управляемости <small>(подчинённых у руководителя)</small></label><input type="range" id="s-r" min="2" max="15" step="1"><input type="number" id="s" min="2" max="15" step="1" aria-label="Норма управляемости"></div>
+      <div class="ctrl"><label for="p-r">Доля производственного персонала, %</label><input type="range" id="p-r" min="0" max="90" step="5"><input type="number" id="p" min="0" max="90" step="5" aria-label="Доля производственного персонала"></div>
+      <label class="check"><input type="checkbox" id="out"> <span>Вынести производство на аутсорсинг<small>Производственный персонал уходит к подрядчику, с ним — связь договором, а не приказом</small></span></label>
+    </div>
+    <div class="group">
+      <h2>Скорость решений</h2>
+      <div class="ctrl"><label for="d-r">Дней на одном звене <small>(пока вопрос лежит у руководителя)</small></label><input type="range" id="d-r" min="0.5" max="5" step="0.5"><input type="number" id="d" min="0.5" max="5" step="0.5" aria-label="Дней на одном звене"></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="pyr"><svg id="svg" viewBox="0 0 520 250" role="img" aria-label="Пирамида уровней управления"></svg></div>
+    <div class="stats">
+      <div class="stat"><div class="l">Уровней управления</div><div class="v" id="o-lev">–</div></div>
+      <div class="stat"><div class="l">Руководителей</div><div class="v" id="o-man">–</div></div>
+      <div class="stat"><div class="l">Доля руководителей</div><div class="v" id="o-share">–</div></div>
+      <div class="stat"><div class="l">Связей у руководителя ➕</div><div class="v" id="o-gr">–</div></div>
+    </div>
+    <div class="route">
+      <div class="up">Вопрос между дальними отделами «только через верх»<b id="o-up">–</b><span id="o-up-d"></span></div>
+      <div class="dir">По горизонтальной связи напрямую<b>1 звено</b><span id="o-dir-d"></span></div>
+    </div>
+    <p class="note" id="o-msg"></p>
+    <p class="foot">Модель упрощённая: все руководители имеют одинаковую норму управляемости. «Связей у руководителя» — формула В. Грайкунаса (1933): при n подчинённых число прямых, групповых и перекрёстных связей равно n·(2<sup>n−1</sup> + n − 1). Это ➕ дополнение, на занятии формула только упоминалась.</p>
+  </div>
+</div>
+
+<script>
+const PRESETS = {
+  small: {n: 40, s: 6, p: 50, out: false, d: 1},
+  plant: {n: 3000, s: 6, p: 70, out: false, d: 1},
+  wide: {n: 3000, s: 12, p: 70, out: false, d: 1},
+  flat: {n: 600, s: 10, p: 70, out: true, d: 1}
+};
+const fields = ["n", "s", "p", "d"];
+const outBox = document.getElementById("out");
+
+function link(id) {
+  const range = document.getElementById(`${id}-r`);
+  const num = document.getElementById(id);
+  range.addEventListener("input", () => { num.value = range.value; render(); });
+  num.addEventListener("input", () => {
+    const v = Math.min(Number(num.max), Math.max(Number(num.min), Number(num.value) || Number(num.min)));
+    range.value = v; render();
+  });
+}
+fields.forEach(link);
+outBox.addEventListener("change", render);
+
+function setValues(v) {
+  fields.forEach((id) => {
+    document.getElementById(id).value = v[id];
+    document.getElementById(`${id}-r`).value = v[id];
+  });
+  outBox.checked = v.out;
+  render();
+}
+document.querySelectorAll(".preset").forEach((b) => b.addEventListener("click", () => setValues(PRESETS[b.dataset.p])));
+
+function val(id) { return Number(document.getElementById(id).value); }
+function fmt(x) { return Math.round(x).toLocaleString("ru-RU"); }
+function graicunas(n) { return n * (Math.pow(2, n - 1) + n - 1); }
+
+function render() {
+  const total = val("n"), span = val("s"), prod = val("p") / 100, days = val("d");
+  const workers = Math.max(1, Math.round(outBox.checked ? total * (1 - prod) : total));
+  // Строим уровни снизу вверх: на каждом уровне ceil(подчинённых / норма) руководителей
+  const levels = [];
+  let below = workers;
+  while (below > 1 || levels.length === 0) {
+    const m = Math.ceil(below / span);
+    levels.push(m);
+    below = m;
+    if (m === 1) break;
+  }
+  const managers = levels.reduce((a, b) => a + b, 0);
+  const L = levels.length;
+  const hops = 2 * L;
+
+  document.getElementById("o-lev").textContent = L;
+  document.getElementById("o-man").textContent = fmt(managers);
+  document.getElementById("o-share").textContent = `${(managers / (managers + workers) * 100).toFixed(1).replace(".", ",")}%`;
+  document.getElementById("o-gr").textContent = fmt(graicunas(span));
+  document.getElementById("o-up").textContent = `${hops} звеньев`;
+  document.getElementById("o-up-d").textContent = `≈ ${(hops * days).toLocaleString("ru-RU")} дн.: вверх ${L}, вниз ${L}`;
+  document.getElementById("o-dir-d").textContent = `≈ ${days.toLocaleString("ru-RU")} дн.`;
+
+  let msg;
+  if (outBox.checked) {
+    msg = `В штате осталось ${fmt(workers)} человек вместо ${fmt(total)}: пирамида стала ниже. Но производство никуда не делось — у подрядчика будет своя иерархия, а с ним вас связывает договор, то есть взаимодействие, а не воздействие.`;
+  } else if (span >= 10) {
+    msg = `Широкая норма делает пирамиду ниже, но у руководителя ${fmt(graicunas(span))} возможных связей — контролировать их сложно. Это работает при стандартных операциях и сильной формализации.`;
+  } else {
+    msg = `Пирамида выросла вширь — и ввысь: ${L} уровней управления. Каждое новое звено скалярной цепи замедляет решение и снижает управляемость.`;
+  }
+  document.getElementById("o-msg").textContent = msg;
+  draw([workers, ...levels], L);
+}
+
+function draw(rows, L) {
+  const svg = document.getElementById("svg");
+  const W = 520, top = 12, bottom = 238;
+  const n = rows.length;
+  const rowH = Math.min(46, (bottom - top) / n);
+  const maxLog = Math.log10(rows[0] + 1);
+  let html = "";
+  rows.forEach((count, i) => {
+    const y = bottom - (i + 1) * rowH;
+    const w = 60 + 400 * Math.log10(count + 1) / maxLog;
+    const x = (W - w) / 2;
+    const isWorkers = i === 0;
+    const fill = isWorkers ? "#ddd6fe" : i === n - 1 ? "#5b21b6" : "#8b5cf6";
+    const text = isWorkers ? "#3b0764" : "#fff";
+    const label = isWorkers ? `исполнители: ${fmt(count)}` : i === n - 1 ? "директор" : `уровень ${n - i}: ${fmt(count)}`;
+    html += `<rect x="${x.toFixed(1)}" y="${(y + 2).toFixed(1)}" width="${w.toFixed(1)}" height="${(rowH - 4).toFixed(1)}" rx="7" fill="${fill}"/>`;
+    html += `<text x="${W / 2}" y="${(y + rowH / 2 + 4).toFixed(1)}" text-anchor="middle" font-size="${rowH > 22 ? 12 : 9}" font-weight="700" fill="${text}">${label}</text>`;
+  });
+  // Маршрут «через верх»: стрелка вверх слева и вниз справа
+  const yTop = bottom - n * rowH + rowH / 2;
+  const yBot = bottom - rowH / 2;
+  html += `<path d="M28 ${yBot} L28 ${yTop}" stroke="#dc2626" stroke-width="2.5" marker-end="url(#a)" fill="none"/>`;
+  html += `<path d="M492 ${yTop} L492 ${yBot}" stroke="#dc2626" stroke-width="2.5" marker-end="url(#a)" fill="none"/>`;
+  html += `<defs><marker id="a" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#dc2626"/></marker></defs>`;
+  svg.innerHTML = html;
+}
+
+setValues(PRESETS.plant);
+</script>
+<script>
+/* Ссылка «← Все уроки» видна, только когда тренажёр открыт отдельной страницей, а не внутри урока */
+if (window.self === window.top) document.getElementById("back").hidden = false;
+</script>
+</body>
+</html>
