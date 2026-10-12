@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр AD–AS</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --cyan:#0ea5e9;
+  --red:#dc2626;
+  --green:#16a34a;
+  --amber:#f59e0b;
+  --amber-lt:#fffbeb;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+h1{font-size:1.05rem;font-weight:800;letter-spacing:-.2px}
+.sub{color:var(--muted);font-size:.78rem}
+.presets{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.presets .lbl{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-right:2px}
+.presets .gap{width:10px}
+.preset{padding:4px 9px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s}
+.preset:hover{border-color:#c7d2fe;color:var(--indigo)}
+.preset.active{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.preset.story{border-color:#fcd34d;background:var(--amber-lt);color:#92400e}
+.preset.story.active{background:var(--amber);border-color:var(--amber);color:#fff}
+.preset:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+
+/* три колонки: график · спрос · предложение */
+.layout{display:grid;grid-template-columns:minmax(300px,1.15fr) minmax(250px,1fr) minmax(250px,1fr);gap:12px;align-items:start}
+@media (max-width:980px){.layout{grid-template-columns:minmax(280px,1fr) minmax(250px,1fr)}.as-col{grid-column:2}}
+@media (max-width:640px){.layout{grid-template-columns:1fr}.as-col{grid-column:auto}}
+
+.chart-box{border:1px solid var(--border);border-radius:12px;padding:4px;background:#fcfcff}
+svg{width:100%;height:auto;display:block;max-height:46vh}
+.legend{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:.68rem;color:var(--muted);padding:0 6px 2px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:4px}
+
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.kpi{border:1px solid var(--border);border-radius:10px;padding:5px 6px;background:#f8fafc;text-align:center}
+.kpi .k-l{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.kpi .k-v{font-size:1.1rem;font-weight:900;line-height:1.15}
+.kpi .k-n{font-size:.66rem;color:var(--muted)}
+.up{color:var(--red)} .down{color:var(--green)} .flat{color:var(--text)}
+
+.verdict{margin-top:8px;border-radius:10px;padding:8px 11px;font-size:.78rem;line-height:1.45;border:1px solid var(--border);background:var(--indigo-lt);color:var(--indigo-dk)}
+.verdict b{display:block}
+.story-text{margin-top:8px;border-radius:10px;padding:8px 11px;font-size:.78rem;line-height:1.45;background:var(--amber-lt);border:1px solid #fcd34d;color:#78350f}
+
+.group{border:1px solid var(--border);border-radius:12px;padding:9px 11px}
+.group + .group{margin-top:10px}
+.group h2{font-size:.8rem;font-weight:800;margin-bottom:6px}
+.ad-group{border-left:4px solid var(--indigo)}
+.as-group{border-left:4px solid var(--cyan)}
+.ctrl{margin-bottom:6px}
+.ctrl .row{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.ctrl label{font-size:.75rem;font-weight:700;line-height:1.2}
+.ctrl label small{font-weight:500;color:var(--muted)}
+.ctrl input[type=range]{width:100%;height:16px;accent-color:var(--indigo);display:block}
+.ctrl input[type=number]{width:58px;flex-shrink:0;padding:2px 5px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;font-weight:800;text-align:right;color:var(--indigo-dk)}
+.sum-line{font-size:.72rem;color:var(--muted);margin-top:4px;line-height:1.35}
+.sum-line b{color:var(--text)}
+.check{display:flex;gap:6px;align-items:flex-start;font-size:.72rem;line-height:1.35;margin:2px 0 4px}
+.check input{margin-top:2px;accent-color:var(--indigo)}
+details.info{font-size:.7rem;color:var(--muted);margin-top:10px;line-height:1.4}
+details.info summary{cursor:pointer;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>Тренажёр AD–AS</h1>
+  <span class="sub">Двигайте ползунки или вписывайте числа. Пунктир — исходное состояние (P = 1, Y = 100), цвет — текущее. Учебная модель в условных единицах.</span>
+</div>
+
+<div class="presets">
+  <span class="lbl">Ситуации</span>
+  <button type="button" class="preset active" data-preset="base">Исходное</button>
+  <button type="button" class="preset" data-preset="pandemic">Пандемия</button>
+  <button type="button" class="preset" data-preset="panic">Ажиотаж</button>
+  <button type="button" class="preset" data-preset="rate">Ставка 21%</button>
+  <button type="button" class="preset" data-preset="gov">Госзакупки ↑</button>
+  <button type="button" class="preset" data-preset="costs">Издержки ↑</button>
+  <button type="button" class="preset" data-preset="export">Экспорт ↓</button>
+  <button type="button" class="preset" data-preset="growth">Рост производства</button>
+  <span class="gap"></span>
+  <span class="lbl">История с занятия</span>
+  <button type="button" class="preset story" data-preset="s1">1 Стоп-машина</button>
+  <button type="button" class="preset story" data-preset="s2">2 Гречка</button>
+  <button type="button" class="preset story" data-preset="s3">3 Ставка</button>
+  <button type="button" class="preset story" data-preset="s4">4 Цена тушения</button>
+  <button type="button" class="preset story" data-preset="s5">5 Долгий путь</button>
+</div>
+
+<div class="layout">
+  <div>
+    <div class="chart-box">
+      <svg id="chart" viewBox="0 0 420 290" role="img" aria-label="График совокупного спроса и совокупного предложения"></svg>
+      <div class="legend">
+        <span><i style="background:#6366f1"></i>AD — спрос</span>
+        <span><i style="background:#0ea5e9"></i>AS — предложение</span>
+        <span><i style="background:#94a3b8"></i>исходные</span>
+        <span><i style="background:#16a34a"></i>потенциал</span>
+      </div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="k-l">Цены P</div><div class="k-v" id="kP">1,000</div><div class="k-n" id="kPn">0%</div></div>
+      <div class="kpi"><div class="k-l">ВВП Y</div><div class="k-v" id="kY">100,0</div><div class="k-n" id="kYn">0%</div></div>
+      <div class="kpi"><div class="k-l">Загрузка</div><div class="k-v" id="kG">100%</div><div class="k-n" id="kGn">у потенциала</div></div>
+    </div>
+  </div>
+
+  <div class="ad-col">
+    <div class="group ad-group">
+      <h2>Спрос: Y = C + I + G + Xn</h2>
+      <div class="ctrl"><div class="row"><label for="C">C — потребление <small>семьи</small></label><input type="number" id="nC" step="1" aria-label="Потребление, число"></div><input type="range" id="C" min="30" max="80" step="1"></div>
+      <div class="ctrl"><div class="row"><label for="I">I — инвестиции <small>фирмы</small></label><input type="number" id="nI" step="1" aria-label="Инвестиции, число"></div><input type="range" id="I" min="5" max="40" step="1"></div>
+      <div class="ctrl"><div class="row"><label for="G">G — госзакупки</label><input type="number" id="nG" step="1" aria-label="Госзакупки, число"></div><input type="range" id="G" min="5" max="40" step="1"></div>
+      <div class="ctrl"><div class="row"><label for="Xn">Xn — чистый экспорт</label><input type="number" id="nXn" step="1" aria-label="Чистый экспорт, число"></div><input type="range" id="Xn" min="-15" max="25" step="1"></div>
+      <div class="ctrl"><div class="row"><label for="r">Ключевая ставка, % <small>↑ сбережения</small></label><input type="number" id="nr" step="0.5" aria-label="Ключевая ставка, число"></div><input type="range" id="r" min="4" max="25" step="0.5"></div>
+      <div class="ctrl"><div class="row"><label for="e">Инфл. ожидания, % <small>↑ покупки впрок</small></label><input type="number" id="ne" step="0.5" aria-label="Инфляционные ожидания, число"></div><input type="range" id="e" min="0" max="20" step="0.5"></div>
+      <p class="sum-line" id="adSum"></p>
+    </div>
+  </div>
+
+  <div class="as-col">
+    <div class="group as-group">
+      <h2>Предложение (производство)</h2>
+      <div class="ctrl"><div class="row"><label for="Yp">Произв. возможности <small>мощности, люди</small></label><input type="number" id="nYp" step="1" aria-label="Производственные возможности, число"></div><input type="range" id="Yp" min="70" max="130" step="1"></div>
+      <div class="ctrl"><div class="row"><label for="cost">Издержки, % <small>сырьё, курс, зарплаты</small></label><input type="number" id="ncost" step="1" aria-label="Издержки, число"></div><input type="range" id="cost" min="-20" max="30" step="1"></div>
+      <label class="check"><input type="checkbox" id="longrun"> <span><b>Долгий срок:</b> дорогие кредиты сокращают инвестиции в мощности.</span></label>
+      <p class="sum-line" id="asSum"></p>
+    </div>
+    <div class="group">
+      <h2>Наклоны кривых</h2>
+      <div class="ctrl"><div class="row"><label for="k">Чувствит. спроса к ценам <small>↑ AD положе</small></label><input type="number" id="nk" step="5" aria-label="Чувствительность спроса, число"></div><input type="range" id="k" min="15" max="100" step="5"></div>
+      <div class="ctrl"><div class="row"><label for="h">Гибкость производства <small>↑ AS положе</small></label><input type="number" id="nh" step="5" aria-label="Гибкость производства, число"></div><input type="range" id="h" min="15" max="150" step="5"></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <div class="story-text" id="storyText" hidden></div>
+    <details class="info"><summary>Как устроена модель</summary>AD: P = 1 + (C + I + G + Xn − Y) / k; AS: P = 1 + издержки + (Y − потенциал) / h. Ставка выше 14% (уровень Банка России на сентябрь 2026) снижает C и I, ожидания выше цели 4% поднимают C. Коэффициенты подобраны для наглядности. Это учебное упрощение: реальные модели ЦБ учитывают лаги, курс, бюджет и многое другое.</details>
+  </div>
+</div>
+
+<script>
+/* Исходные значения: условная экономика, где Y = 100 и P = 1 */
+const BASE = {C:55, I:20, G:20, Xn:5, r:14, e:4, Yp:100, cost:0, k:40, h:60, longrun:false};
+const R0 = 14, E0 = 4;
+
+/* Готовые ситуации: меняют только указанные параметры относительно исходного состояния */
+const PRESETS = {
+  base:{},
+  pandemic:{Yp:85},
+  panic:{e:12},
+  rate:{r:21},
+  gov:{G:30},
+  costs:{cost:12},
+  export:{Xn:-5},
+  growth:{Yp:115},
+  s1:{Yp:85},
+  s2:{Yp:85, e:12},
+  s3:{Yp:85, e:12, r:21},
+  s4:{Yp:85, e:12, r:21, cost:6},
+  s5:{Yp:85, e:6, r:21, cost:6, longrun:true}
+};
+const STORY = {
+  s1:"<b>Шаг 1. Пандемия, «стоп-машина».</b> Производство остановилось — AS сдвигается влево. Выпуск падает, цены растут. Так на занятии объясняли переход P₁ → P₂.",
+  s2:"<b>Шаг 2. Адаптивные ожидания.</b> Люди ждут роста цен и покупают впрок: «бежим за гречкой». AD сдвигается вправо — цены растут ещё сильнее (P₃). ВВП это почти не спасает: производить больше нечем.",
+  s3:"<b>Шаг 3. ЦБ поднимает ключевую ставку.</b> Вклады становятся выгодными: располагаемый доход = потребление + сбережения, и люди переносят деньги в сбережения. AD возвращается влево, инфляция не раскручивается.",
+  s4:"<b>Шаг 4. Обратная сторона.</b> Кредиты для бизнеса дорожают: оборотные средства, аренда, закупки — всё дороже. Издержки растут, AS поднимается. Преподаватель назвала такую ставку «убийством производства».",
+  s5:"<b>Шаг 5. Долгий срок.</b> Ожидания успокоились, но высокая ставка месяцами сдерживает инвестиции: новых мощностей не строят, потенциал падает. Поэтому ставка — экстренная, краткосрочная мера. Надолго цены стабилизирует только рост предложения: попробуйте поднять «Производственные возможности»."
+};
+
+const KEYS = ["C","I","G","Xn","r","e","Yp","cost","k","h"];
+const state = {...BASE};
+
+function readNum(v, el){
+  const x = parseFloat(String(v).replace(",", "."));
+  if (Number.isNaN(x)) return null;
+  return Math.min(parseFloat(el.max), Math.max(parseFloat(el.min), x));
+}
+
+/* Расчёт равновесия */
+function model(s){
+  const C = s.C - 0.6*(s.r - R0) + 0.5*(s.e - E0);
+  const I = s.I - 0.5*(s.r - R0);
+  const E = C + I + s.G + s.Xn;                 // совокупные расходы при P = 1
+  const Yp = s.Yp - (s.longrun ? 0.9*(s.r - R0) : 0);
+  const c = s.cost/100;
+  const Y = (E*s.h + Yp*s.k - c*s.k*s.h)/(s.h + s.k);
+  const P = 1 + (E - Y)/s.k;
+  return {C, I, E, Yp, c, Y, P};
+}
+
+/* Рисование графика */
+const svg = document.getElementById("chart");
+const W = 420, H = 290, L = 40, R = 14, T = 12, B = 34;
+const Ymin = 50, Ymax = 150, Pmin = 0.6, Pmax = 1.5;
+const sx = (y) => L + (y - Ymin)/(Ymax - Ymin)*(W - L - R);
+const sy = (p) => H - B - (p - Pmin)/(Pmax - Pmin)*(H - T - B);
+const fmt = (x, d=1) => x.toFixed(d).replace(".", ",");
+
+function clipLine(f){
+  /* f: Y -> P. Возвращает отрезок внутри области графика */
+  const pts = [];
+  for (let y = Ymin; y <= Ymax; y += 0.5){
+    const p = f(y);
+    if (p >= Pmin && p <= Pmax) pts.push([sx(y), sy(p)]);
+  }
+  if (pts.length < 2) return null;
+  return {x1:pts[0][0], y1:pts[0][1], x2:pts[pts.length-1][0], y2:pts[pts.length-1][1]};
+}
+function line(seg, color, w, dash){
+  if (!seg) return "";
+  return `<line x1="${seg.x1}" y1="${seg.y1}" x2="${seg.x2}" y2="${seg.y2}" stroke="${color}" stroke-width="${w*0.8}" ${dash ? `stroke-dasharray="${dash}"` : ""} stroke-linecap="round"/>`;
+}
+function label(seg, text, color, end){
+  if (!seg) return "";
+  const x = end ? seg.x2 : seg.x1, y = end ? seg.y2 : seg.y1;
+  const dx = end ? -6 : 6, anchor = end ? "end" : "start";
+  const dy = end ? (seg.y2 > seg.y1 ? -8 : 16) : (seg.y1 > seg.y2 ? -8 : 16);
+  return `<text x="${x+dx}" y="${y+dy}" fill="${color}" font-size="13" font-weight="800" text-anchor="${anchor}">${text}</text>`;
+}
+
+function draw(m0, m){
+  let g = "";
+  /* сетка и оси */
+  for (let y = 60; y <= 140; y += 20){
+    g += `<line x1="${sx(y)}" y1="${T}" x2="${sx(y)}" y2="${H-B}" stroke="#eef2f7"/>`;
+    g += `<text x="${sx(y)}" y="${H-B+14}" fill="#64748b" font-size="10" text-anchor="middle">${y}</text>`;
+  }
+  for (let p = 0.6; p <= 1.501; p += 0.1){
+    g += `<line x1="${L}" y1="${sy(p)}" x2="${W-R}" y2="${sy(p)}" stroke="#eef2f7"/>`;
+    g += `<text x="${L-5}" y="${sy(p)+3}" fill="#64748b" font-size="10" text-anchor="end">${fmt(p,1)}</text>`;
+  }
+  g += `<line x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}" stroke="#0f172a" stroke-width="1.5"/>`;
+  g += `<line x1="${L}" y1="${T}" x2="${L}" y2="${H-B}" stroke="#0f172a" stroke-width="1.5"/>`;
+  g += `<text x="${W-R}" y="${H-3}" fill="#0f172a" font-size="11" font-weight="700" text-anchor="end">Y — реальный ВВП</text>`;
+  g += `<text x="10" y="${T+4}" fill="#0f172a" font-size="11" font-weight="700" transform="rotate(-90 10 ${T+4})" text-anchor="end">P — уровень цен</text>`;
+
+  /* потенциальный ВВП */
+  if (m.Yp >= Ymin && m.Yp <= Ymax){
+    g += `<line x1="${sx(m.Yp)}" y1="${T}" x2="${sx(m.Yp)}" y2="${H-B}" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="2 5"/>`;
+    g += `<text x="${sx(m.Yp)+4}" y="${T+12}" fill="#16a34a" font-size="9" font-weight="700">потенциал</text>`;
+  }
+
+  const adF = (mm, s) => (y) => 1 + (mm.E - y)/s.k;
+  const asF = (mm, s) => (y) => 1 + mm.c + (y - mm.Yp)/s.h;
+  const ad0 = clipLine(adF(m0, BASE)), as0 = clipLine(asF(m0, BASE));
+  const ad1 = clipLine(adF(m, state)), as1 = clipLine(asF(m, state));
+  g += line(ad0, "#94a3b8", 2, "6 6") + line(as0, "#94a3b8", 2, "6 6");
+  g += line(ad1, "#6366f1", 3.5) + line(as1, "#0ea5e9", 3.5);
+  g += label(ad1, "AD", "#6366f1", true) + label(as1, "AS", "#0ea5e9", true);
+
+  /* точки равновесия */
+  const pt = (mm, color, name) => {
+    if (mm.Y < Ymin || mm.Y > Ymax || mm.P < Pmin || mm.P > Pmax) return "";
+    const x = sx(mm.Y), y = sy(mm.P);
+    return `<line x1="${x}" y1="${y}" x2="${x}" y2="${H-B}" stroke="${color}" stroke-dasharray="3 4"/>`+
+           `<line x1="${L}" y1="${y}" x2="${x}" y2="${y}" stroke="${color}" stroke-dasharray="3 4"/>`+
+           `<circle cx="${x}" cy="${y}" r="5" fill="${color}" stroke="#fff" stroke-width="2"/>`+
+           `<text x="${x+7}" y="${y-7}" fill="${color}" font-size="11" font-weight="800">${name}</text>`;
+  };
+  g += pt(m0, "#94a3b8", "E₀");
+  const moved = Math.abs(m.Y - m0.Y) > 0.05 || Math.abs(m.P - m0.P) > 0.0005;
+  if (moved) g += pt(m, "#dc2626", "E₁");
+  svg.innerHTML = g;
+}
+
+function sign(x, d=1){ return (x > 0 ? "+" : x < 0 ? "−" : "") + fmt(Math.abs(x), d); }
+
+function render(){
+  KEYS.forEach((key) => {
+    document.getElementById(key).value = state[key];
+    document.getElementById("n"+key).value = state[key];
+  });
+  document.getElementById("longrun").checked = state.longrun;
+
+  const m0 = model(BASE), m = model(state);
+  draw(m0, m);
+
+  const infl = (m.P - 1)*100, dY = (m.Y - 100);
+  const kP = document.getElementById("kP"), kY = document.getElementById("kY"), kG = document.getElementById("kG");
+  kP.textContent = fmt(m.P, 3);
+  kP.className = "k-v " + (infl > 0.05 ? "up" : infl < -0.05 ? "down" : "flat");
+  document.getElementById("kPn").textContent = `инфляция ${sign(infl)}%`;
+  kY.textContent = fmt(m.Y, 1);
+  kY.className = "k-v " + (dY > 0.05 ? "down" : dY < -0.05 ? "up" : "flat");
+  document.getElementById("kYn").textContent = `${sign(dY)}% к исходному`;
+  const gap = m.Y/m.Yp*100;
+  kG.textContent = `${fmt(gap, 0)}%`;
+  kG.className = "k-v " + (gap > 101 ? "up" : gap < 99 ? "up" : "flat");
+  document.getElementById("kGn").textContent = gap > 101 ? "перегрев" : gap < 99 ? "мощности простаивают" : "у потенциала";
+
+  const dE = m.E - m0.E;
+  const shiftAS = (m.Yp - m0.Yp) - m.c*state.h;   // сдвиг AS по горизонтали
+  document.getElementById("adSum").innerHTML = `Сумма расходов: <b>${fmt(m.E,1)}</b> (C ${fmt(m.C,1)} + I ${fmt(m.I,1)} + G ${state.G} + Xn ${state.Xn}). AD ${Math.abs(dE) < 0.05 ? "на месте" : dE > 0 ? `сдвинута <b>вправо на ${fmt(dE)}</b>` : `сдвинута <b>влево на ${fmt(-dE)}</b>`}.`;
+  document.getElementById("asSum").innerHTML = `Потенциал: <b>${fmt(m.Yp,1)}</b>. AS ${Math.abs(shiftAS) < 0.05 ? "на месте" : shiftAS > 0 ? `сдвинута <b>вправо на ${fmt(shiftAS)}</b>` : `сдвинута <b>влево на ${fmt(-shiftAS)}</b>`}.`;
+
+  let title, text;
+  const pUp = infl > 0.2, pDown = infl < -0.2, yUp = dY > 0.2, yDown = dY < -0.2;
+  if (!pUp && !pDown && !yUp && !yDown){ title = "Равновесие почти не изменилось"; text = "Измените любой параметр — кривые сдвинутся, и точка равновесия E₁ уйдёт от исходной E₀."; }
+  else if (pUp && yDown){ title = "Стагфляция: цены растут, производство падает"; text = "Худшее сочетание. Типично для шока предложения: пандемия, рост издержек, дорогие кредиты для бизнеса."; }
+  else if (pUp && yUp){ title = "Рост спроса: экономика разгоняется, цены растут"; text = gap > 101 ? "Выпуск выше потенциала — это «перегрев». Мощности загружены сверх нормы, и дальше расти будут в основном цены." : "Пока есть свободные мощности, спрос поднимает и выпуск, и цены."; }
+  else if (pDown && yUp){ title = "Лучший сценарий: больше товаров, ниже цены"; text = "Так работает рост предложения. Именно его преподаватель назвала долгосрочным способом стабилизировать цены."; }
+  else if (pDown && yDown){ title = "Спад спроса: цены и производство снижаются"; text = "Так действует жёсткая денежная политика или падение экспорта: инфляция гасится ценой выпуска."; }
+  else if (pUp){ title = "Цены растут при почти неизменном выпуске"; text = "Сдвиги спроса и предложения частично гасят друг друга по выпуску, но вместе поднимают цены."; }
+  else if (pDown){ title = "Цены снижаются при почти неизменном выпуске"; text = "Сдвиги частично компенсируют друг друга по выпуску, но вместе тянут цены вниз."; }
+  else if (yUp){ title = "Выпуск растёт при стабильных ценах"; text = "Спрос и предложение растут одновременно — сбалансированный рост."; }
+  else { title = "Выпуск падает при стабильных ценах"; text = "Спрос и предложение сокращаются одновременно."; }
+  document.getElementById("verdict").innerHTML = `<b>${title}</b>${text}`;
+}
+
+function applyPreset(name){
+  Object.assign(state, BASE, PRESETS[name]);
+  document.querySelectorAll(".preset").forEach((b) => b.classList.toggle("active", b.dataset.preset === name));
+  const st = document.getElementById("storyText");
+  if (STORY[name]){ st.innerHTML = STORY[name]; st.hidden = false; } else { st.hidden = true; }
+  render();
+}
+function clearPresetMark(){
+  document.querySelectorAll(".preset").forEach((b) => b.classList.remove("active"));
+  document.getElementById("storyText").hidden = true;
+}
+
+KEYS.forEach((key) => {
+  const range = document.getElementById(key), num = document.getElementById("n"+key);
+  range.addEventListener("input", () => { state[key] = parseFloat(range.value); clearPresetMark(); render(); });
+  num.addEventListener("change", () => {
+    const v = readNum(num.value, range);
+    if (v !== null) state[key] = v;
+    clearPresetMark(); render();
+  });
+});
+document.getElementById("longrun").addEventListener("change", (ev) => { state.longrun = ev.target.checked; clearPresetMark(); render(); });
+document.querySelectorAll(".preset").forEach((b) => b.addEventListener("click", () => applyPreset(b.dataset.preset)));
+
+render();
+</script>
+</body>
+</html>

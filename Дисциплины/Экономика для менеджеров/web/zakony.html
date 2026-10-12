@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Законы экономики — реестр с аналогиями из физики и выводами для бизнеса</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --cyan:#0ea5e9;
+  --cyan-lt:#e0f2fe;
+  --amber:#f59e0b;
+  --amber-lt:#fffbeb;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+  --nav-h:56px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(99,102,241,.14),transparent 32%),
+    radial-gradient(circle at 85% 6%,rgba(14,165,233,.13),transparent 34%),
+    linear-gradient(180deg,#f8fafc 0%,#eef2ff 30%,#f8fafc 100%);
+  color:var(--text);
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;z-index:900;
+  gap:2px;overflow-x:auto;scrollbar-width:none;
+}
+nav.top::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:.93rem;color:var(--indigo-dk);white-space:nowrap;margin:0 10px 0 4px;flex-shrink:0}
+.nav-sep{width:1px;height:18px;background:var(--border);margin:0 6px;flex-shrink:0}
+.nav-link{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;transition:color .2s,background .2s;flex-shrink:0}
+.nav-link:hover,.nav-link.active{color:var(--indigo);background:var(--indigo-lt)}
+.nav-link:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* HERO */
+#hero{
+  min-height:100vh;padding:calc(var(--nav-h) + 56px) 24px 64px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
+.hero-badge{padding:5px 14px;background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:100px;font-size:.78rem;font-weight:700;color:var(--indigo-dk)}
+.hero-title{font-size:clamp(2rem,5.5vw,3.6rem);font-weight:900;line-height:1.12;letter-spacing:-1.5px;margin-bottom:16px;max-width:900px}
+.hero-title em{color:var(--indigo);font-style:normal}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:660px;margin-bottom:36px}
+.hero-img{max-width:900px;width:100%;margin-bottom:40px}
+.hero-nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:820px}
+.hero-nav a{padding:8px 16px;border-radius:10px;background:var(--card);border:1px solid var(--border);font-size:.82rem;font-weight:600;color:var(--text);text-decoration:none;box-shadow:0 2px 8px rgba(15,23,42,.05);transition:transform .15s,box-shadow .15s}
+.hero-nav a:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,.15)}
+
+/* SECTIONS */
+.sec{max-width:1180px;margin:0 auto;padding:72px 24px}
+.sec-head{margin-bottom:36px}
+.num-badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:13px;font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:14px}
+.n1{background:linear-gradient(135deg,#6366f1,#818cf8)}
+.n2{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
+.n3{background:linear-gradient(135deg,#8b5cf6,#a78bfa)}
+.n4{background:linear-gradient(135deg,#16a34a,#4ade80)}
+.n5{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+.n6{background:linear-gradient(135deg,#ec4899,#f472b6)}
+.n7{background:linear-gradient(135deg,#dc2626,#f87171)}
+.n8{background:linear-gradient(135deg,#0891b2,#22d3ee)}
+.n9{background:linear-gradient(135deg,#4338ca,#6366f1)}
+.sec-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.sec-desc{font-size:1rem;color:var(--muted);max-width:760px;line-height:1.75}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+
+/* CARD GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.grid .c-name{font-weight:800;margin-bottom:8px;font-size:.96rem}
+.grid p:not(.c-name){color:var(--muted);font-size:.88rem;line-height:1.6}
+
+/* CALLOUTS */
+.note-callout{background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:14px;padding:16px 20px;margin-bottom:24px}
+.note-callout p{color:var(--indigo-dk);font-size:.92rem;line-height:1.7}
+.warn-callout{background:var(--amber-lt);border:1px solid #fcd34d;border-radius:16px;padding:20px 24px;margin-top:20px}
+.warn-callout p{color:#78350f;line-height:1.7;font-size:.93rem}
+
+/* IMAGE CARD + PLACEHOLDER */
+.img-card{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.12);cursor:zoom-in}
+.img-card img{display:block;width:100%;height:auto}
+.img-card .img-missing-caption{display:none}
+.img-card.img-missing{border:2px dashed var(--border);background:var(--indigo-lt);min-height:220px;display:flex;align-items:center;justify-content:center;box-shadow:none;cursor:default}
+.img-card.img-missing img{display:none}
+.img-card.img-missing .img-missing-caption{display:block;color:var(--muted);font-size:.85rem;text-align:center;padding:24px;max-width:340px}
+
+/* VIZ CARD (iframe) */
+.viz{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.viz-bar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#f8fafc;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#febb2c}.dg{background:#27c840}
+.viz-lbl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);flex:1}
+.viz-fs{display:flex;align-items:center;gap:5px;padding:4px 10px;background:transparent;border:1px solid var(--border);border-radius:6px;font-size:.71rem;font-weight:600;color:var(--muted);cursor:pointer;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+.viz-fs:hover{background:var(--indigo-lt);color:var(--indigo);border-color:#c7d2fe}
+.viz iframe{width:100%;border:none;display:block}
+
+/* PROMPT BOX */
+.prompt-box{background:#0f172a;border-radius:14px;overflow:hidden;margin-bottom:18px}
+.prompt-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#1e293b;color:#e2e8f0;font-size:.82rem;font-weight:700}
+.copy-btn{padding:5px 12px;border-radius:8px;border:1px solid #475569;background:transparent;color:#e2e8f0;font-size:.76rem;font-weight:700;cursor:pointer;transition:background .2s}
+.copy-btn:hover{background:#334155}
+.prompt-box pre{margin:0;padding:18px 16px;color:#e2e8f0;font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+
+/* LIGHTBOX */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.92);z-index:2000;display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:auto}
+.overlay img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.overlay-close{position:absolute;top:18px;right:22px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.overlay-close:hover{background:rgba(255,255,255,.22)}
+.overlay-download{position:absolute;top:18px;right:72px;height:40px;padding:0 16px;border-radius:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;z-index:2}
+.overlay-download:hover{background:rgba(255,255,255,.22)}
+
+/* FULLSCREEN IFRAME OVERLAY */
+#fs-overlay{position:fixed;inset:0;background:rgba(2,6,23,.94);z-index:2100;display:none;flex-direction:column}
+#fs-overlay.open{display:flex}
+#fs-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(255,255,255,.08)}
+#fs-title{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.65);flex:1}
+#fs-close{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.8);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#fs-close:hover{background:rgba(255,255,255,.2)}
+#fs-frame{flex:1;border:none;background:#fff}
+
+/* CHECKLIST */
+.checklist-progress-bar{height:10px;border-radius:100px;background:var(--indigo-lt);overflow:hidden;margin-bottom:20px}
+.checklist-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--indigo),var(--cyan));border-radius:100px;transition:width .3s ease}
+.checklist-items{list-style:none;display:flex;flex-direction:column;gap:12px}
+.checklist-items label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.95rem}
+.checklist-items input{width:18px;height:18px;accent-color:var(--indigo);cursor:pointer;flex-shrink:0}
+.checklist-done{margin-top:18px;padding:12px 16px;background:var(--green-lt);color:var(--green);border-radius:10px;font-weight:700}
+
+/* QUIZ */
+.quiz{display:flex;flex-direction:column;gap:18px}
+.quiz-question{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.quiz-text{font-weight:700;margin-bottom:12px}
+.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.quiz-options label{display:flex;align-items:center;gap:8px;font-size:.92rem;cursor:pointer}
+.quiz-options label.quiz-correct-answer{color:var(--green);font-weight:700}
+.quiz-options input{accent-color:var(--indigo)}
+.quiz-check{padding:8px 16px;border-radius:9px;border:none;background:var(--indigo);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer}
+.quiz-check:hover{background:var(--indigo-dk)}
+.quiz-feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem}
+.quiz-feedback.correct{background:var(--green-lt);color:var(--green)}
+.quiz-feedback.incorrect{background:var(--red-lt);color:var(--red)}
+.quiz-score-box{text-align:center;font-weight:800;color:var(--indigo-dk)}
+
+/* CONCLUSION */
+.conclusion-list{list-style:none;counter-reset:concl;display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.conclusion-list li{counter-increment:concl;padding-left:38px;position:relative;font-size:1rem}
+.conclusion-list li::before{content:counter(concl);position:absolute;left:0;top:-2px;width:26px;height:26px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+.svc-link{color:var(--indigo);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+
+/* SCROLL REVEAL */
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.fade.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.fade{opacity:1;transform:none;transition:none}}
+@media (max-width:900px){.sec{padding:56px 18px}}
+
+
+/* ДОПОЛНИТЕЛЬНЫЕ БЛОКИ УЧЕБНОЙ СТРАНИЦЫ */
+.legend-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:-14px 0 30px;max-width:900px}
+.legend-row span{font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:var(--card);color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.card h3{font-size:1.02rem;font-weight:800;margin-bottom:8px}
+.card p,.card li{font-size:.94rem;line-height:1.7}
+.card ul,.card ol{padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.lecture-tag,.extra-tag,.practice-tag,.trap-tag,.opinion-tag{display:inline-block;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:100px;margin-bottom:8px}
+.lecture-tag{background:var(--indigo-lt);color:var(--indigo-dk)}
+.extra-tag{background:var(--cyan-lt);color:#0369a1}
+.practice-tag{background:var(--green-lt);color:var(--green)}
+.trap-tag{background:var(--red-lt);color:var(--red)}
+.opinion-tag{background:var(--amber-lt);color:#92400e}
+.extra{background:linear-gradient(180deg,#f0f9ff,#fff);border:1px solid #bae6fd;border-left:5px solid var(--cyan);border-radius:16px;padding:18px 22px}
+.practice{background:linear-gradient(180deg,var(--green-lt),#fff);border:1px solid #bbf7d0;border-left:5px solid var(--green);border-radius:16px;padding:18px 22px}
+.trap{background:var(--red-lt);border:1px solid #fecaca;border-left:5px solid var(--red);border-radius:16px;padding:16px 22px}
+.opinion{background:var(--amber-lt);border:1px solid #fcd34d;border-left:5px solid var(--amber);border-radius:16px;padding:18px 22px}
+.extra h3,.practice h3,.trap h3,.opinion h3{font-size:1rem;font-weight:800;margin-bottom:6px}
+.extra p,.extra li,.practice p,.practice li,.trap p,.trap li,.opinion p,.opinion li{font-size:.93rem;line-height:1.7}
+.extra ul,.practice ul,.practice ol,.trap ul,.opinion ul{padding-left:20px;display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.src{font-size:.8rem;color:var(--muted);margin-top:8px}
+.src a{color:#0369a1}
+.def{background:var(--card);border:1px solid #c7d2fe;border-left:5px solid var(--indigo);border-radius:14px;padding:14px 20px;font-size:1rem;line-height:1.7}
+.def b{color:var(--indigo-dk)}
+.formula{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:clamp(1.2rem,2.6vw,1.7rem);font-weight:800;text-align:center;padding:16px;background:var(--indigo-lt);border-radius:14px;color:var(--indigo-dk);letter-spacing:.5px}
+details.ref{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0 18px}
+details.ref + details.ref{margin-top:8px}
+details.ref summary{cursor:pointer;padding:12px 0;font-weight:800;font-size:.93rem;list-style:none;display:flex;gap:8px;align-items:center}
+details.ref summary::before{content:"🧭"}
+details.ref summary::-webkit-details-marker{display:none}
+details.ref[open] summary{border-bottom:1px dashed var(--border)}
+details.ref .ref-body{padding:10px 0 14px;font-size:.92rem;line-height:1.7;color:#334155}
+details.ref .ref-body p + p{margin-top:6px}
+table.cmp{width:100%;border-collapse:collapse;background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--border);font-size:.92rem}
+table.cmp th{background:var(--indigo-lt);color:var(--indigo-dk);text-align:left;padding:10px 14px;font-size:.84rem}
+table.cmp td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top;line-height:1.6}
+table.cmp td:first-child{font-weight:700}
+.table-wrap{overflow-x:auto}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.flow .step{flex:1 1 140px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;position:relative}
+.flow .step b{display:block;color:var(--indigo-dk);font-size:.92rem}
+.flow .step span{font-size:.84rem;color:var(--muted)}
+.flow .step .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.78rem;font-weight:800;align-items:center;justify-content:center;margin-bottom:6px}
+.quiz-feedback .explain{display:block;margin-top:6px;color:var(--text);font-weight:500}
+
+footer{text-align:center;padding:32px 20px 48px;color:var(--muted);font-size:.85rem}
+
+/* РЕЕСТР ЗАКОНОВ */
+.law{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:26px 28px;box-shadow:0 4px 20px rgba(15,23,42,.05);scroll-margin-top:calc(var(--nav-h) + 16px)}
+.law + .law{margin-top:22px}
+.law-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
+.law-num{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#059669,#34d399);color:#fff;font-weight:900;flex-shrink:0}
+.law-title{font-size:clamp(1.2rem,2.4vw,1.55rem);font-weight:800;letter-spacing:-.3px;flex:1;min-width:240px}
+.law-tags{display:flex;gap:6px;flex-wrap:wrap}
+.law-tags span{font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:100px;background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+.law-tags span.add{background:var(--cyan-lt);color:#0369a1;border-color:#bae6fd}
+.law-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media (max-width:820px){.law-cols{grid-template-columns:1fr}}
+.physics{background:linear-gradient(180deg,#f5f3ff,#fff);border:1px solid #ddd6fe;border-left:5px solid #8b5cf6;border-radius:14px;padding:14px 18px}
+.physics h3,.biz h3{font-size:.95rem;font-weight:800;margin-bottom:6px}
+.physics p,.biz li{font-size:.92rem;line-height:1.65}
+.biz{background:linear-gradient(180deg,var(--green-lt),#fff);border:1px solid #bbf7d0;border-left:5px solid var(--green);border-radius:14px;padding:14px 18px}
+.biz ul{padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.limit{margin-top:12px;font-size:.88rem;color:#78350f;background:var(--amber-lt);border:1px solid #fcd34d;border-radius:12px;padding:10px 14px;line-height:1.6}
+.law .def{margin-top:4px}
+.law .src{margin-top:10px}
+.toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.toc a{display:flex;gap:10px;align-items:center;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);font-size:.88rem;font-weight:700;transition:transform .15s,box-shadow .15s}
+.toc a:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(5,150,105,.15)}
+.toc a b{color:#059669;min-width:22px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.filter{padding:6px 14px;border-radius:100px;border:1px solid var(--border);background:var(--card);font-size:.8rem;font-weight:700;color:var(--muted);cursor:pointer}
+.filter.active{background:#059669;border-color:#059669;color:#fff}
+.law[hidden]{display:none}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Навигация по странице">
+  <a class="nav-link" href="../index.html">← Все уроки</a>
+  <span class="nav-sep"></span>
+  <span class="nav-logo">Законы экономики</span>
+  <span class="nav-sep"></span>
+  <a class="nav-link" href="#intro">Как читать</a>
+  <a class="nav-link" href="#laws">Реестр законов</a>
+</nav>
+
+<header id="hero" style="min-height:auto">
+  <div class="hero-badges">
+    <span class="hero-badge">Экономика для менеджеров</span>
+    <span class="hero-badge">Сквозной реестр · пополняется с каждым занятием</span>
+    <span class="hero-badge">Законов: <span id="law-count">0</span></span>
+  </div>
+  <h1 class="hero-title">Законы экономики — <em>как законы физики</em> для решений руководителя</h1>
+  <p class="hero-sub">Каждый закон: точная формулировка к тесту, аналогия из физики, выводы для бизнеса и границы, где закон перестаёт работать.</p>
+</header>
+
+<main>
+
+<section class="sec" id="intro" style="padding-top:20px">
+  <div class="sec-head fade">
+    <div class="num-badge n4">?</div>
+    <h2 class="sec-title">Почему законы экономики похожи на законы физики</h2>
+  </div>
+  <div class="stack">
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции 1</span>
+        <h3>Три параллели</h3>
+        <ul>
+          <li><b>Законы объективны.</b> Они срабатывают, знаем мы о них или нет, — как падает уроненный маркер.</li>
+          <li><b>Есть идеальные модели.</b> Идеальный газ в физике — совершенная конкуренция в экономике.</li>
+          <li><b>Общий язык.</b> Общепринятые обозначения: P, Q, Y, C, I, G, Xn.</li>
+        </ul>
+        <p style="margin-top:8px">Физика нужна, чтобы создавать устройства. Экономика — чтобы <b>принимать управленческие решения</b>.</p>
+      </div>
+      <div class="card">
+        <span class="extra-tag">➕ Важное отличие</span>
+        <h3>Почему «при прочих равных» — главное условие</h3>
+        <p>В физике условия можно закрепить в лаборатории: закон Бойля — Мариотта выполняется «при постоянной температуре». Экономические законы тоже выполняются только «при прочих равных», но в жизни прочее постоянно меняется: доходы, ожидания, курс, сезон. Поэтому экономический закон показывает <b>направление и силу тенденции</b>, а не точное число. Кроме того, у экономики «частицы» — люди: они учатся, ждут и реагируют на сами прогнозы.</p>
+      </div>
+    </div>
+    <div class="note-callout fade"><p><b>Как пользоваться.</b> Фиолетовый блок — аналогия из физики, чтобы запомнить механизм. Зелёный — выводы для бизнеса. Жёлтый — где закон не работает. Метка «📘 лекция» — закон давали на занятии, «➕ дополнение» — добавлен из учебников для полноты картины.</p></div>
+  </div>
+</section>
+
+<section class="sec" id="laws" style="padding-top:20px">
+  <div class="sec-head fade">
+    <div class="num-badge n4">§</div>
+    <h2 class="sec-title">Реестр законов</h2>
+  </div>
+
+  <nav class="toc fade" aria-label="Список законов" style="margin-bottom:22px">
+    <a href="#law-1"><b>1</b> Закон убывающей предельной полезности</a>
+    <a href="#law-2"><b>2</b> Закон спроса</a>
+    <a href="#law-3"><b>3</b> Цену определяют спрос и предложение</a>
+    <a href="#law-4"><b>4</b> Принцип невидимой руки</a>
+    <a href="#law-5"><b>5</b> Основное макроэкономическое тождество</a>
+    <a href="#law-6"><b>6</b> Ставка и совокупный спрос</a>
+    <a href="#law-7"><b>7</b> Рост предложения — долгосрочный стабилизатор цен</a>
+    <a href="#law-8"><b>8</b> Уравнение Фишера</a>
+    <a href="#law-9"><b>9</b> Ограниченность ресурсов и альтернативные издержки</a>
+    <a href="#law-10"><b>10</b> Ошибка композиции и парадокс бережливости</a>
+  </nav>
+
+  <div class="filters fade" role="group" aria-label="Фильтр законов">
+    <button type="button" class="filter active" data-filter="all">Все</button>
+    <button type="button" class="filter" data-filter="lecture">📘 Из лекций</button>
+    <button type="button" class="filter" data-filter="extra">➕ Дополнения</button>
+    <button type="button" class="filter" data-filter="micro">Микро</button>
+    <button type="button" class="filter" data-filter="macro">Макро</button>
+  </div>
+
+  <!-- ══════ 1 ══════ -->
+  <article class="law fade" id="law-1" data-tags="lecture micro">
+    <div class="law-head"><span class="law-num">1</span><h2 class="law-title">Закон убывающей предельной полезности</h2>
+      <div class="law-tags"><span>📘 Занятие 1</span><span>Микро</span></div></div>
+    <div class="def">В однократном акте потребления <b>предельная (дополнительная) полезность</b> каждой последующей единицы блага <b>снижается</b> — человеку свойственно насыщаться.</div>
+    <div class="law-cols">
+      <div class="physics"><h3>⚛️ Как в физике: насыщенный раствор</h3><p>Первая ложка сахара в стакане растворяется мгновенно, каждая следующая — хуже, и в какой-то момент сахар просто ложится на дно: раствор насыщен. С полезностью так же: первый стакан воды в жару бесценен, пятый — ноль. Сколько бы ни добавляли, «растворяться» в удовольствии больше нечему.</p></div>
+      <div class="biz"><h3>🛠 Выводы для бизнеса</h3><ul>
+        <li><b>Вторую единицу продают дешевле:</b> «второй товар за полцены», оптовые скидки, пакеты.</li>
+        <li><b>Абонементы и безлимиты</b> работают, потому что ценность каждого следующего визита падает.</li>
+        <li><b>Расширяйте ассортимент, а не объём:</b> клиенту нужнее новое благо, чем ещё одна единица старого.</li>
+        <li><b>Мотивация:</b> одинаковая премия каждый месяц радует всё меньше — меняйте форму поощрения.</li>
+      </ul></div>
+    </div>
+    <p class="limit"><b>Где не работает.</b> Коллекционирование и зависимости (каждая следующая марка в серии ценнее), сетевые товары (мессенджер полезнее, когда в нём больше знакомых). Закон говорит об однократном акте потребления: завтра первый стакан снова будет ценным.</p>
+    <p class="src">Первым сформулировал Герман Госсен (1854) — «первый закон Госсена»; основа маржинальной революции 1871–1874 (Джевонс, Менгер, Вальрас).</p>
+  </article>
+
+  <!-- ══════ 2 ══════ -->
+  <article class="law fade" id="law-2" data-tags="lecture micro">
+    <div class="law-head"><span class="law-num">2</span><h2 class="law-title">Закон спроса</h2>
+      <div class="law-tags"><span>📘 Занятие 1</span><span>Микро</span></div></div>
+    <div class="def">Закон спроса отображает <b>обратную зависимость</b> между величиной спроса и ценой <b>при прочих равных условиях</b>. В его основе — закон убывающей предельной полезности.</div>
+    <div class="law-cols">
+      <div class="physics"><h3>⚛️ Как в физике: закон Бойля — Мариотта</h3><p>При постоянной температуре давление газа и его объём обратно пропорциональны: сжал сильнее — объём меньше. Так же цена и величина спроса: цена выше — покупают меньше. И условие то же: у Бойля «при постоянной температуре», у экономистов — «при прочих равных». Изменилась температура (доходы, вкусы, ожидания) — вся кривая сдвигается.</p></div>
+      <div class="biz"><h3>🛠 Выводы для бизнеса</h3><ul>
+        <li><b>Повышение цены почти всегда снижает продажи.</b> Вопрос не «упадут ли», а «насколько»: это эластичность спроса.</li>
+        <li><b>Считайте выручку, а не только наценку:</b> P × Q может вырасти или упасть при повышении цены.</li>
+        <li><b>Различайте движение по кривой и сдвиг кривой.</b> Продажи упали из-за вашей цены — движение. Из-за падения доходов клиентов — сдвиг, и снижение цены его не исправит.</li>
+        <li><b>Проверяйте цену экспериментом:</b> меняйте только цену, остальное фиксируйте (ceteris paribus).</li>
+      </ul></div>
+    </div>
+    <p class="limit"><b>Где не работает.</b> Эффект Веблена — статусные товары покупают, потому что дорого. Товары Гиффена — у очень бедных семей при подорожании основного продукта его покупают больше (подтверждено: рис в Хунани, Дженсен и Миллер, 2008). Ажиотаж — рост цен рождает ожидание дальнейшего роста, но это сдвиг кривой, а не нарушение закона.</p>
+  </article>
+
+  <!-- ══════ 3 ══════ -->
+  <article class="law fade" id="law-3" data-tags="lecture micro">
+    <div class="law-head"><span class="law-num">3</span><h2 class="law-title">Цену определяют спрос и предложение («ножницы Маршалла»)</h2>
+      <div class="law-tags"><span>📘 Занятие 1</span><span>Микро</span></div></div>
+    <div class="def"><b>Цена</b> — результат взаимодействия спроса и предложения, формируется рынком стихийно. Она может не отражать ни <b>ценности</b> (субъективной значимости), ни <b>стоимости</b> (затрат ресурсов).</div>
+    <div class="law-cols">
+      <div class="physics"><h3>⚛️ Как в физике: равновесие сил</h3><p>Груз на пружине останавливается там, где сила тяжести уравновешена силой упругости. Цена останавливается там, где желание покупателей купить уравновешено желанием продавцов продать. Спорить, что важнее — спрос или предложение, всё равно что спорить, какое лезвие ножниц режет бумагу (Маршалл, 1890).</p></div>
+      <div class="biz"><h3>🛠 Выводы для бизнеса</h3><ul>
+        <li><b>Себестоимость — нижняя граница цены, ценность для клиента — верхняя.</b> Сама цена складывается на рынке между ними.</li>
+        <li><b>«Себестоимость + наценка» не гарантирует продаж,</b> если рынок даёт меньше.</li>
+        <li><b>В переговорах выясняйте ценность для другой стороны:</b> она может быть выше рыночной цены.</li>
+        <li><b>Кейс с занятия:</b> земля в Некрасовском районе — высокая кадастровая стоимость, высокая ценность для владельца и низкая цена, потому что нет дороги, газа и спроса.</li>
+      </ul></div>
+    </div>
+    <p class="limit"><b>Где не работает.</b> Регулируемые цены (тарифы ЖКХ), монополии и картели — цену задаёт не равновесие, а решение одной стороны.</p>
+  </article>
+
+  <!-- ══════ 4 ══════ -->
+  <article class="law fade" id="law-4" data-tags="lecture micro">
+    <div class="law-head"><span class="law-num">4</span><h2 class="law-title">Принцип невидимой руки</h2>
+      <div class="law-tags"><span>📘 Занятие 1</span><span>Микро</span></div></div>
+    <div class="def">«Действуя в собственных интересах, преследуя собственную выгоду, товаропроизводитель способствует общественному благосостоянию, хотя это не входило в его планы» (А. Смит, 1776). <b>Невидимая рука рынка — это конкуренция.</b></div>
+    <div class="law-cols">
+      <div class="physics"><h3>⚛️ Как в физике: давление газа из хаоса молекул</h3><p>Каждая молекула летит куда хочет, никто ими не управляет — а газ в целом даёт стабильное, предсказуемое давление. Миллионы продавцов и покупателей тоже действуют каждый в своих интересах, а в сумме рынок даёт порядок: цены, ассортимент, накормленный город. Условие — много «молекул», то есть конкуренция.</p></div>
+      <div class="biz"><h3>🛠 Выводы для бизнеса</h3><ul>
+        <li><b>Выстраивайте систему так, чтобы личный интерес работал на общий:</b> мотивация и KPI сотрудников, связанные с результатом клиента.</li>
+        <li><b>Конкуренция дисциплинирует:</b> там, где её нет (внутренний монополист — единственный отдел-поставщик), качество падает. Альтернативный поставщик или внутренний рынок услуг помогают.</li>
+        <li><b>Не рассчитывайте на альтруизм контрагента</b> — рассчитывайте на его интерес и стройте сделку так, чтобы он совпадал с вашим.</li>
+      </ul></div>
+    </div>
+    <p class="limit"><b>Где не работает (провалы рынка).</b> Внешние эффекты (загрязнение), общественные блага (освещение улиц), монополия, асимметрия информации (Акерлоф, «рынок лимонов»). И пузыри: от тюльпаномании 1637 года до доткомов 2000 года.</p>
+  </article>
+
+  <!-- ══════ 5 ══════ -->
+  <article class="law fade" id="law-5" data-tags="lecture macro">
+    <div class="law-head"><span class="law-num">5</span><h2 class="law-title">Основное макроэкономическое тождество</h2>
+      <div class="law-tags"><span>📘 Занятие 1</span><span>Макро</span></div></div>
+    <div class="formula">Y = C + I + G + Xn</div>
+    <div class="def" style="margin-top:10px">ВВП (Y) равен сумме расходов четырёх субъектов: <b>C</b> — потребление домашних хозяйств, <b>I</b> — инвестиции фирм, <b>G</b> — госзакупки, <b>Xn</b> — чистый экспорт (остальной мир). Сумма этих расходов при каждом уровне цен — совокупный спрос (AD).</div>
+    <div class="law-cols">
+      <div class="physics"><h3>⚛️ Как в физике: закон сохранения</h3><p>Энергия не берётся из ниоткуда и не исчезает — она только переходит из одной формы в другую. Так и всё произведённое в стране кто-то купил: семьи, фирмы, государство или иностранцы. Сколько произвели — столько и потратили. Если один «канал» сжался, его должен заместить другой, иначе ВВП упадёт.</p></div>
+      <div class="biz"><h3>🛠 Выводы для бизнеса</h3><ul>
+        <li><b>Определите, в какой букве ваши клиенты:</b> розница живёт на C, станкостроение — на I, подрядчик госзаказа — на G, экспортёр — на Xn.</li>
+        <li><b>Следите за своей буквой в статистике:</b> Росстат публикует ВВП по расходам. Сжимается ваш компонент — готовьтесь к падению спроса раньше конкурентов.</li>
+        <li><b>Диверсифицируйте по буквам:</b> компания, продающая и семьям, и государству, устойчивее.</li>
+      </ul></div>
+    </div>
+    <p class="limit"><b>Важно для теста.</b> Это тождество — оно верно всегда по определению, как бухгалтерский баланс. Оно ничего не говорит о причинах: почему вырос C или упал I, объясняют уже модели.</p>
+  </article>
+
+  <!-- ══════ 6 ══════ -->
+  <article class="law fade" id="law-6" data-tags="lecture macro">
+    <div class="law-head"><span class="law-num">6</span><h2 class="law-title">Рост ключевой ставки сдерживает совокупный спрос</h2>
+      <div class="law-tags"><span>📘 Занятие 1</span><span>Макро</span></div></div>
+    <div class="def">Высокая ставка делает выгодными сбережения: <b>располагаемый доход = потребление + сбережения</b>, и доля сбережений растёт. Кредиты дорожают. <b>AD сдвигается влево</b>, инфляция не раскручивается — но падают инвестиции и производство. Это экстренная, краткосрочная мера.</div>
+    <div class="law-cols">
+      <div class="physics"><h3>⚛️ Как в физике: тормоз и инерция</h3><p>Нажали на тормоз — машина останавливается не мгновенно, а с тормозным путём: у неё инерция. Ставка действует так же, с лагом: по оценкам Банка России, полный эффект на инфляцию — через 3–6 кварталов. И как резкое торможение бьёт пассажиров о ремни, так резкое повышение ставки бьёт по бизнесу, живущему в кредит.</p></div>
+      <div class="biz"><h3>🛠 Выводы для бизнеса</h3><ul>
+        <li><b>Сравнивайте рентабельность проекта со ставкой:</b> если проект приносит меньше, чем стоят деньги, его выгоднее отложить.</li>
+        <li><b>Сокращайте оборотный капитал:</b> запасы и дебиторку при высокой ставке финансировать дорого; договаривайтесь о предоплате.</li>
+        <li><b>Свободные деньги — на депозит,</b> пока ставка высокая.</li>
+        <li><b>Ставку повышают — спрос клиентов ослабнет через несколько месяцев.</b> Планируйте продажи с этим лагом.</li>
+      </ul></div>
+    </div>
+    <p class="limit"><b>Где не работает.</b> Если инфляция вызвана шоком предложения (неурожай, санкции, рост издержек), ставка гасит её ценой падения выпуска, а не устраняет причину. И если ЦБ не доверяют, канал ожиданий не работает.</p>
+    <p class="src">Тренажёр для проверки: <a href="ad_as_trenazher.html">модель AD–AS</a>. Механизм каналов: <a href="https://cbr.ru/dkp/" target="_blank" rel="noopener">Банк России</a>.</p>
+  </article>
+
+  <!-- ══════ 7 ══════ -->
+  <article class="law fade" id="law-7" data-tags="lecture macro">
+    <div class="law-head"><span class="law-num">7</span><h2 class="law-title">Долгосрочно цены стабилизирует рост предложения</h2>
+      <div class="law-tags"><span>📘 Занятие 1</span><span>Макро</span></div></div>
+    <div class="def">В долгосрочном периоде цены стабилизирует <b>рост предложения</b> — развитие производства. <b>Благосостояние</b> — уровень удовлетворения потребностей, а не количество денег: оно растёт от экономического роста, а не от печатания денег. Источник благосостояния — <b>добавленная стоимость</b>, созданная в стране.</div>
+    <div class="law-cols">
+      <div class="physics"><h3>⚛️ Как в физике: сообщающиеся сосуды</h3><p>Если в один сосуд лить воду (деньги, спрос), а второй (товары) не расширять, уровень цен поднимается. Дополнительные деньги без дополнительных товаров — это просто больше воды в том же сосуде. Чтобы уровень не рос, расширять надо сам сосуд — производственные возможности.</p></div>
+      <div class="biz"><h3>🛠 Выводы для бизнеса</h3><ul>
+        <li><b>Инвестиции в производительность</b> — самый надёжный ответ на инфляцию издержек: дешевле производить → можно не поднимать цены.</li>
+        <li><b>Рост выручки за счёт цен ≠ рост бизнеса.</b> Смотрите на реальные объёмы.</li>
+        <li><b>Добавленная стоимость — ваша доля в благосостоянии:</b> чем больше переработки внутри компании, тем больше вы зарабатываете на каждом рубле выручки.</li>
+      </ul></div>
+    </div>
+    <p class="limit"><b>Граница.</b> Рост предложения требует времени и инвестиций — именно поэтому в краткосрочном шоке ЦБ использует ставку.</p>
+  </article>
+
+  <!-- ══════ 8 ══════ -->
+  <article class="law fade" id="law-8" data-tags="lecture extra macro">
+    <div class="law-head"><span class="law-num">8</span><h2 class="law-title">Уравнение Фишера: реальное = номинальное − инфляция</h2>
+      <div class="law-tags"><span>📘 Занятие 1</span><span class="add">➕ формула — дополнение</span><span>Макро</span></div></div>
+    <div class="formula">(1 + i) = (1 + r) × (1 + π)  ⇒  r ≈ i − π</div>
+    <div class="def" style="margin-top:10px">Реальная ставка <b>r</b> примерно равна номинальной <b>i</b> минус ожидаемая инфляция <b>π</b>. На занятии: 12% по вкладу − 7% прогнозной инфляции ≈ 5% реальной доходности. Считать по <b>прогнозной</b>, а не прошлой инфляции; учитывать <b>личную</b> инфляцию.</div>
+    <div class="law-cols">
+      <div class="physics"><h3>⚛️ Как в физике: сложение скоростей</h3><p>Человек идёт вверх по эскалатору, который едет вниз. Его скорость относительно земли — собственная скорость минус скорость эскалатора. Ставка вклада — ваша скорость, инфляция — эскалатор вниз. Идёте медленнее, чем едет эскалатор, — вас сносит вниз, хотя ноги шагают вверх.</p></div>
+      <div class="biz"><h3>🛠 Выводы для бизнеса</h3><ul>
+        <li><b>Индексация зарплат ниже инфляции</b> — реальное снижение оплаты; сотрудники это чувствуют.</li>
+        <li><b>Рост выручки на 8% при инфляции 7%</b> — почти нулевой реальный рост.</li>
+        <li><b>Длинные договоры</b> — с ценовой оговоркой (индексация по ИПЦ), иначе инфляция съест маржу.</li>
+        <li><b>Проекты оценивайте в реальных величинах:</b> сравнивайте доходность проекта со ставкой и с инфляцией вашей «корзины» издержек.</li>
+      </ul></div>
+    </div>
+    <p class="limit"><b>Граница.</b> Вычитание — приближение для невысокой инфляции; при высокой считайте точно: 1,12 / 1,07 − 1 ≈ 4,67%. Налоги на процентный доход реальную доходность ещё снижают.</p>
+    <p class="src">Ирвинг Фишер, «Теория процента», 1930. Калькулятор: <a href="realnaya_dohodnost.html">реальная доходность</a>.</p>
+  </article>
+
+  <!-- ══════ 9 ══════ -->
+  <article class="law fade" id="law-9" data-tags="lecture extra micro">
+    <div class="law-head"><span class="law-num">9</span><h2 class="law-title">Ограниченность ресурсов и альтернативные издержки</h2>
+      <div class="law-tags"><span>📘 Занятие 1 (допущение)</span><span class="add">➕ альтернативные издержки — дополнение</span></div></div>
+    <div class="def"><b>Предмет экономики</b> — проблема выбора в условиях <b>ограниченности ресурсов</b>. Раз ресурсы ограничены, любой выбор — отказ от чего-то другого. <b>Альтернативные издержки</b> — ценность лучшей из упущенных альтернатив. Чем больше производим одного блага, тем дороже (в отказе от другого) обходится каждая следующая единица — <b>закон возрастающих альтернативных издержек</b>.</div>
+    <div class="law-cols">
+      <div class="physics"><h3>⚛️ Как в физике: закон сохранения энергии</h3><p>Энергию нельзя получить из ничего: потратил её на нагрев — на движение уже не осталось. Ресурсы компании так же: час, рубль или станок, отданный одному проекту, не достанется другому. «Бесплатных решений» не существует, как не существует вечного двигателя.</p></div>
+      <div class="biz"><h3>🛠 Выводы для бизнеса</h3><ul>
+        <li><b>Перед каждым решением спросите: «От чего мы отказываемся?»</b></li>
+        <li><b>Проект с прибылью 10% плох,</b> если деньги на депозите приносят 14%: альтернатива лучше.</li>
+        <li><b>Время руководителя — самый дефицитный ресурс:</b> у каждого совещания есть альтернативные издержки.</li>
+        <li><b>Переброска ресурсов дорожает:</b> первых людей на новое направление перевести легко, каждого следующего — с всё большей потерей в старом.</li>
+      </ul></div>
+    </div>
+    <p class="limit"><b>Граница.</b> Если ресурсы простаивают (кризис, недогрузка), рост одного выпуска не требует отказа от другого — до тех пор, пока мощности не загружены полностью.</p>
+    <p class="src">Определение Лайонела Роббинса (1932): экономика изучает поведение как отношение между целями и ограниченными средствами, имеющими альтернативные применения.</p>
+  </article>
+
+  <!-- ══════ 10 ══════ -->
+  <article class="law fade" id="law-10" data-tags="extra macro">
+    <div class="law-head"><span class="law-num">10</span><h2 class="law-title">Ошибка композиции и парадокс бережливости</h2>
+      <div class="law-tags"><span class="add">➕ Дополнение к занятию 1</span><span>Макро</span></div></div>
+    <div class="def">Что верно для одного, может быть неверно для всех вместе. <b>Парадокс бережливости</b> (популяризировал Кейнс): одной семье выгодно больше сберегать, но если сберегать начнут все, совокупный спрос упадёт, доходы сократятся — и общие сбережения могут даже снизиться.</div>
+    <div class="law-cols">
+      <div class="physics"><h3>⚛️ Как в физике: свойства системы ≠ свойства частиц</h3><p>У одной молекулы нет температуры и давления — они появляются только у газа в целом. Так и макроэкономика не равна сумме микрорешений: у системы свои свойства. С занятия: одна сушилка белья ничего не меняет, а много сушилок в закрытой комнате поднимают влажность — и бельё перестаёт сохнуть.</p></div>
+      <div class="biz"><h3>🛠 Выводы для бизнеса</h3><ul>
+        <li><b>Решение, правильное для отдела, проверяйте на уровне компании:</b> каждый отдел режет затраты — компания теряет клиентов.</li>
+        <li><b>Не копируйте всех:</b> когда вся отрасль одновременно снижает цены или урезает рекламу, выигрыш каждого исчезает.</li>
+        <li><b>Кризис = все экономят сразу.</b> Спрос падает сильнее, чем подсказывает логика одной семьи, — закладывайте это в план продаж.</li>
+      </ul></div>
+    </div>
+    <p class="limit"><b>Граница.</b> Парадокс бережливости заметен в спаде, когда мощности простаивают. В долгом периоде сбережения превращаются в инвестиции и поддерживают рост.</p>
+    <p class="src">Дж. М. Кейнс, «Общая теория занятости, процента и денег», 1936.</p>
+  </article>
+
+</section>
+
+</main>
+
+<footer>
+  <p>Президентская программа · «Экономика для менеджеров» · реестр пополняется после каждого занятия · блоки «➕» добавлены к лекциям</p>
+</footer>
+
+<script>
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (!reduceMotion && "IntersectionObserver" in window) {
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) { entry.target.classList.add("in"); reveal.unobserve(entry.target); }
+    });
+  }, {threshold: 0.04, rootMargin: "0px 0px -24px"});
+  document.querySelectorAll(".fade").forEach((element) => reveal.observe(element));
+} else {
+  document.querySelectorAll(".fade").forEach((element) => element.classList.add("in"));
+}
+
+/* Счётчик и фильтр законов */
+const laws = [...document.querySelectorAll(".law")];
+document.getElementById("law-count").textContent = laws.length;
+document.querySelectorAll(".filter").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".filter").forEach((b) => b.classList.toggle("active", b === button));
+    const f = button.dataset.filter;
+    laws.forEach((law) => { law.hidden = f !== "all" && !law.dataset.tags.split(" ").includes(f); });
+  });
+});
+</script>
+</body>
+</html>

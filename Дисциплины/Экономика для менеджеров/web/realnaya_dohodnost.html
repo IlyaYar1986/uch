@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор реальной доходности</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--border:#e2e8f0;--indigo:#6366f1;--indigo-dk:#4338ca;--indigo-lt:#eef2ff;--cyan:#0ea5e9;--red:#dc2626;--red-lt:#fef2f2;--green:#16a34a;--green-lt:#f0fdf4;--amber-lt:#fffbeb;--text:#0f172a;--muted:#64748b}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.5;padding:18px 20px 22px}
+h1{font-size:clamp(1.05rem,2.4vw,1.35rem);font-weight:800}
+.sub{color:var(--muted);font-size:.88rem;margin:2px 0 14px;max-width:860px}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:760px){.layout{grid-template-columns:1fr}}
+.group{border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.group h2{font-size:.86rem;font-weight:800;margin-bottom:8px}
+.ctrl{display:grid;grid-template-columns:1fr 84px;gap:4px 10px;align-items:center;margin-bottom:9px}
+.ctrl label{font-size:.82rem;font-weight:700}
+.ctrl label small{font-weight:500;color:var(--muted)}
+.ctrl input[type=range]{width:100%;accent-color:var(--indigo)}
+.ctrl input[type=number]{grid-row:1 / 3;grid-column:2;width:84px;padding:6px;border:1px solid var(--border);border-radius:8px;font-size:.92rem;font-weight:800;text-align:right;color:var(--indigo-dk)}
+input:focus-visible,button:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.preset{padding:6px 11px;border-radius:9px;border:1px solid var(--border);background:#fff;font-size:.78rem;font-weight:700;color:var(--muted);cursor:pointer}
+.preset:hover{border-color:#c7d2fe;color:var(--indigo)}
+.res{border:1px solid var(--border);border-radius:14px;padding:14px 16px;background:#f8fafc;margin-bottom:10px}
+.res .l{font-size:.76rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.res .v{font-size:1.9rem;font-weight:900;line-height:1.2}
+.res .n{font-size:.8rem;color:var(--muted)}
+.pos{color:var(--green)} .neg{color:var(--red)}
+.bars{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+.bar{display:grid;grid-template-columns:150px 1fr 90px;gap:8px;align-items:center;font-size:.8rem}
+.bar .track{height:16px;background:var(--indigo-lt);border-radius:100px;overflow:hidden}
+.bar .fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--indigo),var(--cyan));transition:width .3s}
+.bar .fill.bad{background:linear-gradient(90deg,#f87171,var(--red))}
+.bar b{text-align:right}
+.note{font-size:.8rem;color:#78350f;background:var(--amber-lt);border:1px solid #fcd34d;border-radius:12px;padding:10px 12px;margin-top:10px}
+.foot{margin-top:12px;font-size:.76rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<h1>Калькулятор реальной доходности вклада</h1>
+<p class="sub">Номинальный процент — это сколько рублей прибавится. Реальный — на сколько больше вы сможете купить. Подставьте свою ставку, прогноз инфляции и свою личную инфляцию.</p>
+
+<div class="presets">
+  <button type="button" class="preset" data-p="12,7,7">Пример с занятия: 12% и 7%</button>
+  <button type="button" class="preset" data-p="12,12,12">Рисковый сценарий: инфляция 12%</button>
+  <button type="button" class="preset" data-p="20,7,7">Вклад 20% на 3 месяца</button>
+  <button type="button" class="preset" data-p="4.5,7,7">Старый вклад 4,5%</button>
+</div>
+
+<div class="layout">
+  <div>
+    <div class="group">
+      <h2>Ваши цифры</h2>
+      <div class="ctrl"><label for="sum">Сумма вклада, ₽</label><input type="number" id="nsum" step="10000" aria-label="Сумма вклада, число"><input type="range" id="sum" min="10000" max="3000000" step="10000"></div>
+      <div class="ctrl"><label for="i">Ставка по вкладу, % годовых <small>номинальная</small></label><input type="number" id="ni" step="0.5" aria-label="Ставка, число"><input type="range" id="i" min="0" max="25" step="0.5"></div>
+      <div class="ctrl"><label for="pi">Прогноз инфляции, % <small>официальный, на срок вклада</small></label><input type="number" id="npi" step="0.5" aria-label="Прогноз инфляции, число"><input type="range" id="pi" min="0" max="25" step="0.5"></div>
+      <div class="ctrl"><label for="own">Ваша личная инфляция, % <small>по вашей корзине</small></label><input type="number" id="nown" step="0.5" aria-label="Личная инфляция, число"><input type="range" id="own" min="0" max="30" step="0.5"></div>
+      <div class="ctrl"><label for="m">Срок, месяцев</label><input type="number" id="nm" step="1" aria-label="Срок, число"><input type="range" id="m" min="1" max="36" step="1"></div>
+    </div>
+    <div class="note"><b>Почему прогноз, а не прошлая инфляция.</b> Деньги лежат сейчас и будут лежать в будущем. Прошлая инфляция уже случилась, а вклад «проживёт» будущую, в том числе обычно дорогие ноябрь и декабрь.</div>
+  </div>
+  <div>
+    <div class="res"><div class="l">Номинальный доход</div><div class="v" id="nom"></div><div class="n" id="nomN"></div></div>
+    <div class="res"><div class="l">Реальная доходность по официальному прогнозу</div><div class="v" id="real"></div><div class="n" id="realN"></div></div>
+    <div class="res"><div class="l">Реальная доходность по вашей инфляции</div><div class="v" id="realOwn"></div><div class="n" id="realOwnN"></div></div>
+    <div class="bars" id="bars"></div>
+  </div>
+</div>
+
+<p class="foot">Формула Фишера: точная — (1 + i) / (1 + π) − 1, приближённая — i − π. При низкой инфляции они почти совпадают, при высокой расходятся. Налог на процентный доход и капитализация не учтены.</p>
+
+<script>
+const state = {sum:100000, i:12, pi:7, own:7, m:12};
+const KEYS = Object.keys(state);
+const rub = (x) => Math.round(x).toLocaleString("ru-RU") + " ₽";
+const pct = (x) => (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(x).toFixed(2).replace(".", ",") + "%";
+
+function render(){
+  KEYS.forEach((k) => { document.getElementById(k).value = state[k]; document.getElementById("n"+k).value = state[k]; });
+  const t = state.m/12;
+  const i = state.i/100*t, pi = state.pi/100*t, own = state.own/100*t;  // за срок вклада, простые проценты
+  const realExact = ((1+i)/(1+pi) - 1)*100, realApprox = (i - pi)*100;
+  const realOwn = ((1+i)/(1+own) - 1)*100;
+  const nomEl = document.getElementById("nom");
+  nomEl.textContent = "+" + rub(state.sum*i);
+  document.getElementById("nomN").textContent = `${pct(i*100)} за ${state.m} мес.`;
+  const r = document.getElementById("real");
+  r.textContent = pct(realExact); r.className = "v " + (realExact >= 0 ? "pos" : "neg");
+  document.getElementById("realN").textContent = `≈ ${rub(state.sum*realExact/100)} в ценах сегодняшнего дня · грубо: ${pct(realApprox)}`;
+  const ro = document.getElementById("realOwn");
+  ro.textContent = pct(realOwn); ro.className = "v " + (realOwn >= 0 ? "pos" : "neg");
+  document.getElementById("realOwnN").textContent = realOwn < 0 ? "Вклад не сохраняет покупательную способность для вашей корзины" : "Покупательная способность растёт";
+  const max = Math.max(state.sum*(1+i), state.sum);
+  const rows = [
+    ["Положили", state.sum, false],
+    ["Получите (номинал)", state.sum*(1+i), false],
+    ["Хватит на (прогноз)", state.sum*(1+i)/(1+pi), state.sum*(1+i)/(1+pi) < state.sum],
+    ["Хватит на (ваша)", state.sum*(1+i)/(1+own), state.sum*(1+i)/(1+own) < state.sum]
+  ];
+  document.getElementById("bars").innerHTML = rows.map(([n, v, bad]) =>
+    `<div class="bar"><span>${n}</span><div class="track"><div class="fill${bad ? " bad" : ""}" style="width:${v/max*100}%"></div></div><b>${rub(v)}</b></div>`).join("");
+}
+KEYS.forEach((k) => {
+  const range = document.getElementById(k), num = document.getElementById("n"+k);
+  range.addEventListener("input", () => { state[k] = parseFloat(range.value); render(); });
+  num.addEventListener("change", () => {
+    const x = parseFloat(String(num.value).replace(",", "."));
+    if (!Number.isNaN(x)) state[k] = Math.min(parseFloat(range.max), Math.max(parseFloat(range.min), x));
+    render();
+  });
+});
+document.querySelectorAll("[data-p]").forEach((b) => b.addEventListener("click", () => {
+  const [i, pi, own] = b.dataset.p.split(",").map(Number);
+  Object.assign(state, {i, pi, own, m: i === 20 ? 3 : 12});
+  render();
+}));
+render();
+</script>
+</body>
+</html>

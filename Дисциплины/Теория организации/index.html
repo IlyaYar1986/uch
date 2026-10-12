@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Теория организации — уроки</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--text:#0f172a;--muted:#64748b;--border:#e2e8f0;--card:#fff;--acc:#475569;--acc-lt:#f1f5f9}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--text);line-height:1.6;min-height:100vh;
+  background:radial-gradient(circle at 10% 0%,rgba(71,85,105,.10),transparent 35%),linear-gradient(180deg,#f8fafc,#eef2f7)}
+.wrap{max-width:1100px;margin:0 auto;padding:40px 24px 48px}
+.back{display:inline-block;margin-bottom:26px;font-size:.85rem;font-weight:700;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--acc)}
+h1{font-size:clamp(1.9rem,4.5vw,3rem);font-weight:900;letter-spacing:-1px;line-height:1.12;margin-bottom:10px}
+h1 em{font-style:normal;color:var(--acc)}
+.sub{color:var(--muted);font-size:1rem;max-width:720px;margin-bottom:34px}
+h2{font-size:1.25rem;font-weight:800;margin:0 0 14px}
+.list{display:flex;flex-direction:column;gap:12px;margin-bottom:38px}
+.lesson{display:grid;grid-template-columns:64px 1fr auto;gap:16px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 20px;text-decoration:none;color:inherit;box-shadow:0 2px 12px rgba(15,23,42,.04);transition:transform .15s,box-shadow .15s}
+a.lesson:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(15,23,42,.10)}
+a.lesson:focus-visible,a.extra:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+.lesson .n{width:52px;height:52px;border-radius:14px;background:var(--acc);color:#fff;font-weight:900;font-size:1.3rem;display:flex;align-items:center;justify-content:center}
+.lesson.wait .n{background:#cbd5e1}
+.lesson .t{font-weight:800;font-size:1.05rem}
+.lesson .d{color:var(--muted);font-size:.86rem}
+.lesson .go{font-size:.8rem;font-weight:800;color:var(--acc);white-space:nowrap}
+.lesson.wait .go{color:var(--muted)}
+.extras{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+a.extra{display:block;background:var(--acc-lt);border:1px solid var(--border);border-left:5px solid var(--acc);border-radius:14px;padding:16px 18px;text-decoration:none;color:inherit;transition:transform .15s}
+a.extra:hover{transform:translateY(-2px)}
+.extra b{display:block;font-size:1rem;margin-bottom:4px}
+.extra span{font-size:.86rem;color:var(--muted)}
+@media (max-width:600px){.lesson{grid-template-columns:52px 1fr}.lesson .go{grid-column:2}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="../../index.html">← Все дисциплины</a>
+  <h1>Теория организации</h1>
+  <p class="sub">Материалы по дисциплине готовятся.</p>
+  <h2>Уроки</h2>
+  <div class="list">
+    <div class="lesson wait"><span class="n">1</span><span><span class="t">Занятие 09.10.2026</span><br><span class="d">Запись есть, учебная страница готовится</span></span><span class="go">Страница готовится</span></div>
+  </div>
+</main>
+</body>
+</html>

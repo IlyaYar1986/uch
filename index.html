@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Президентская программа — учебные материалы</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--text:#0f172a;--muted:#64748b;--border:#e2e8f0;--card:#fff}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--text);line-height:1.6;min-height:100vh;
+  background:radial-gradient(circle at 10% 0%,rgba(5,150,105,.10),transparent 35%),radial-gradient(circle at 90% 10%,rgba(99,102,241,.10),transparent 35%),linear-gradient(180deg,#f8fafc,#eef2f7)}
+.wrap{max-width:1100px;margin:0 auto;padding:64px 24px 48px}
+.badge{display:inline-block;padding:5px 14px;border-radius:100px;background:#fff;border:1px solid var(--border);font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:18px}
+h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:900;letter-spacing:-1.2px;line-height:1.12;margin-bottom:12px}
+.sub{color:var(--muted);font-size:1.05rem;max-width:680px;margin-bottom:40px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.disc{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:0 4px 20px rgba(15,23,42,.05);transition:transform .15s,box-shadow .15s}
+.disc:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(15,23,42,.12)}
+.disc:focus-visible{outline:3px solid #059669;outline-offset:3px}
+.disc .band{height:10px}
+.disc .body{padding:22px 24px 24px;display:flex;flex-direction:column;gap:8px;flex:1}
+.disc h2{font-size:1.35rem;font-weight:800;letter-spacing:-.3px}
+.disc p{color:var(--muted);font-size:.92rem}
+.disc .meta{margin-top:auto;padding-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.disc .meta span{font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid var(--border);color:var(--muted)}
+.disc .meta span.ready{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
+.econ .band{background:linear-gradient(90deg,#047857,#34d399)}
+.team .band{background:linear-gradient(90deg,#94a3b8,#cbd5e1)}
+.org .band{background:linear-gradient(90deg,#94a3b8,#cbd5e1)}
+footer{margin-top:48px;color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <span class="badge">Президентская программа подготовки управленческих кадров · 2026</span>
+  <h1>Учебные материалы по дисциплинам</h1>
+  <p class="sub">Выберите дисциплину: внутри — список уроков, у каждого урока своя страница с инфографикой, тренажёрами, чек-листом и квизом.</p>
+
+  <div class="grid">
+    <a class="disc econ" href="Дисциплины/Экономика для менеджеров/index.html">
+      <div class="band"></div>
+      <div class="body">
+        <h2>Экономика для менеджеров</h2>
+        <p>Экономическая теория для управленческих решений: микро и макро, инфляция, ключевая ставка, закон спроса.</p>
+        <div class="meta"><span class="ready">1 урок готов</span><span>Реестр законов</span><span>Тренажёры</span></div>
+      </div>
+    </a>
+    <a class="disc org" href="Дисциплины/Теория организации/index.html">
+      <div class="band"></div>
+      <div class="body">
+        <h2>Теория организации</h2>
+        <p>Материалы готовятся.</p>
+        <div class="meta"><span>1 занятие записано</span></div>
+      </div>
+    </a>
+    <a class="disc team" href="Дисциплины/Командообразование/index.html">
+      <div class="band"></div>
+      <div class="body">
+        <h2>Командообразование</h2>
+        <p>Тренинг: что такое команда, упражнения и их разбор.</p>
+        <div class="meta"><span>2 занятия записаны</span></div>
+      </div>
+    </a>
+  </div>
+
+  <footer>Материалы для самостоятельной подготовки. Блоки с пометкой «➕ Дополнение» добавлены к лекциям из открытых источников.</footer>
+</main>
+</body>
+</html>
