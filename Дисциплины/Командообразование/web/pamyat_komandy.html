@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр «Память команды»</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--border:#e2e8f0;--acc:#c2410c;--acc-dk:#9a3412;--acc-lt:#fff7ed;--gold-lt:#fffbeb;--red:#dc2626;--red-lt:#fef2f2;--green:#16a34a;--green-lt:#f0fdf4;--text:#0f172a;--muted:#64748b}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.5;padding:16px 20px 18px}
+h1{font-size:clamp(1.05rem,2.4vw,1.3rem);font-weight:800}
+.sub{color:var(--muted);font-size:.86rem;margin:2px 0 12px;max-width:940px}
+.layout{display:grid;grid-template-columns:minmax(280px,1fr) minmax(320px,1.35fr);gap:18px}
+@media (max-width:760px){.layout{grid-template-columns:1fr}}
+.group{border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.group h2{font-size:.84rem;font-weight:800;margin-bottom:8px}
+.ctrl{display:grid;grid-template-columns:1fr 70px;gap:2px 10px;align-items:center;margin-bottom:8px}
+.ctrl label{font-size:.8rem;font-weight:700}
+.ctrl label small{font-weight:500;color:var(--muted)}
+.ctrl input[type=range]{width:100%;accent-color:var(--acc)}
+.ctrl input[type=number]{grid-row:1 / 3;grid-column:2;width:70px;padding:6px;border:1px solid var(--border);border-radius:8px;font-size:.92rem;font-weight:800;text-align:right;color:var(--acc-dk)}
+.radio{display:flex;flex-direction:column;gap:5px}
+.radio label{display:flex;gap:8px;align-items:flex-start;font-size:.8rem;font-weight:700;cursor:pointer}
+.radio label small{display:block;font-weight:500;color:var(--muted)}
+.radio input{accent-color:var(--acc);margin-top:3px}
+input:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+.bars{border:1px solid var(--border);border-radius:14px;padding:10px 12px;background:#fffaf5}
+.bars svg{width:100%;height:auto;display:block}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.stat{border:1px solid var(--border);border-radius:12px;padding:8px 10px;background:#fff}
+.stat .l{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;line-height:1.3}
+.stat .v{font-size:1.3rem;font-weight:900;color:var(--acc-dk);line-height:1.2}
+.verdict{border-radius:12px;padding:9px 13px;font-size:.86rem}
+.verdict b{display:block;font-size:1rem}
+.verdict.ok{background:var(--green-lt);border:1px solid #bbf7d0;color:#14532d}
+.verdict.mid{background:var(--gold-lt);border:1px solid #fcd34d;color:#78350f}
+.verdict.bad{background:var(--red-lt);border:1px solid #fecaca;color:#7f1d1d}
+.foot{margin-top:6px;font-size:.72rem;color:var(--muted)}
+.back{display:inline-block;margin-bottom:8px;font-size:.8rem;font-weight:700;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--acc)}
+.back[hidden]{display:none}
+</style>
+</head>
+<body>
+<a class="back" id="back" href="../index.html" hidden>← Все уроки</a>
+<h1>Память команды: сколько фактов на одну голову</h1>
+<p class="sub">Задача вроде «Дачного посёлка»: несколько дачников, у каждого несколько признаков. Выберите, как группа распределяет информацию, и посмотрите, сколько фактов приходится держать в голове одному человеку.</p>
+
+<div class="layout">
+  <div>
+    <div class="group">
+      <h2>Задача и группа</h2>
+      <div class="ctrl"><label for="obj-r">Дачников <small>(объектов)</small></label><input type="range" id="obj-r" min="3" max="7" step="1"><input type="number" id="obj" min="3" max="7" step="1" aria-label="Дачников"></div>
+      <div class="ctrl"><label for="cat-r">Признаков у каждого <small>(дом, сад, животное, транспорт…)</small></label><input type="range" id="cat-r" min="2" max="6" step="1"><input type="number" id="cat" min="2" max="6" step="1" aria-label="Признаков"></div>
+      <div class="ctrl"><label for="ppl-r">Людей в группе</label><input type="range" id="ppl-r" min="3" max="20" step="1"><input type="number" id="ppl" min="3" max="20" step="1" aria-label="Людей в группе"></div>
+      <div class="ctrl"><label for="cap-r">Ёмкость памяти одного <small>(≈ 4 по Коуэну, 7 ± 2 по Миллеру)</small></label><input type="range" id="cap-r" min="3" max="9" step="1"><input type="number" id="cap" min="3" max="9" step="1" aria-label="Ёмкость памяти"></div>
+    </div>
+    <div class="group">
+      <h2>Как группа держит информацию</h2>
+      <div class="radio" role="radiogroup" aria-label="Способ работы">
+        <label><input type="radio" name="mode" value="all"> <span>Каждый держит всё<small>все слушают всё и пытаются запомнить</small></span></label>
+        <label><input type="radio" name="mode" value="coord"> <span>Один координатор держит карту<small>остальные только сообщают факты</small></span></label>
+        <label><input type="radio" name="mode" value="own"> <span>Каждый исполнитель держит свою дачу<small>«это про меня?» — и знает соседей</small></span></label>
+        <label><input type="radio" name="mode" value="keeper"> <span>Свои дачи + хранитель непривязанных фактов<small>«кошку» держит отдельный человек, пока не найдётся хозяин</small></span></label>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="bars"><svg id="svg" viewBox="0 0 520 260" role="img" aria-label="Нагрузка на память каждого участника"></svg></div>
+    <div class="stats">
+      <div class="stat"><div class="l">Фактов в задаче</div><div class="v" id="o-f">–</div></div>
+      <div class="stat"><div class="l">Макс. нагрузка на одного</div><div class="v" id="o-l">–</div></div>
+      <div class="stat"><div class="l">Каналов связи в группе</div><div class="v" id="o-c">–</div></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <p class="foot">Модель упрощённая: один «факт» — одна связка «дачник + признак», а ёмкость памяти — сколько таких связок человек держит без записи. Число каналов связи — n·(n−1)/2: столько пар людей должны синхронизироваться, если все говорят со всеми.</p>
+  </div>
+</div>
+
+<script>
+if (window.self === window.top) document.getElementById("back").hidden = false;
+
+const state = {obj:5, cat:4, ppl:15, cap:4, mode:"all"};
+["obj","cat","ppl","cap"].forEach((k) => {
+  const r = document.getElementById(`${k}-r`), n = document.getElementById(k);
+  const set = (v) => { const x = Math.round(Number(v)); if (Number.isNaN(x)) return; state[k] = Math.min(Number(n.max), Math.max(Number(n.min), x)); render(); };
+  r.addEventListener("input", () => set(r.value));
+  n.addEventListener("change", () => set(n.value));
+});
+document.querySelectorAll("input[name=mode]").forEach((r) => r.addEventListener("change", () => { state.mode = r.value; render(); }));
+
+function render() {
+  ["obj","cat","ppl","cap"].forEach((k) => { document.getElementById(`${k}-r`).value = state[k]; document.getElementById(k).value = state[k]; });
+  document.querySelector(`input[name=mode][value=${state.mode}]`).checked = true;
+  const {obj, cat, ppl, cap, mode} = state;
+  const facts = obj * cat;
+  // Нагрузка по людям
+  let loads = [], labels = [];
+  if (mode === "all") {
+    loads = Array(ppl).fill(facts); labels = Array(ppl).fill("");
+  } else if (mode === "coord") {
+    loads = [facts].concat(Array(ppl - 1).fill(Math.min(cat, 2)));
+    labels = ["коорд."].concat(Array(ppl - 1).fill(""));
+  } else {
+    const execs = Math.min(obj, ppl);
+    // своя дача: только свои признаки, соседей видно по стульям
+    const own = cat;
+    loads = Array(execs).fill(own); labels = Array(execs).fill("дача");
+    if (mode === "keeper" && ppl > execs) { loads.push(Math.ceil(facts * 0.15)); labels.push("хран."); }
+    const rest = ppl - loads.length;
+    loads = loads.concat(Array(Math.max(0, rest)).fill(1)); labels = labels.concat(Array(Math.max(0, rest)).fill(""));
+    if (mode === "own") {
+      // без хранителя непривязанные факты висят на исполнителях
+      loads = loads.map((l, i) => (i < execs ? l + Math.ceil(facts * 0.15 / execs) : l));
+    }
+    if (ppl < obj) loads = loads.map((l, i) => (i < execs ? l + Math.ceil((obj - ppl) * cat / execs) : l));
+  }
+  const maxLoad = Math.max(...loads);
+  const channels = mode === "all" ? ppl * (ppl - 1) / 2 : (mode === "coord" ? ppl - 1 : Math.min(obj, ppl) - 1 + (ppl - Math.min(obj, ppl)));
+  document.getElementById("o-f").textContent = facts;
+  document.getElementById("o-l").textContent = maxLoad;
+  document.getElementById("o-c").textContent = channels;
+
+  const over = loads.filter((l) => l > cap).length;
+  const v = document.getElementById("verdict");
+  if (over === 0) {
+    v.className = "verdict ok";
+    v.innerHTML = "<b>Все справляются</b>Нагрузка у каждого в пределах ёмкости памяти. Осталось договориться и закреплять промежуточный результат.";
+  } else if (mode === "coord") {
+    v.className = "verdict bad";
+    v.innerHTML = `<b>Координатор перегружен: ${maxLoad} фактов при ёмкости ${cap}</b>Рано или поздно прозвучит «у меня кончилась память». Лидеру нужен помощник — или распределите факты по исполнителям.`;
+  } else if (mode === "all") {
+    v.className = "verdict bad";
+    v.innerHTML = `<b>Перегружены все ${ppl}</b>Каждому нужно удержать ${facts} фактов при ёмкости ${cap}, а ещё синхронизироваться по ${channels} каналам. Примерно так и работала группа на занятии.`;
+  } else {
+    v.className = "verdict mid";
+    v.innerHTML = `<b>Перегружено человек: ${over}</b>Уменьшите число признаков на человека или добавьте хранителя непривязанных фактов.`;
+  }
+
+  // Столбики
+  const svg = document.getElementById("svg");
+  const n = loads.length, W = 480, H = 200, x0 = 30, y0 = 220;
+  const top = Math.max(maxLoad, cap) * 1.1;
+  const bw = Math.min(40, W / n - 4);
+  let html = "";
+  const capY = y0 - cap / top * H;
+  loads.forEach((l, i) => {
+    const h = l / top * H, x = x0 + i * (W / n) + (W / n - bw) / 2;
+    const col = l > cap ? "#dc2626" : "#c2410c";
+    html += `<rect x="${x}" y="${y0 - h}" width="${bw}" height="${h}" rx="4" fill="${col}" opacity="${l > cap ? .85 : .75}"/>`;
+    html += `<text x="${x + bw / 2}" y="${y0 - h - 4}" text-anchor="middle" font-size="10" font-weight="700" fill="#334155">${l}</text>`;
+    if (labels[i]) html += `<text x="${x + bw / 2}" y="${y0 + 13}" text-anchor="middle" font-size="9" fill="#64748b">${labels[i]}</text>`;
+  });
+  html += `<line x1="${x0 - 6}" y1="${capY}" x2="${x0 + W}" y2="${capY}" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 4"/>`;
+  html += `<text x="${x0}" y="${capY - 6}" font-size="11" font-weight="800" fill="#15803d" paint-order="stroke" stroke="#fffaf5" stroke-width="4">ёмкость памяти: ${cap}</text>`;
+  html += `<line x1="${x0 - 6}" y1="${y0}" x2="${x0 + W}" y2="${y0}" stroke="#cbd5e1"/>`;
+  html += `<text x="${x0 - 8}" y="${y0 + 26}" font-size="10" fill="#64748b">участники группы →</text>`;
+  svg.innerHTML = html;
+}
+render();
+</script>
+</body>
+</html>

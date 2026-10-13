@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр «Мини-посёлок»</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--border:#e2e8f0;--acc:#c2410c;--acc-dk:#9a3412;--acc-lt:#fff7ed;--gold-lt:#fffbeb;--red:#dc2626;--red-lt:#fef2f2;--green:#16a34a;--green-lt:#f0fdf4;--text:#0f172a;--muted:#64748b}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.5;padding:16px 20px 18px}
+h1{font-size:clamp(1.05rem,2.4vw,1.3rem);font-weight:800}
+.sub{color:var(--muted);font-size:.86rem;margin:2px 0 12px;max-width:980px}
+.layout{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(380px,1.4fr);gap:18px}
+@media (max-width:820px){.layout{grid-template-columns:1fr}}
+.clues{border:1px solid var(--border);border-radius:14px;padding:10px 14px}
+.clues h2,.board h2{font-size:.84rem;font-weight:800;margin-bottom:6px}
+.clues ol{padding-left:20px;font-size:.84rem;display:flex;flex-direction:column;gap:3px}
+.clues li.bad{color:var(--red);font-weight:700}
+.clues li.ok{color:var(--green)}
+.q{margin-top:8px;font-size:.84rem;background:var(--acc-lt);border:1px solid #fed7aa;border-radius:10px;padding:8px 10px}
+.board{border:1px solid var(--border);border-radius:14px;padding:10px 12px;background:#fffaf5}
+.compass{display:flex;justify-content:space-between;font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:0 4px 6px 92px}
+table{width:100%;border-collapse:separate;border-spacing:6px}
+th{font-size:.74rem;color:var(--muted);text-align:left;font-weight:800;width:86px}
+td.h{font-size:.74rem;font-weight:800;color:var(--acc-dk);text-align:center}
+select{width:100%;padding:6px 4px;border:1px solid var(--border);border-radius:8px;font-size:.84rem;font-weight:600;background:#fff;color:var(--text)}
+select.locked{background:#ffedd5;border-color:#fdba74;color:var(--acc-dk)}
+select.dup{border-color:var(--red);background:var(--red-lt)}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+button{padding:7px 12px;border-radius:9px;border:1px solid var(--border);background:#fff;font-size:.78rem;font-weight:700;color:var(--text);cursor:pointer}
+button.main{background:var(--acc);border-color:var(--acc);color:#fff}
+button:hover{border-color:#fed7aa}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+.mode{display:flex;gap:8px;align-items:center;font-size:.78rem;font-weight:700;margin-top:8px}
+.mode input{accent-color:var(--acc)}
+.res{margin-top:8px;border-radius:12px;padding:8px 12px;font-size:.86rem;min-height:38px}
+.res.ok{background:var(--green-lt);border:1px solid #bbf7d0;color:#14532d}
+.res.bad{background:var(--red-lt);border:1px solid #fecaca;color:#7f1d1d}
+.res.mid{background:var(--gold-lt);border:1px solid #fcd34d;color:#78350f}
+.foot{margin-top:6px;font-size:.72rem;color:var(--muted)}
+.back{display:inline-block;margin-bottom:8px;font-size:.8rem;font-weight:700;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--acc)}
+.back[hidden]{display:none}
+</style>
+</head>
+<body>
+<a class="back" id="back" href="../index.html" hidden>← Все уроки</a>
+<h1>Мини-посёлок: потренируйте процесс, а не только логику</h1>
+<p class="sub">Задача того же типа, что «Дачный посёлок», но меньше: 4 дачи в ряд с запада на восток. Можно решать одному, но полезнее с коллегами: зачитайте каждому по 2–3 условия, дальше в список не смотрите и ничего не записывайте — только таблица ниже. Нашли что-то наверняка — нажмите «Зафиксировать», чтобы промежуточный результат не потерялся.</p>
+
+<div class="layout">
+  <div class="clues">
+    <h2>Условия (каждое необходимо, лишних нет)</h2>
+    <ol id="clues"></ol>
+    <div class="q"><b>Вопросы группы:</b> кто выращивает яблоки? Кто живёт в бунгало?</div>
+  </div>
+  <div class="board">
+    <h2>Живая карта посёлка</h2>
+    <div class="compass"><span>← запад</span><span>восток →</span></div>
+    <table id="grid" aria-label="Таблица решения"></table>
+    <div class="btns">
+      <button type="button" class="main" id="check">Назвать ответ</button>
+      <button type="button" id="lock">📌 Зафиксировать заполненное</button>
+      <button type="button" id="unlock">Снять фиксацию</button>
+      <button type="button" id="reset">Начать заново</button>
+    </div>
+    <label class="mode"><input type="checkbox" id="hint"> Режим подсказки: показывать, какие условия нарушены (на занятии ведущий этого не говорил)</label>
+    <div class="res" id="res">Заполните таблицу. Одинаковые значения в строке подсвечиваются: в каждой строке всё разное.</div>
+    <p class="foot">Задача придумана для тренажёра, это не задача с занятия: её карточки на записи не разобрать. Решение проверено перебором — оно единственное. Прогресс сохраняется в браузере.</p>
+  </div>
+</div>
+
+<script>
+if (window.self === window.top) document.getElementById("back").hidden = false;
+
+const CATS = [
+  {k:"prof",  name:"Кто",       opts:["поэт","прозаик","журналист","критик"]},
+  {k:"house", name:"Дом",       opts:["изба","бунгало","ранчо","хата"]},
+  {k:"tree",  name:"Сад",       opts:["вишня","слива","персик","яблоня"]},
+  {k:"pet",   name:"Животное",  opts:["собака","кошка","голуби","крысы"]}
+];
+const at = (s, cat, val) => s[cat].indexOf(val);
+const near = (a, b) => a >= 0 && b >= 0 && Math.abs(a - b) === 1;
+const same = (a, b) => a >= 0 && b >= 0 && a === b;
+// Каждое условие: текст и проверка (true — выполнено, false — нарушено, null — пока нельзя судить)
+const CLUES = [
+  {t:"Изба — самая западная дача.", f:(s) => s.house[0] ? s.house[0] === "изба" : null},
+  {t:"Поэт живёт в избе.", f:(s) => known(s,"prof","поэт","house","изба")},
+  {t:"Журналист — сосед хаты.", f:(s) => pair(s,"prof","журналист","house","хата", near)},
+  {t:"Журналист выращивает персики.", f:(s) => known(s,"prof","журналист","tree","персик")},
+  {t:"В бунгало разводят голубей.", f:(s) => known(s,"house","бунгало","pet","голуби")},
+  {t:"Хозяин собаки — сосед сливового сада.", f:(s) => pair(s,"pet","собака","tree","слива", near)},
+  {t:"Критик живёт на самом востоке.", f:(s) => s.prof[3] ? s.prof[3] === "критик" : null},
+  {t:"Хозяин собаки выращивает вишню.", f:(s) => known(s,"pet","собака","tree","вишня")},
+  {t:"На ранчо живут крысы.", f:(s) => known(s,"house","ранчо","pet","крысы")},
+  {t:"Прозаик разводит голубей.", f:(s) => known(s,"prof","прозаик","pet","голуби")}
+];
+function known(s, c1, v1, c2, v2) {
+  const a = at(s, c1, v1), b = at(s, c2, v2);
+  if (a >= 0 && s[c2][a]) return s[c2][a] === v2;
+  if (b >= 0 && s[c1][b]) return s[c1][b] === v1;
+  return a >= 0 && b >= 0 ? a === b : null;
+}
+function pair(s, c1, v1, c2, v2, rel) {
+  const a = at(s, c1, v1), b = at(s, c2, v2);
+  return a >= 0 && b >= 0 ? rel(a, b) : null;
+}
+const SOLUTION = {prof:["поэт","прозаик","журналист","критик"], house:["изба","бунгало","ранчо","хата"], tree:["вишня","слива","персик","яблоня"], pet:["собака","голуби","крысы","кошка"]};
+
+const STORE = "komandoobrazovanie-z2-mini-poselok";
+let state;
+try { state = JSON.parse(localStorage.getItem(STORE) || "null"); } catch { state = null; }
+if (!state) state = {v:{prof:["","","",""],house:["","","",""],tree:["","","",""],pet:["","","",""]}, lock:{}};
+const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch { /* приватный режим */ } };
+
+const clueList = document.getElementById("clues");
+CLUES.forEach((c) => { const li = document.createElement("li"); li.textContent = c.t; clueList.appendChild(li); });
+
+const grid = document.getElementById("grid");
+grid.innerHTML = "<tr><th></th>" + [1,2,3,4].map((n) => `<td class="h">Дача ${n}</td>`).join("") + "</tr>"
+  + CATS.map((c) => `<tr><th>${c.name}</th>` + [0,1,2,3].map((i) =>
+    `<td><select data-c="${c.k}" data-i="${i}" aria-label="${c.name}, дача ${i + 1}"><option value="">—</option>${c.opts.map((o) => `<option>${o}</option>`).join("")}</select></td>`).join("") + "</tr>").join("");
+
+const sels = [...grid.querySelectorAll("select")];
+sels.forEach((sel) => sel.addEventListener("change", () => {
+  state.v[sel.dataset.c][sel.dataset.i] = sel.value;
+  save(); render();
+}));
+
+function render() {
+  sels.forEach((sel) => {
+    const c = sel.dataset.c, i = sel.dataset.i, key = `${c}${i}`;
+    sel.value = state.v[c][i];
+    const locked = Boolean(state.lock[key]) && sel.value !== "";
+    sel.disabled = locked;
+    sel.classList.toggle("locked", locked);
+    const row = state.v[c];
+    sel.classList.toggle("dup", sel.value !== "" && row.filter((x) => x === sel.value).length > 1);
+  });
+  const hint = document.getElementById("hint").checked;
+  [...clueList.children].forEach((li, n) => {
+    const r = hint ? CLUES[n].f(state.v) : null;
+    li.className = r === false ? "bad" : (r === true ? "ok" : "");
+  });
+}
+document.getElementById("hint").addEventListener("change", render);
+
+document.getElementById("lock").addEventListener("click", () => {
+  CATS.forEach((c) => [0,1,2,3].forEach((i) => { if (state.v[c.k][i]) state.lock[`${c.k}${i}`] = true; }));
+  save(); render();
+  const res = document.getElementById("res");
+  res.className = "res mid";
+  res.textContent = "Промежуточный результат зафиксирован. Теперь его не сломать случайно — так группа не начинает каждый раз сначала.";
+});
+document.getElementById("unlock").addEventListener("click", () => { state.lock = {}; save(); render(); });
+document.getElementById("reset").addEventListener("click", () => {
+  state = {v:{prof:["","","",""],house:["","","",""],tree:["","","",""],pet:["","","",""]}, lock:{}};
+  save(); render();
+  document.getElementById("res").className = "res";
+  document.getElementById("res").textContent = "Начали заново. Сначала договоритесь о процессе: кто держит какую дачу, кто фиксирует результат.";
+});
+document.getElementById("check").addEventListener("click", () => {
+  const res = document.getElementById("res");
+  const filled = CATS.every((c) => state.v[c.k].every((x) => x));
+  if (!filled) {
+    res.className = "res mid";
+    res.textContent = "Ответ принимается только целиком: заполните всю таблицу.";
+    return;
+  }
+  const right = CATS.every((c) => state.v[c.k].every((x, i) => x === SOLUTION[c.k][i]));
+  if (right) {
+    res.className = "res ok";
+    res.innerHTML = "<b>Ответ верный.</b> Яблоки выращивает критик, в бунгало живёт прозаик. Кошку не упоминает ни одно условие — она нашлась методом исключения, как «факт без хозяина» на занятии.";
+  } else {
+    res.className = "res bad";
+    res.textContent = document.getElementById("hint").checked
+      ? "Ответ неверный. Красным отмечены нарушенные условия."
+      : "Ответ неверный. Какая часть неверна — не скажу: так было и на занятии. Включите режим подсказки, если нужно.";
+  }
+});
+render();
+</script>
+</body>
+</html>
