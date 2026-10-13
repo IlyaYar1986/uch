@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр «Группа или команда?»</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--border:#e2e8f0;--acc:#c2410c;--acc-dk:#9a3412;--acc-lt:#fff7ed;--gold:#b45309;--gold-lt:#fffbeb;--red:#dc2626;--red-lt:#fef2f2;--green:#16a34a;--green-lt:#f0fdf4;--text:#0f172a;--muted:#64748b}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.5;padding:16px 20px 18px}
+h1{font-size:clamp(1.05rem,2.4vw,1.3rem);font-weight:800}
+.sub{color:var(--muted);font-size:.86rem;margin:2px 0 12px;max-width:900px}
+.layout{display:grid;grid-template-columns:minmax(300px,1.1fr) minmax(300px,1fr);gap:18px}
+@media (max-width:760px){.layout{grid-template-columns:1fr}}
+.group{border:1px solid var(--border);border-radius:14px;padding:10px 14px}
+.ctrl{display:grid;grid-template-columns:1fr 60px;gap:0 10px;align-items:center;padding:4px 0}
+.ctrl + .ctrl{border-top:1px dashed var(--border)}
+.ctrl label{font-size:.8rem;font-weight:700;line-height:1.3}
+.ctrl label small{display:block;font-weight:500;color:var(--muted)}
+.ctrl input[type=range]{width:100%;accent-color:var(--acc);grid-column:1}
+.ctrl input[type=number]{grid-row:1 / 3;grid-column:2;width:60px;padding:5px;border:1px solid var(--border);border-radius:8px;font-size:.92rem;font-weight:800;text-align:right;color:var(--acc-dk)}
+input:focus-visible,button:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.preset{padding:6px 10px;border-radius:9px;border:1px solid var(--border);background:#fff;font-size:.76rem;font-weight:700;color:var(--muted);cursor:pointer}
+.preset:hover,.preset.on{border-color:#fed7aa;color:var(--acc)}
+.radar{border:1px solid var(--border);border-radius:14px;padding:6px;background:#fffaf5}
+.radar svg{width:100%;height:auto;display:block}
+.score{display:flex;gap:10px;align-items:center;margin:10px 0}
+.score .big{font-size:2rem;font-weight:900;color:var(--acc-dk);line-height:1}
+.verdict{border-radius:12px;padding:9px 13px;font-size:.86rem;flex:1}
+.verdict b{display:block;font-size:1rem}
+.verdict.ok{background:var(--green-lt);border:1px solid #bbf7d0;color:#14532d}
+.verdict.mid{background:var(--gold-lt);border:1px solid #fcd34d;color:#78350f}
+.verdict.bad{background:var(--red-lt);border:1px solid #fecaca;color:#7f1d1d}
+.weak{font-size:.8rem;border:1px solid var(--border);border-radius:12px;padding:8px 12px}
+.weak h2{font-size:.8rem;font-weight:800;margin-bottom:4px}
+.weak li{margin-left:18px}
+.foot{margin-top:6px;font-size:.72rem;color:var(--muted)}
+.back{display:inline-block;margin-bottom:8px;font-size:.8rem;font-weight:700;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--acc)}
+.back[hidden]{display:none}
+</style>
+</head>
+<body>
+<a class="back" id="back" href="../index.html" hidden>← Все уроки</a>
+<h1>Группа или команда? Диагностика по признакам занятия</h1>
+<p class="sub">Оцените свою команду (или группу на тренинге) по восьми признакам от 0 до 10. Тренажёр покажет профиль, вердикт и три слабых звена — с чего начать разговор.</p>
+
+<div class="layout">
+  <div>
+    <div class="presets" role="group" aria-label="Готовые профили">
+      <button type="button" class="preset" data-p="stop">Очередь на остановке</button>
+      <button type="button" class="preset" data-p="day1">Группа на «Квадрате», день 1</button>
+      <button type="button" class="preset" data-p="team">Сыгранная команда</button>
+      <button type="button" class="preset" data-p="mine">Моя команда</button>
+    </div>
+    <div class="group" id="ctrls"></div>
+  </div>
+  <div>
+    <div class="radar"><svg id="svg" viewBox="-50 0 500 300" role="img" aria-label="Профиль команды по восьми признакам"></svg></div>
+    <div class="score"><div class="big" id="o-score">–</div><div class="verdict" id="verdict"></div></div>
+    <div class="weak"><h2>Три слабых звена — с них начать</h2><ol id="weak"></ol></div>
+    <p class="foot">Признаки — из разбора на занятии 21.09.2026. Шкала и пороги вердикта условные: это инструмент для разговора, а не тест с нормами. Профиль «день 1» — условная оценка по разбору ведущего, а не замер. Профиль «Моя команда» сохраняется в браузере.</p>
+  </div>
+</div>
+
+<script>
+if (window.self === window.top) document.getElementById("back").hidden = false;
+
+const ITEMS = [
+  {k:"goal", short:"Цель",  name:"Общая цель",                 hint:"ради неё объединились",              tip:"Сформулируйте цель одной фразой и спросите каждого, как он её понял."},
+  {k:"same", short:"Понимание",  name:"Одинаковое понимание цели",  hint:"не «зáмок» и «замóк»",              tip:"Пусть каждый своими словами опишет результат — сравните описания."},
+  {k:"crit", short:"Критерии",  name:"Критерии результата",        hint:"по чему проверим, что дошли",        tip:"Договоритесь, что и с каким допуском будете проверять."},
+  {k:"roles", short:"Роли", name:"Осознанные роли",             hint:"каждый знает и принял свою",         tip:"Проговорите, кто за что отвечает, и спросите: «Всех устраивает?»"},
+  {k:"rules", short:"Правила", name:"Принятые правила",            hint:"договорились и применяем",           tip:"Перечитайте свои правила перед задачей и назначьте того, кто следит."},
+  {k:"resp", short:"Ответственность",  name:"Личная и общая ответственность", hint:"каждый за своё и все за итог",   tip:"Разберите неудачу без поиска виноватого: «три пальца — на себя»."},
+  {k:"fb", short:"Обратная связь",    name:"Обратная связь",              hint:"«Стоп, куда идём?»",                tip:"Вставьте короткие остановки-сверки в ход работы."},
+  {k:"skills", short:"Компетенции",name:"Разные компетенции",          hint:"умения дополняют друг друга",        tip:"Составьте карту умений: чего не хватает, кого позвать."}
+];
+const PRESETS = {
+  stop: {goal:2, same:1, crit:0, roles:0, rules:1, resp:0, fb:0, skills:3},
+  day1: {goal:9, same:3, crit:2, roles:3, rules:5, resp:5, fb:3, skills:7},
+  team: {goal:9, same:9, crit:8, roles:8, rules:8, resp:9, fb:8, skills:8}
+};
+const STORE = "komandoobrazovanie-z1-gruppa-komanda";
+function loadMine() {
+  try { return JSON.parse(localStorage.getItem(STORE) || "null"); } catch { return null; }
+}
+function saveMine(v) {
+  try { localStorage.setItem(STORE, JSON.stringify(v)); } catch { /* приватный режим */ }
+}
+let mode = "day1";
+const state = {...PRESETS.day1};
+
+const ctrls = document.getElementById("ctrls");
+ITEMS.forEach((it) => {
+  const row = document.createElement("div");
+  row.className = "ctrl";
+  row.innerHTML = `<label for="${it.k}-r">${it.name}<small>${it.hint}</small></label>`
+    + `<input type="range" id="${it.k}-r" min="0" max="10" step="1">`
+    + `<input type="number" id="${it.k}" min="0" max="10" step="1" aria-label="${it.name}">`;
+  ctrls.appendChild(row);
+  const set = (v) => {
+    const n = Math.round(Number(v));
+    if (Number.isNaN(n)) return;
+    state[it.k] = Math.min(10, Math.max(0, n));
+    if (mode !== "mine") { mode = "mine"; }
+    saveMine(state);
+    render();
+  };
+  row.querySelector("input[type=range]").addEventListener("input", (e) => set(e.target.value));
+  row.querySelector("input[type=number]").addEventListener("change", (e) => set(e.target.value));
+});
+
+document.querySelectorAll(".preset").forEach((b) => b.addEventListener("click", () => {
+  mode = b.dataset.p;
+  if (mode === "mine") {
+    Object.assign(state, loadMine() || {goal:5, same:5, crit:5, roles:5, rules:5, resp:5, fb:5, skills:5});
+  } else {
+    Object.assign(state, PRESETS[mode]);
+  }
+  render();
+}));
+
+function render() {
+  document.querySelectorAll(".preset").forEach((b) => b.classList.toggle("on", b.dataset.p === mode));
+  ITEMS.forEach((it) => {
+    document.getElementById(`${it.k}-r`).value = state[it.k];
+    document.getElementById(it.k).value = state[it.k];
+  });
+  const vals = ITEMS.map((it) => state[it.k]);
+  const score = Math.round(vals.reduce((s, v) => s + v, 0) / (vals.length * 10) * 100);
+  const minVal = Math.min(...vals);
+  document.getElementById("o-score").textContent = `${score}%`;
+
+  const verdict = document.getElementById("verdict");
+  if (score < 35) {
+    verdict.className = "verdict bad";
+    verdict.innerHTML = "<b>Группа</b>Люди рядом, но общей цели и договорённостей почти нет.";
+  } else if (score < 60 || minVal <= 3) {
+    verdict.className = "verdict mid";
+    verdict.innerHTML = `<b>Квази-команда</b>Цель есть, но ${minVal <= 3 ? "есть провал по одному из признаков" : "договорённостей мало"}: часть обсуждает, остальные просто выполняют.`;
+  } else if (score < 80) {
+    verdict.className = "verdict mid";
+    verdict.innerHTML = "<b>Команда на подходе</b>Основа есть. Подтяните слабые звенья.";
+  } else {
+    verdict.className = "verdict ok";
+    verdict.innerHTML = "<b>Команда</b>Совокупность признаков на месте. Держите её обратной связью.";
+  }
+
+  const weak = ITEMS.map((it) => ({...it, v: state[it.k]})).sort((x, y) => x.v - y.v).slice(0, 3);
+  document.getElementById("weak").innerHTML = weak.map((w) => `<li><b>${w.name} (${w.v})</b> — ${w.tip}</li>`).join("");
+
+  // Радар
+  const cx = 200, cy = 150, R = 105, n = ITEMS.length;
+  const pt = (i, r) => {
+    const a = -Math.PI / 2 + i * 2 * Math.PI / n;
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  };
+  let html = "";
+  [2.5, 5, 7.5, 10].forEach((lvl) => {
+    html += `<polygon points="${ITEMS.map((_, i) => pt(i, R * lvl / 10).join(",")).join(" ")}" fill="none" stroke="#e2e8f0"/>`;
+  });
+  ITEMS.forEach((it, i) => {
+    const [x, y] = pt(i, R);
+    html += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e2e8f0"/>`;
+    const [lx, ly] = pt(i, R + 22);
+    const anchor = Math.abs(lx - cx) < 8 ? "middle" : (lx > cx ? "start" : "end");
+    html += `<text x="${lx}" y="${ly + 4}" text-anchor="${anchor}" font-size="11" font-weight="700" fill="#334155">${it.short}</text>`;
+  });
+  html += `<polygon points="${vals.map((v, i) => pt(i, R * v / 10).join(",")).join(" ")}" fill="rgba(194,65,12,.22)" stroke="#c2410c" stroke-width="2.5"/>`;
+  vals.forEach((v, i) => {
+    const [x, y] = pt(i, R * v / 10);
+    html += `<circle cx="${x}" cy="${y}" r="4" fill="#9a3412"/>`;
+  });
+  document.getElementById("svg").innerHTML = html;
+}
+render();
+</script>
+</body>
+</html>

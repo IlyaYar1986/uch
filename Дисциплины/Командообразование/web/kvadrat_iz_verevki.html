@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр «Квадрат из верёвки»</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--border:#e2e8f0;--acc:#c2410c;--acc-dk:#9a3412;--acc-lt:#fff7ed;--gold:#b45309;--gold-lt:#fffbeb;--red:#dc2626;--red-lt:#fef2f2;--green:#16a34a;--green-lt:#f0fdf4;--text:#0f172a;--muted:#64748b}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.5;padding:16px 20px 18px}
+h1{font-size:clamp(1.05rem,2.4vw,1.3rem);font-weight:800}
+.sub{color:var(--muted);font-size:.86rem;margin:2px 0 12px;max-width:900px}
+.layout{display:grid;grid-template-columns:minmax(280px,1fr) minmax(320px,1.35fr);gap:18px}
+@media (max-width:760px){.layout{grid-template-columns:1fr}}
+.group{border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.group h2{font-size:.84rem;font-weight:800;margin-bottom:8px}
+.ctrl{display:grid;grid-template-columns:1fr 84px;gap:2px 10px;align-items:center;margin-bottom:8px}
+.ctrl label{font-size:.8rem;font-weight:700}
+.ctrl label small{font-weight:500;color:var(--muted)}
+.ctrl input[type=range]{width:100%;accent-color:var(--acc)}
+.ctrl input[type=number]{grid-row:1 / 3;grid-column:2;width:84px;padding:6px;border:1px solid var(--border);border-radius:8px;font-size:.92rem;font-weight:800;text-align:right;color:var(--acc-dk)}
+input:focus-visible,button:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.preset{padding:6px 10px;border-radius:9px;border:1px solid var(--border);background:#fff;font-size:.76rem;font-weight:700;color:var(--muted);cursor:pointer}
+.preset:hover{border-color:#fed7aa;color:var(--acc)}
+.field{border:1px solid var(--border);border-radius:14px;padding:8px;background:#fffaf5}
+.field svg{width:100%;height:auto;display:block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+@media (max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{border:1px solid var(--border);border-radius:12px;padding:8px 10px;background:#fff}
+.stat .l{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;line-height:1.3}
+.stat .v{font-size:.92rem;font-weight:900;color:var(--acc-dk);line-height:1.3;white-space:nowrap}
+.verdict{border-radius:12px;padding:10px 14px;font-size:.88rem;font-weight:600}
+.verdict b{font-size:1.15rem;display:block}
+.verdict.ok{background:var(--green-lt);border:1px solid #bbf7d0;color:#14532d}
+.verdict.mid{background:var(--gold-lt);border:1px solid #fcd34d;color:#78350f}
+.verdict.bad{background:var(--red-lt);border:1px solid #fecaca;color:#7f1d1d}
+.note{font-size:.8rem;color:#78350f;background:var(--gold-lt);border:1px solid #fcd34d;border-radius:12px;padding:9px 12px;margin-top:8px}
+.back{display:inline-block;margin-bottom:8px;font-size:.8rem;font-weight:700;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--acc)}
+.back[hidden]{display:none}
+</style>
+</head>
+<body>
+<a class="back" id="back" href="../index.html" hidden>← Все уроки</a>
+<h1>Квадрат из верёвки: когда фигура — действительно квадрат</h1>
+<p class="sub">Замкнутую верёвку держат четыре «угловых». Выберите, в каких местах верёвки они стоят и какой угол у первого угла. Тренажёр растянет фигуру и проверит её по критериям: стороны и диагонали.</p>
+
+<div class="layout">
+  <div>
+    <div class="presets" role="group" aria-label="Готовые ситуации">
+      <button type="button" class="preset" data-p="group">Как у группы</button>
+      <button type="button" class="preset" data-p="rhomb">Равные отрезки, угол на глаз</button>
+      <button type="button" class="preset" data-p="rect">Прямые углы, неравные отрезки</button>
+      <button type="button" class="preset" data-p="square">Равные отрезки и прямой угол</button>
+    </div>
+    <div class="group">
+      <h2>Верёвка и угловые</h2>
+      <div class="ctrl"><label for="len-r">Длина верёвки, м</label><input type="range" id="len-r" min="6" max="24" step="0.5"><input type="number" id="len" min="6" max="24" step="0.5" aria-label="Длина верёвки"></div>
+      <div class="ctrl"><label for="p1-r">Угловой 2 стоит на отметке, % <small>(угловой 1 — на нуле)</small></label><input type="range" id="p1-r" min="5" max="90" step="1"><input type="number" id="p1" min="5" max="90" step="1" aria-label="Отметка углового 2"></div>
+      <div class="ctrl"><label for="p2-r">Угловой 3, %</label><input type="range" id="p2-r" min="10" max="95" step="1"><input type="number" id="p2" min="10" max="95" step="1" aria-label="Отметка углового 3"></div>
+      <div class="ctrl"><label for="p3-r">Угловой 4, %</label><input type="range" id="p3-r" min="15" max="95" step="1"><input type="number" id="p3" min="15" max="95" step="1" aria-label="Отметка углового 4"></div>
+    </div>
+    <div class="group">
+      <h2>Форма и проверка</h2>
+      <div class="ctrl"><label for="ang-r">Угол у углового 1, ° <small>(как его «чувствуют» с закрытыми глазами)</small></label><input type="range" id="ang-r" min="40" max="140" step="1"><input type="number" id="ang" min="40" max="140" step="1" aria-label="Угол у углового 1"></div>
+      <div class="ctrl"><label for="tol-r">Допуск, см <small>(насколько стороны и диагонали могут различаться)</small></label><input type="range" id="tol-r" min="0" max="30" step="1"><input type="number" id="tol" min="0" max="30" step="1" aria-label="Допуск"></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="field"><svg id="svg" viewBox="0 0 520 330" role="img" aria-label="Фигура из верёвки"></svg></div>
+    <div class="stats">
+      <div class="stat"><div class="l">Стороны 1–2 / 2–3</div><div class="v" id="o-s1">–</div></div>
+      <div class="stat"><div class="l">Стороны 3–4 / 4–1</div><div class="v" id="o-s2">–</div></div>
+      <div class="stat"><div class="l">Диагонали 1–3 / 2–4</div><div class="v" id="o-d">–</div></div>
+      <div class="stat"><div class="l">Углы 1 / 2 / 3 / 4</div><div class="v" id="o-a">–</div></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <p class="note">Критерий — это то, что можно проверить. «Похоже на квадрат» — не критерий. Равные стороны дают ромб; квадратом он станет, когда равны ещё и диагонали.</p>
+  </div>
+</div>
+
+<script>
+if (window.self === window.top) document.getElementById("back").hidden = false;
+
+const PRESETS = {
+  group:  {len:15, p1:22, p2:48, p3:77, ang:82, tol:5},
+  rhomb:  {len:15, p1:25, p2:50, p3:75, ang:68, tol:5},
+  rect:   {len:15, p1:30, p2:50, p3:80, ang:90, tol:5},
+  square: {len:15, p1:25, p2:50, p3:75, ang:90, tol:5}
+};
+const KEYS = ["len","p1","p2","p3","ang","tol"];
+const state = {...PRESETS.group};
+
+function bind(key) {
+  const range = document.getElementById(`${key}-r`);
+  const num = document.getElementById(key);
+  const set = (v) => {
+    const n = Number(v);
+    if (Number.isNaN(n)) return;
+    state[key] = Math.min(Number(num.max), Math.max(Number(num.min), n));
+    render();
+  };
+  range.addEventListener("input", () => set(range.value));
+  num.addEventListener("change", () => set(num.value));
+}
+KEYS.forEach(bind);
+document.querySelectorAll(".preset").forEach((b) => b.addEventListener("click", () => {
+  Object.assign(state, PRESETS[b.dataset.p]);
+  render();
+}));
+
+const cm = (m) => Math.round(m * 100);
+const fmt = (m) => `${m.toFixed(2).replace(".", ",")} м`;
+
+function render() {
+  // Метки по порядку: угловой 2 < 3 < 4
+  if (state.p2 <= state.p1) state.p2 = Math.min(95, state.p1 + 1);
+  if (state.p3 <= state.p2) state.p3 = Math.min(95, state.p2 + 1);
+  KEYS.forEach((k) => {
+    document.getElementById(`${k}-r`).value = state[k];
+    document.getElementById(k).value = state[k];
+  });
+
+  const L = state.len;
+  const a = L * state.p1 / 100, b = L * (state.p2 - state.p1) / 100,
+        c = L * (state.p3 - state.p2) / 100, d = L * (100 - state.p3) / 100;
+  const th = state.ang * Math.PI / 180;
+  const A = [0, 0], B = [a, 0], D = [d * Math.cos(th), d * Math.sin(th)];
+  // C — пересечение окружностей (B, b) и (D, c), берём точку дальше от A
+  const dx = D[0] - B[0], dy = D[1] - B[1];
+  const r = Math.hypot(dx, dy);
+  const svg = document.getElementById("svg");
+  const verdict = document.getElementById("verdict");
+  if (r > b + c || r < Math.abs(b - c) || r === 0) {
+    svg.innerHTML = `<text x="260" y="165" text-anchor="middle" font-size="15" fill="#7f1d1d" font-weight="700">Такую фигуру не растянуть: верёвка провисает или её не хватает</text>`;
+    ["o-s1","o-s2","o-d","o-a"].forEach((id) => { document.getElementById(id).textContent = "–"; });
+    verdict.className = "verdict bad";
+    verdict.innerHTML = "<b>Фигура не собирается</b>Измените угол или отметки угловых.";
+    return;
+  }
+  const x = (r * r + b * b - c * c) / (2 * r);
+  const h = Math.sqrt(Math.max(0, b * b - x * x));
+  const mx = B[0] + x * dx / r, my = B[1] + x * dy / r;
+  const C1 = [mx - h * dy / r, my + h * dx / r], C2 = [mx + h * dy / r, my - h * dx / r];
+  const C = Math.hypot(...C1) >= Math.hypot(...C2) ? C1 : C2;
+
+  const P = [A, B, C, D];
+  const sides = [a, b, c, d];
+  const diag1 = Math.hypot(C[0] - A[0], C[1] - A[1]);
+  const diag2 = Math.hypot(D[0] - B[0], D[1] - B[1]);
+  const angles = P.map((p, i) => {
+    const prev = P[(i + 3) % 4], next = P[(i + 1) % 4];
+    const v1 = [prev[0] - p[0], prev[1] - p[1]], v2 = [next[0] - p[0], next[1] - p[1]];
+    const cos = (v1[0] * v2[0] + v1[1] * v2[1]) / (Math.hypot(...v1) * Math.hypot(...v2));
+    return Math.round(Math.acos(Math.max(-1, Math.min(1, cos))) * 180 / Math.PI);
+  });
+
+  const tol = state.tol / 100;
+  const allEq = Math.max(...sides) - Math.min(...sides) <= tol;
+  const oppEq = Math.abs(a - c) <= tol && Math.abs(b - d) <= tol;
+  const diagEq = Math.abs(diag1 - diag2) <= tol;
+
+  document.getElementById("o-s1").textContent = `${fmt(a)} / ${fmt(b)}`;
+  document.getElementById("o-s2").textContent = `${fmt(c)} / ${fmt(d)}`;
+  document.getElementById("o-d").textContent = `${fmt(diag1)} / ${fmt(diag2)}`;
+  document.getElementById("o-a").textContent = angles.map((v) => `${v}°`).join(" / ");
+
+  const sideSpread = cm(Math.max(...sides) - Math.min(...sides));
+  const diagSpread = cm(Math.abs(diag1 - diag2));
+  if (allEq && diagEq) {
+    verdict.className = "verdict ok";
+    verdict.innerHTML = `<b>Квадрат ✓</b>Стороны равны (разброс ${sideSpread} см) и диагонали равны (разница ${diagSpread} см) в пределах допуска.`;
+  } else if (allEq) {
+    verdict.className = "verdict mid";
+    verdict.innerHTML = `<b>Ромб, а не квадрат</b>Стороны равны, но диагонали различаются на ${diagSpread} см. Проверка диагоналей — тот самый критерий, которого не хватало.`;
+  } else if (oppEq && diagEq) {
+    verdict.className = "verdict mid";
+    verdict.innerHTML = `<b>Прямоугольник, а не квадрат</b>Углы прямые, но соседние стороны различаются. Метки угловых стоят на неравных отрезках верёвки.`;
+  } else {
+    verdict.className = "verdict bad";
+    verdict.innerHTML = `<b>Кривой четырёхугольник</b>Стороны различаются на ${sideSpread} см, диагонали — на ${diagSpread} см. Без договорённости о критериях такую фигуру легко «доказать» квадратом.`;
+  }
+
+  // Отрисовка: масштаб под поле
+  const xs = P.map((p) => p[0]), ys = P.map((p) => p[1]);
+  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+  const k = Math.min(440 / (maxX - minX || 1), 250 / (maxY - minY || 1));
+  const ox = 260 - (minX + maxX) / 2 * k, oy = 165 + (minY + maxY) / 2 * k;
+  const T = (p) => [ox + p[0] * k, oy - p[1] * k];
+  const Q = P.map(T);
+  const poly = Q.map((q) => q.join(",")).join(" ");
+  const mid = (i, j) => [(Q[i][0] + Q[j][0]) / 2, (Q[i][1] + Q[j][1]) / 2];
+  let html = `<line x1="${Q[0][0]}" y1="${Q[0][1]}" x2="${Q[2][0]}" y2="${Q[2][1]}" stroke="#94a3b8" stroke-dasharray="6 5" stroke-width="1.5"/>`
+    + `<line x1="${Q[1][0]}" y1="${Q[1][1]}" x2="${Q[3][0]}" y2="${Q[3][1]}" stroke="#94a3b8" stroke-dasharray="6 5" stroke-width="1.5"/>`
+    + `<polygon points="${poly}" fill="rgba(194,65,12,.07)" stroke="#c2410c" stroke-width="5" stroke-linejoin="round"/>`;
+  [[0,1],[1,2],[2,3],[3,0]].forEach(([i, j], n) => {
+    const m = mid(i, j);
+    const gx = Q.reduce((s, q) => s + q[0], 0) / 4, gy = Q.reduce((s, q) => s + q[1], 0) / 4;
+    const vx = m[0] - gx, vy = m[1] - gy, vl = Math.hypot(vx, vy) || 1;
+    const lx = m[0] + vx / vl * 24, ly = m[1] + vy / vl * 18 + 4;
+    html += `<text x="${lx}" y="${ly}" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412" paint-order="stroke" stroke="#fffaf5" stroke-width="4">${fmt(sides[n])}</text>`;
+  });
+  Q.forEach((q, i) => {
+    html += `<circle cx="${q[0]}" cy="${q[1]}" r="13" fill="#9a3412"/><text x="${q[0]}" y="${q[1] + 4.5}" text-anchor="middle" font-size="13" font-weight="900" fill="#fff">${i + 1}</text>`;
+  });
+  svg.innerHTML = html;
+}
+render();
+</script>
+</body>
+</html>
