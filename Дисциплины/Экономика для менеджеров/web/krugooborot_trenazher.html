@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр кругооборота</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --cyan:#0ea5e9;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --amber:#f59e0b;
+  --amber-lt:#fffbeb;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+h1{font-size:1.05rem;font-weight:800;letter-spacing:-.2px}
+.sub{color:var(--muted);font-size:.78rem}
+.presets{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.presets .lbl{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-right:2px}
+.presets .gap{width:10px}
+.preset{padding:4px 9px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s}
+.preset:hover{border-color:#c7d2fe;color:var(--indigo)}
+.preset.active{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.preset.story{border-color:#fcd34d;background:var(--amber-lt);color:#92400e}
+.preset:focus-visible,input:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+
+.layout{display:grid;grid-template-columns:minmax(320px,1.35fr) minmax(260px,1fr);gap:12px;align-items:start}
+@media (max-width:760px){.layout{grid-template-columns:1fr}}
+.chart-box{border:1px solid var(--border);border-radius:12px;padding:4px;background:#fcfcff}
+svg{width:100%;height:auto;display:block;max-height:58vh}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.68rem;color:var(--muted);padding:0 6px 4px}
+.legend i{display:inline-block;width:18px;height:0;border-top:3px solid var(--indigo);vertical-align:middle;margin-right:4px}
+.legend i.dash{border-top-style:dashed}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+@media (max-width:520px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{border:1px solid var(--border);border-radius:10px;padding:5px 6px;background:#f8fafc;text-align:center}
+.kpi .k-l{font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.kpi .k-v{font-size:1.05rem;font-weight:900;line-height:1.2}
+.kpi .k-n{font-size:.64rem;color:var(--muted)}
+.neg{color:var(--red)} .pos{color:var(--green)}
+
+.verdict{margin-top:8px;border-radius:10px;padding:8px 11px;font-size:.78rem;line-height:1.45;border:1px solid #c7d2fe;background:var(--indigo-lt);color:var(--indigo-dk)}
+.verdict b{display:block;margin-bottom:2px}
+
+.group{border:1px solid var(--border);border-radius:12px;padding:9px 11px}
+.group + .group{margin-top:8px}
+.group h2{font-size:.8rem;font-weight:800;margin-bottom:6px}
+.g-hh{border-left:4px solid var(--indigo)}
+.g-firm{border-left:4px solid var(--cyan)}
+.g-gov{border-left:4px solid var(--amber)}
+.g-row{border-left:4px solid #8b5cf6}
+.group.off{opacity:.38}
+.ctrl{margin-bottom:5px}
+.ctrl .row{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.ctrl label{font-size:.75rem;font-weight:700;line-height:1.2}
+.ctrl label small{font-weight:500;color:var(--muted)}
+.ctrl input[type=range]{width:100%;height:16px;accent-color:var(--indigo);display:block}
+.ctrl input[type=number]{width:58px;flex-shrink:0;padding:2px 5px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;font-weight:800;text-align:right;color:var(--indigo-dk)}
+.sum-line{font-size:.72rem;color:var(--muted);margin-top:2px;line-height:1.35}
+.sum-line b{color:var(--text)}
+details.info{font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45}
+details.info summary{cursor:pointer;font-weight:700}
+details.info p + p{margin-top:4px}
+
+/* SVG */
+.box rect{fill:#fff;stroke:#cbd5e1;stroke-width:1.5}
+.box text{font-size:13px;font-weight:800;fill:var(--text);text-anchor:middle}
+.box.market rect{fill:#f1f5f9}
+.box.gov rect{fill:var(--amber-lt);stroke:#fcd34d}
+.box.row rect{fill:#f5f3ff;stroke:#c4b5fd}
+.box.cap rect{fill:#ecfeff;stroke:#a5f3fc}
+.flow{fill:none;stroke-linecap:round}
+.money{stroke:var(--indigo);stroke-dasharray:7 5}
+.goods{stroke:#94a3b8}
+.flow-lbl{font-size:10.5px;font-weight:700;fill:var(--indigo-dk);text-anchor:middle}
+.flow-lbl.g{fill:#475569}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>Тренажёр кругооборота доходов и расходов</h1>
+  <span class="sub">Двигайте ползунки или вписывайте числа. Пунктир — деньги, сплошная — товары и ресурсы; толщина стрелки — величина потока. Учебная модель в условных единицах за год.</span>
+</div>
+
+<div class="presets" role="group" aria-label="Число секторов и сценарии">
+  <span class="lbl">Модель</span>
+  <button type="button" class="preset" data-sectors="2">2 сектора</button>
+  <button type="button" class="preset" data-sectors="3">3 сектора: + государство</button>
+  <button type="button" class="preset active" data-sectors="4">4 сектора: + заграница</button>
+  <span class="gap"></span>
+  <span class="lbl">Опыты</span>
+  <button type="button" class="preset story" data-exp="tr">Трансферты +20</button>
+  <button type="button" class="preset story" data-exp="g">Госзакупки +20</button>
+  <button type="button" class="preset story" data-exp="def">Бюджет в дефицит</button>
+  <button type="button" class="preset" data-exp="reset">Сбросить</button>
+</div>
+
+<div class="layout">
+  <div>
+    <div class="chart-box">
+      <svg viewBox="0 0 620 430" role="img" aria-label="Схема кругооборота: домашние хозяйства, фирмы, государство, заграница, рынки благ, факторов и капитала">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="15" markerHeight="15" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
+          <marker id="ahg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="15" markerHeight="15" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
+        </defs>
+
+        <!-- товары и ресурсы (сплошные) -->
+        <path id="f-goods" class="flow goods" d="M100,236 C100,330 190,372 236,372" marker-end="url(#ahg)"/>
+        <text class="flow-lbl g" x="60" y="276" style="text-anchor:end">товары</text>
+        <path id="f-goods2" class="flow goods" d="M384,372 C430,372 520,330 520,236" marker-end="url(#ahg)"/>
+        <path id="f-res" class="flow goods" d="M520,184 C520,96 430,58 384,58" marker-end="url(#ahg)"/>
+        <text class="flow-lbl g" x="470" y="108" style="text-anchor:end">ресурсы</text>
+        <path id="f-res2" class="flow goods" d="M236,58 C190,58 100,96 100,184" marker-end="url(#ahg)"/>
+
+        <!-- деньги (пунктир), по часовой стрелке: ДХ → рынок благ → фирмы → рынок факторов → ДХ -->
+        <path id="m-c" class="flow money" d="M548,236 C548,352 452,398 388,398" marker-end="url(#ah)"/>
+        <text id="l-c" class="flow-lbl" x="545" y="352">C</text>
+        <path id="m-rev" class="flow money" d="M232,398 C168,398 72,352 72,236" marker-end="url(#ah)"/>
+        <text id="l-rev" class="flow-lbl" x="88" y="370">выручка</text>
+        <path id="m-fi" class="flow money" d="M72,184 C72,70 168,32 232,32" marker-end="url(#ah)"/>
+        <text id="l-fi" class="flow-lbl" x="150" y="20">факторные доходы</text>
+        <path id="m-fi2" class="flow money" d="M388,32 C452,32 548,70 548,184" marker-end="url(#ah)"/>
+        <text id="l-fi2" class="flow-lbl" x="560" y="70">Y</text>
+
+        <!-- государство -->
+        <g id="gov-flows">
+          <path id="m-tx" class="flow money" d="M488,198 C430,170 400,150 372,150" marker-end="url(#ah)"/>
+          <text id="l-tx" class="flow-lbl" x="440" y="160">Tx</text>
+          <path id="m-tr" class="flow money" d="M372,178 C400,178 440,200 488,212" marker-end="url(#ah)"/>
+          <text id="l-tr" class="flow-lbl" x="420" y="206">TR</text>
+          <path id="m-g" class="flow money" d="M246,186 C200,230 200,300 262,352" marker-end="url(#ah)"/>
+          <text id="l-g" class="flow-lbl" x="214" y="318" style="text-anchor:start">G</text>
+        </g>
+
+        <!-- рынок капитала: сбережения → инвестиции -->
+        <path id="m-s" class="flow money" d="M488,226 C450,250 420,268 372,276" marker-end="url(#ah)"/>
+        <text id="l-s" class="flow-lbl" x="440" y="262">S</text>
+        <path id="m-i" class="flow money" d="M228,280 C190,272 160,256 136,236" marker-end="url(#ah)"/>
+        <text id="l-i" class="flow-lbl" x="176" y="250">I</text>
+        <path id="m-ib" class="flow money" d="M150,236 C160,300 200,336 240,350" marker-end="url(#ah)"/>
+        <text id="l-ib" class="flow-lbl" x="150" y="296" style="text-anchor:end">I</text>
+        <path id="m-def" class="flow money" d="M330,262 C330,240 330,214 330,190" marker-end="url(#ah)"/>
+        <text id="l-def" class="flow-lbl" x="340" y="232" style="text-anchor:start">дефицит</text>
+
+        <!-- заграница -->
+        <g id="row-flows">
+          <path id="m-m" class="flow money" d="M384,394 C440,410 470,410 506,404" marker-end="url(#ah)"/>
+          <text id="l-m" class="flow-lbl" x="446" y="422">M</text>
+          <path id="m-x" class="flow money" d="M506,380 C470,372 440,372 386,376" marker-end="url(#ah)"/>
+          <text id="l-x" class="flow-lbl" x="446" y="368">X</text>
+        </g>
+
+        <g class="box market"><rect x="236" y="14" width="152" height="44" rx="10"/><text x="312" y="34">Рынок</text><text x="312" y="50" style="font-size:11px;font-weight:700">факторов производства</text></g>
+        <g class="box market"><rect x="236" y="352" width="152" height="44" rx="10"/><text x="312" y="379">Рынок благ</text></g>
+        <g class="box"><rect x="16" y="184" width="132" height="52" rx="12"/><text x="82" y="215">Фирмы</text></g>
+        <g class="box"><rect x="488" y="184" width="120" height="52" rx="12"/><text x="548" y="206">Домашние</text><text x="548" y="223">хозяйства</text></g>
+        <g class="box gov" id="gov-box"><rect x="228" y="140" width="144" height="46" rx="12"/><text x="300" y="168">Государство</text></g>
+        <g class="box cap"><rect x="228" y="262" width="144" height="34" rx="10"/><text x="300" y="284" style="font-size:12px">Рынок капитала</text></g>
+        <g class="box row" id="row-box"><rect x="506" y="370" width="104" height="46" rx="12"/><text x="558" y="398">Заграница</text></g>
+      </svg>
+      <div class="legend"><span><i class="dash"></i>деньги</span><span><i style="border-color:#94a3b8"></i>товары и ресурсы</span><span>Y — ВВП и факторные доходы · S — сбережения</span></div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="k-l">ВВП по расходам</div><div class="k-v" id="k-ye">—</div><div class="k-n">C + I + G + Xn</div></div>
+      <div class="kpi"><div class="k-l">ВВП по доходам</div><div class="k-v" id="k-yi">—</div><div class="k-n">зарплата, рента, %, прибыль</div></div>
+      <div class="kpi"><div class="k-l">Располагаемый доход</div><div class="k-v" id="k-yd">—</div><div class="k-n">Y − Tx + TR</div></div>
+      <div class="kpi"><div class="k-l">Сальдо бюджета</div><div class="k-v" id="k-b">—</div><div class="k-n">Tx − G − TR</div></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+
+  <div>
+    <div class="group g-hh">
+      <h2>Домашние хозяйства</h2>
+      <div class="ctrl"><div class="row"><label for="c">C — потребление</label><input type="number" id="c-n" min="0" max="160" step="1" aria-label="Потребление, число"></div><input type="range" id="c" min="0" max="160" step="1"></div>
+      <p class="sum-line">Сбережения S = располагаемый доход − C = <b id="s-out">—</b></p>
+    </div>
+    <div class="group g-firm">
+      <h2>Фирмы: валовые инвестиции I = чистые + амортизация</h2>
+      <div class="ctrl"><div class="row"><label for="in">Чистые инвестиции <small>(развитие)</small></label><input type="number" id="in-n" min="0" max="60" step="1" aria-label="Чистые инвестиции, число"></div><input type="range" id="in" min="0" max="60" step="1"></div>
+      <div class="ctrl"><div class="row"><label for="am">Амортизация <small>(поддержание)</small></label><input type="number" id="am-n" min="0" max="40" step="1" aria-label="Амортизация, число"></div><input type="range" id="am" min="0" max="40" step="1"></div>
+      <p class="sum-line">Валовые инвестиции I = <b id="i-out">—</b></p>
+    </div>
+    <div class="group g-gov" id="g-gov">
+      <h2>Государство</h2>
+      <div class="ctrl"><div class="row"><label for="tx">Tx — налоги</label><input type="number" id="tx-n" min="0" max="80" step="1" aria-label="Налоги, число"></div><input type="range" id="tx" min="0" max="80" step="1"></div>
+      <div class="ctrl"><div class="row"><label for="g">G — госзакупки</label><input type="number" id="g-n" min="0" max="80" step="1" aria-label="Госзакупки, число"></div><input type="range" id="g" min="0" max="80" step="1"></div>
+      <div class="ctrl"><div class="row"><label for="tr">TR — трансферты</label><input type="number" id="tr-n" min="0" max="60" step="1" aria-label="Трансферты, число"></div><input type="range" id="tr" min="0" max="60" step="1"></div>
+    </div>
+    <div class="group g-row" id="g-row">
+      <h2>Заграница</h2>
+      <div class="ctrl"><div class="row"><label for="x">X — экспорт</label><input type="number" id="x-n" min="0" max="60" step="1" aria-label="Экспорт, число"></div><input type="range" id="x" min="0" max="60" step="1"></div>
+      <div class="ctrl"><div class="row"><label for="m">M — импорт</label><input type="number" id="m-n" min="0" max="60" step="1" aria-label="Импорт, число"></div><input type="range" id="m" min="0" max="60" step="1"></div>
+    </div>
+    <details class="info"><summary>Как устроена модель</summary>
+      <p>ВВП по расходам: Y = C + I + G + (X − M). Всё, что потрачено на рынке благ, стало выручкой фирм, а фирмы целиком раздали её в виде факторных доходов (зарплата, рента, процент, прибыль). Поэтому ВВП по доходам всегда равен ВВП по расходам: <b>доходы одних — расходы других</b>.</p>
+      <p>Располагаемый доход семей = Y − Tx + TR. Всё, что семьи не потратили, — сбережения S. Через рынок капитала они идут на инвестиции фирм, покрытие дефицита бюджета и чистый экспорт: S = I + (G + TR − Tx) + (X − M).</p>
+      <p>Это бухгалтерия кругооборота, а не прогноз: модель не показывает, как изменение одного потока меняет поведение остальных (мультипликатор — тема макроэкономики).</p>
+    </details>
+  </div>
+</div>
+
+<script>
+const BASE = {c:100, in:20, am:10, tx:40, g:35, tr:15, x:25, m:20};
+const FIELDS = ["c","in","am","tx","g","tr","x","m"];
+let sectors = 4;
+let state = {...BASE};
+
+function bind(id){
+  const range = document.getElementById(id);
+  const num = document.getElementById(id + "-n");
+  range.addEventListener("input", () => { state[id] = Number(range.value); render(); });
+  num.addEventListener("change", () => {
+    const v = Math.max(Number(num.min), Math.min(Number(num.max), Number(num.value) || 0));
+    state[id] = v; render();
+  });
+}
+FIELDS.forEach(bind);
+
+function eff(){
+  const s = {...state};
+  if (sectors < 3){ s.tx = 0; s.g = 0; s.tr = 0; }
+  if (sectors < 4){ s.x = 0; s.m = 0; }
+  return s;
+}
+function width(v, max){ return v <= 0 ? 0 : 1.5 + 5 * Math.min(1, v / max); }
+function setFlow(id, v, max, labelId, label){
+  const el = document.getElementById(id);
+  const w = width(v, max);
+  el.style.strokeWidth = w;
+  el.classList.toggle("hidden", w === 0);
+  if (labelId){
+    const l = document.getElementById(labelId);
+    l.textContent = label;
+    l.classList.toggle("hidden", w === 0);
+  }
+}
+function fmt(v){ return (Math.round(v * 10) / 10).toLocaleString("ru-RU"); }
+
+function render(){
+  FIELDS.forEach((id) => {
+    document.getElementById(id).value = state[id];
+    document.getElementById(id + "-n").value = state[id];
+  });
+  const s = eff();
+  const I = s.in + s.am;
+  const Y = s.c + I + s.g + (s.x - s.m);
+  const Yd = Y - s.tx + s.tr;
+  const S = Yd - s.c;
+  const B = s.tx - s.g - s.tr;
+  const max = Math.max(Y, 1);
+
+  setFlow("m-c", s.c, max, "l-c", `C = ${fmt(s.c)}`);
+  setFlow("m-rev", Y, max, "l-rev", `выручка = ${fmt(Y)}`);
+  setFlow("m-fi", Y, max, "l-fi", `факторные доходы = ${fmt(Y)}`);
+  setFlow("m-fi2", Y, max, "l-fi2", `Y = ${fmt(Y)}`);
+  ["f-goods","f-goods2","f-res","f-res2"].forEach((id) => setFlow(id, Y, max));
+  setFlow("m-tx", s.tx, max, "l-tx", `Tx = ${fmt(s.tx)}`);
+  setFlow("m-tr", s.tr, max, "l-tr", `TR = ${fmt(s.tr)}`);
+  setFlow("m-g", s.g, max, "l-g", `G = ${fmt(s.g)}`);
+  setFlow("m-s", Math.max(S, 0), max, "l-s", `S = ${fmt(S)}`);
+  setFlow("m-i", I, max, "l-i", `I = ${fmt(I)}`);
+  setFlow("m-ib", I, max, "l-ib", "I");
+  setFlow("m-def", Math.max(-B, 0), max, "l-def", `дефицит ${fmt(-B)}`);
+  setFlow("m-x", s.x, max, "l-x", `X = ${fmt(s.x)}`);
+  setFlow("m-m", s.m, max, "l-m", `M = ${fmt(s.m)}`);
+
+  document.getElementById("gov-box").classList.toggle("hidden", sectors < 3);
+  document.getElementById("row-box").classList.toggle("hidden", sectors < 4);
+  document.getElementById("g-gov").classList.toggle("off", sectors < 3);
+  document.getElementById("g-row").classList.toggle("off", sectors < 4);
+  ["tx","g","tr"].forEach((id) => { document.getElementById(id).disabled = sectors < 3; document.getElementById(id + "-n").disabled = sectors < 3; });
+  ["x","m"].forEach((id) => { document.getElementById(id).disabled = sectors < 4; document.getElementById(id + "-n").disabled = sectors < 4; });
+
+  document.getElementById("k-ye").textContent = fmt(Y);
+  document.getElementById("k-yi").textContent = fmt(Y);
+  document.getElementById("k-yd").textContent = fmt(Yd);
+  const kb = document.getElementById("k-b");
+  kb.textContent = sectors < 3 ? "—" : (B > 0 ? "+" : "") + fmt(B);
+  kb.className = "k-v " + (sectors < 3 ? "" : B < 0 ? "neg" : "pos");
+  document.getElementById("s-out").textContent = fmt(S);
+  document.getElementById("i-out").textContent = fmt(I);
+
+  const parts = [`инвестиции ${fmt(I)}`];
+  if (sectors >= 3) parts.push(B < 0 ? `дефицит бюджета ${fmt(-B)}` : `профицит бюджета уменьшает нужду в займах на ${fmt(B)}`);
+  if (sectors >= 4) parts.push(`чистый экспорт ${fmt(s.x - s.m)}`);
+  let text = `<b>Y = E: ${fmt(Y)} по расходам = ${fmt(Y)} по доходам.</b>`;
+  text += `Сбережения семей S = ${fmt(S)} через рынок капитала покрывают: ${parts.join(", ")}.`;
+  if (S < 0) text += " Сбережения отрицательные: семьи тратят больше располагаемого дохода — проедают накопленное или берут в долг.";
+  if (s.am > s.in) text += " Амортизация больше чистых инвестиций: фирмы в основном латают старое оборудование.";
+  document.getElementById("verdict").innerHTML = text;
+}
+
+document.querySelectorAll("[data-sectors]").forEach((b) => b.addEventListener("click", () => {
+  sectors = Number(b.dataset.sectors);
+  document.querySelectorAll("[data-sectors]").forEach((x) => x.classList.toggle("active", x === b));
+  render();
+}));
+document.querySelectorAll("[data-exp]").forEach((b) => b.addEventListener("click", () => {
+  const e = b.dataset.exp;
+  if (sectors < 3 && e !== "reset"){ sectors = 4; document.querySelectorAll("[data-sectors]").forEach((x) => x.classList.toggle("active", x.dataset.sectors === "4")); }
+  if (e === "reset") state = {...BASE};
+  if (e === "tr") state.tr = Math.min(60, state.tr + 20);
+  if (e === "g") state.g = Math.min(80, state.g + 20);
+  if (e === "def"){ state.tx = 30; state.g = 45; state.tr = 25; }
+  render();
+}));
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр «Расставь потоки»</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --amber-lt:#fffbeb;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:6px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.78rem}
+.rules{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.rules span{font-size:.72rem;font-weight:700;padding:4px 9px;border-radius:8px;background:var(--amber-lt);border:1px solid #fcd34d;color:#78350f}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.score{font-size:.82rem;font-weight:800;color:var(--indigo-dk)}
+.btn{padding:5px 11px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:.76rem;font-weight:700;color:var(--muted);cursor:pointer}
+.btn:hover{border-color:#c7d2fe;color:var(--indigo)}
+.btn.primary{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.btn:focus-visible,select:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:8px;max-height:calc(100vh - 150px);overflow:auto;padding-right:4px}
+.item{border:1px solid var(--border);border-radius:12px;padding:8px 10px;background:#fcfcff}
+.item.ok{border-color:#86efac;background:var(--green-lt)}
+.item.bad{border-color:#fca5a5;background:var(--red-lt)}
+.item .q{font-size:.8rem;font-weight:700;margin-bottom:6px}
+.item .q b{color:var(--indigo-dk);margin-right:4px}
+.sel{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:5px;align-items:center}
+@media (max-width:420px){.sel{grid-template-columns:1fr 1fr}}
+select{font:inherit;font-size:.74rem;padding:3px 4px;border:1px solid var(--border);border-radius:6px;background:#fff;min-width:0}
+.item .fb{font-size:.74rem;margin-top:6px;line-height:1.4}
+.item.ok .fb{color:#166534}
+.item.bad .fb{color:#991b1b}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>Расставьте потоки на схеме кругооборота</h1>
+  <span class="sub">Для каждого примера выберите, откуда и куда идёт поток и какой линией его рисовать. Это задание с занятия 14.10.2026: сначала попробуйте сами, потом проверьте.</span>
+</div>
+<div class="rules" aria-label="Правила">
+  <span>Предложение → на рынок</span>
+  <span>Спрос → от рынка к сектору</span>
+  <span>Товары, услуги, ресурсы, ценные бумаги — сплошная</span>
+  <span>Деньги — пунктир</span>
+</div>
+<div class="bar">
+  <button type="button" class="btn primary" id="check">Проверить всё</button>
+  <button type="button" class="btn" id="reset">Начать заново</button>
+  <span class="score" id="score">Верно: 0 из 0</span>
+</div>
+<div class="list" id="list"></div>
+
+<script>
+const PLACES = ["Домашние хозяйства","Фирмы","Государство","Заграница","Рынок благ","Рынок труда","Рынок капитала","Рынок денег"];
+const FLOWS = [
+  ["1","Услуги адвоката, работающего в частной конторе","Фирмы","Рынок благ","сплошная","Предложение благ: контора — фирма, предложение рисуем на рынок."],
+  ["2","Покупка нового автомобиля «Газель» частным лицом","Рынок благ","Домашние хозяйства","сплошная","Потребительский спрос (C): машина с рынка благ едет к семье."],
+  ["3","Покупка нового автомобиля «Газель» частным автотранспортным предприятием","Рынок благ","Фирмы","сплошная","Инвестиционный спрос фирм: та же «Газель», но покупатель — фирма. Это чистые реальные инвестиции, и берут их на рынке благ, а не на рынке капитала."],
+  ["4","Государство оплачивает закупку благ для общественных нужд","Государство","Рынок благ","пунктир","Госзакупки (G): деньги государства идут через рынок благ и входят в ВВП."],
+  ["5","Обучение иностранных студентов в российском вузе","Рынок благ","Заграница","сплошная","Экспорт: наша услуга уходит нерезидентам, даже если оказана в России."],
+  ["6","Лечение российского гражданина в Израиле","Заграница","Рынок благ","сплошная","Импорт: иностранная услуга попадает на наш рынок через этого человека."],
+  ["7","Программист предлагает свои услуги по созданию сайта","Домашние хозяйства","Рынок труда","сплошная","Предложение труда: владелец труда — домашнее хозяйство."],
+  ["8.1","Конкурс на вакансию менеджера в крупной частной компании","Рынок труда","Фирмы","сплошная","Спрос на труд со стороны фирм: спрос рисуем к сектору."],
+  ["8.2","Конкурс на вакансию в государственном учреждении","Рынок труда","Государство","сплошная","Спрос на труд со стороны государства: учителя, врачи, сотрудники МЧС продают труд государству."],
+  ["9","Студент снимает наличные со стипендиальной карты","Рынок денег","Домашние хозяйства","пунктир","Спрос на деньги: одно действие — снять наличные. Стипендию как трансферт рисуем отдельно (поток 15)."],
+  ["10","Денежная эмиссия","Государство","Рынок денег","пунктир","Предложение денег: его обеспечивает государство."],
+  ["11.1","Продажа на фондовом рынке акций «Ростелекома»","Фирмы","Рынок капитала","сплошная","Предложение ценных бумаг, эмитент — фирма. Ценные бумаги — высоколиквидные активы, но не деньги."],
+  ["11.2","Продажа на фондовом рынке государственных облигаций (ГКО) с высокой доходностью","Государство","Рынок капитала","сплошная","Предложение ценных бумаг, эмитент — государство."],
+  ["12","Семья покупает облигации частной фирмы","Рынок капитала","Домашние хозяйства","сплошная","Спрос на ценные бумаги: от рынка капитала к сектору домашних хозяйств."],
+  ["13","Подоходный налог, который наёмный работник платит со своей зарплаты","Домашние хозяйства","Государство","пунктир","Налоги (Tx): деньги от семьи к государству, мимо рынков."],
+  ["14","Создание в Ярославле единой системы движения общественного транспорта","Государство","Домашние хозяйства","сплошная","Общественное благо: государство создало его на деньги бюджета и бесплатно предоставило семьям (и фирмам)."],
+  ["15","Стипендия студента-бюджетника","Государство","Домашние хозяйства","пунктир","Трансферт (TR): прямая социальная выплата, в ВВП не входит."],
+  ["16","Деньги, полученные государством от продажи облигаций на покрытие дефицита бюджета","Рынок капитала","Государство","пунктир","Встречный поток к 11.2: деньги с рынка капитала финансируют дефицит бюджета."],
+  ["17","Акции Ярославской ТЭЦ проданы иностранным покупателям","Рынок капитала","Заграница","сплошная","Ценные бумаги уходят с нашего рынка капитала за границу."],
+  ["18","Российский бизнесмен покупает 51% акций английского футбольного клуба","Домашние хозяйства","Заграница","пунктир","Отток капитала: деньги частного лица уходят за рубеж и не работают на нашу экономику."]
+];
+
+const list = document.getElementById("list");
+function options(arr){ return '<option value="">—</option>' + arr.map((p) => `<option>${p}</option>`).join(""); }
+FLOWS.forEach(([n, text]) => {
+  const div = document.createElement("div");
+  div.className = "item";
+  div.dataset.n = n;
+  div.innerHTML = `<p class="q"><b>${n}.</b>${text}</p>
+    <div class="sel">
+      <select aria-label="Поток ${n}: откуда">${options(PLACES)}</select>
+      <select aria-label="Поток ${n}: куда">${options(PLACES)}</select>
+      <select aria-label="Поток ${n}: линия">${options(["сплошная","пунктир"])}</select>
+      <button type="button" class="btn" aria-label="Проверить поток ${n}">✓</button>
+    </div>
+    <p class="fb" hidden></p>`;
+  div.querySelector("button").addEventListener("click", () => { check(div); updateScore(); });
+  list.appendChild(div);
+});
+
+function check(div){
+  const f = FLOWS.find((x) => x[0] === div.dataset.n);
+  const [from, to, line] = [...div.querySelectorAll("select")].map((s) => s.value);
+  const fb = div.querySelector(".fb");
+  if (!from || !to || !line){ fb.hidden = false; fb.textContent = "Выберите откуда, куда и линию."; div.className = "item"; return; }
+  const ok = from === f[2] && to === f[3] && line === f[4];
+  div.className = "item " + (ok ? "ok" : "bad");
+  div.dataset.checked = ok ? "1" : "0";
+  fb.hidden = false;
+  fb.textContent = (ok ? "Верно. " : `Ответ: ${f[2]} → ${f[3]}, ${f[4]}. `) + f[5];
+}
+function updateScore(){
+  const checked = [...list.children].filter((d) => d.dataset.checked !== undefined);
+  const ok = checked.filter((d) => d.dataset.checked === "1").length;
+  document.getElementById("score").textContent = `Верно: ${ok} из ${checked.length} (всего потоков ${FLOWS.length})`;
+}
+document.getElementById("check").addEventListener("click", () => { [...list.children].forEach(check); updateScore(); });
+document.getElementById("reset").addEventListener("click", () => {
+  [...list.children].forEach((d) => { d.className = "item"; delete d.dataset.checked; d.querySelectorAll("select").forEach((s) => { s.value = ""; }); d.querySelector(".fb").hidden = true; });
+  updateScore();
+});
+updateScore();
+</script>
+</body>
+</html>

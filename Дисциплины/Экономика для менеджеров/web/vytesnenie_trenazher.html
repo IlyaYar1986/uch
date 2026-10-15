@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр эффекта вытеснения</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --cyan:#0ea5e9;
+  --red:#dc2626;
+  --green:#16a34a;
+  --amber:#f59e0b;
+  --amber-lt:#fffbeb;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.78rem}
+.presets{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.presets .lbl{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-right:2px}
+.preset{padding:4px 9px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer}
+.preset:hover{border-color:#c7d2fe;color:var(--indigo)}
+.preset:focus-visible,input:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+.layout{display:grid;grid-template-columns:minmax(300px,1.3fr) minmax(250px,1fr);gap:12px;align-items:start}
+@media (max-width:720px){.layout{grid-template-columns:1fr}}
+.chart-box{border:1px solid var(--border);border-radius:12px;padding:4px;background:#fcfcff}
+svg{width:100%;height:auto;display:block;max-height:54vh}
+.legend{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:.68rem;color:var(--muted);padding:0 6px 4px}
+.legend i{display:inline-block;width:16px;height:0;border-top:3px solid;vertical-align:middle;margin-right:4px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.kpi{border:1px solid var(--border);border-radius:10px;padding:5px 6px;background:#f8fafc;text-align:center}
+.kpi .k-l{font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.kpi .k-v{font-size:1.1rem;font-weight:900;line-height:1.2}
+.kpi .k-n{font-size:.64rem;color:var(--muted)}
+.up{color:var(--red)} .down{color:var(--green)}
+.verdict{margin-top:8px;border-radius:10px;padding:8px 11px;font-size:.78rem;line-height:1.45;border:1px solid #c7d2fe;background:var(--indigo-lt);color:var(--indigo-dk)}
+.verdict b{display:block;margin-bottom:2px}
+.group{border:1px solid var(--border);border-radius:12px;padding:9px 11px}
+.group + .group{margin-top:8px}
+.group h2{font-size:.8rem;font-weight:800;margin-bottom:6px}
+.g-gov{border-left:4px solid var(--amber)}
+.g-mkt{border-left:4px solid var(--indigo)}
+.ctrl{margin-bottom:6px}
+.ctrl .row{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.ctrl label{font-size:.75rem;font-weight:700;line-height:1.2}
+.ctrl label small{font-weight:500;color:var(--muted)}
+.ctrl input[type=range]{width:100%;height:16px;accent-color:var(--indigo);display:block}
+.ctrl input[type=number]{width:58px;flex-shrink:0;padding:2px 5px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;font-weight:800;text-align:right;color:var(--indigo-dk)}
+.sum-line{font-size:.72rem;color:var(--muted);margin-top:2px;line-height:1.35}
+.sum-line b{color:var(--text)}
+details.info{font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45}
+details.info summary{cursor:pointer;font-weight:700}
+details.info p + p{margin-top:4px}
+.axis{stroke:#94a3b8;stroke-width:1.5}
+.grid{stroke:#eef2f7;stroke-width:1}
+.tick{font-size:10px;fill:var(--muted)}
+.ax-lbl{font-size:11px;font-weight:700;fill:var(--text)}
+.c-lbl{font-size:11px;font-weight:800}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>Эффект вытеснения: государство и бизнес на одном рынке капитала</h1>
+  <span class="sub">Двигайте ползунки или вписывайте числа. Серая точка и пунктир — равновесие без госзаймов, красная — текущее. Учебная модель в условных единицах.</span>
+</div>
+
+<div class="presets" role="group" aria-label="Готовые ситуации">
+  <span class="lbl">Ситуации</span>
+  <button type="button" class="preset" data-p="balance">Бюджет без дефицита</button>
+  <button type="button" class="preset" data-p="def">Дефицит в долг</button>
+  <button type="button" class="preset" data-p="emis">Дефицит эмиссией</button>
+  <button type="button" class="preset" data-p="save">Люди больше сберегают</button>
+</div>
+
+<div class="layout">
+  <div>
+    <div class="chart-box">
+      <svg viewBox="0 0 520 330" role="img" aria-label="График рынка заёмных средств: предложение сбережений и спрос на кредиты фирм и государства">
+        <g id="grid"></g>
+        <line class="axis" x1="50" y1="290" x2="500" y2="290"/>
+        <line class="axis" x1="50" y1="290" x2="50" y2="14"/>
+        <text class="ax-lbl" x="500" y="318" text-anchor="end">Объём заёмных средств</text>
+        <text class="ax-lbl" x="14" y="14">r, %</text>
+        <line id="s" stroke="#0ea5e9" stroke-width="3"/>
+        <line id="dp" stroke="#6366f1" stroke-width="3"/>
+        <line id="dt" stroke="#f59e0b" stroke-width="3"/>
+        <line id="r-line" stroke="#dc2626" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <line id="r0-line" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3"/>
+        <line id="ip-line" stroke="#6366f1" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <rect id="crowd" fill="#dc2626" opacity=".14"/>
+        <circle id="e0" r="4" fill="#94a3b8"/>
+        <circle id="e1" r="5.5" fill="#dc2626"/>
+        <circle id="ep" r="4.5" fill="#6366f1"/>
+        <text id="t-s" class="c-lbl" fill="#0369a1">S — сбережения</text>
+        <text id="t-dp" class="c-lbl" fill="#4338ca">I — инвестиции фирм</text>
+        <text id="t-dt" class="c-lbl" fill="#b45309">I + займы государства</text>
+        <text id="t-r" class="tick" fill="#dc2626" style="font-weight:800"></text>
+      </svg>
+      <div class="legend"><span><i style="border-color:#0ea5e9"></i>предложение: сбережения семей</span><span><i style="border-color:#6366f1"></i>спрос фирм</span><span><i style="border-color:#f59e0b"></i>спрос фирм + государства</span><span>красная полоса — вытесненные инвестиции</span></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="k-l">Ставка</div><div class="k-v" id="k-r">—</div><div class="k-n" id="k-r0">без госзаймов —</div></div>
+      <div class="kpi"><div class="k-l">Инвестиции фирм</div><div class="k-v" id="k-i">—</div><div class="k-n" id="k-i0">без госзаймов —</div></div>
+      <div class="kpi"><div class="k-l">Вытеснено</div><div class="k-v up" id="k-c">—</div><div class="k-n" id="k-c2">—</div></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+
+  <div>
+    <div class="group g-gov">
+      <h2>Государство</h2>
+      <div class="ctrl"><div class="row"><label for="def">Дефицит бюджета <small>(G + TR − Tx)</small></label><input type="number" id="def-n" min="0" max="60" step="1" aria-label="Дефицит, число"></div><input type="range" id="def" min="0" max="60" step="1"></div>
+      <div class="ctrl"><div class="row"><label for="em">Доля эмиссии в покрытии, % <small>(остальное — займы)</small></label><input type="number" id="em-n" min="0" max="100" step="5" aria-label="Доля эмиссии, число"></div><input type="range" id="em" min="0" max="100" step="5"></div>
+      <p class="sum-line">Займы на рынке капитала: <b id="b-out">—</b> · эмиссия: <b id="e-out">—</b></p>
+    </div>
+    <div class="group g-mkt">
+      <h2>Рынок капитала</h2>
+      <div class="ctrl"><div class="row"><label for="sv">Сбережения населения <small>(сдвиг S)</small></label><input type="number" id="sv-n" min="0" max="80" step="1" aria-label="Сбережения, число"></div><input type="range" id="sv" min="0" max="80" step="1"></div>
+      <div class="ctrl"><div class="row"><label for="ks">Отклик сбережений на ставку <small>(наклон S)</small></label><input type="number" id="ks-n" min="1" max="10" step="0.5" aria-label="Отклик сбережений, число"></div><input type="range" id="ks" min="1" max="10" step="0.5"></div>
+      <div class="ctrl"><div class="row"><label for="ki">Чувствительность инвестиций к ставке <small>(наклон I)</small></label><input type="number" id="ki-n" min="1" max="10" step="0.5" aria-label="Чувствительность инвестиций, число"></div><input type="range" id="ki" min="1" max="10" step="0.5"></div>
+    </div>
+    <details class="info"><summary>Как устроена модель</summary>
+      <p>Предложение заёмных средств — сбережения семей: чем выше ставка, тем больше сберегают (S = сбережения + отклик × r). Спрос — инвестиции фирм: чем выше ставка, тем меньше проектов окупается (I = 100 − чувствительность × r). Государство с дефицитом добавляет к спросу свои займы.</p>
+      <p>Новое равновесие — там, где сбережения равны спросу фирм и государства. Ставка (цена капитала) растёт, и часть частных инвестиций уходит с рынка: это эффект вытеснения.</p>
+      <p>Эмиссия не забирает сбережения, но увеличивает денежную массу без новых товаров — растёт риск инфляции. В России прямое кредитование правительства Центральным банком запрещено законом, поэтому дефицит покрывают в основном займы (ОФЗ) и средства ФНБ.</p>
+    </details>
+  </div>
+</div>
+
+<script>
+const I0 = 100;
+const BASE = {def:20, em:0, sv:40, ks:4, ki:5};
+const FIELDS = ["def","em","sv","ks","ki"];
+let st = {...BASE};
+const X0 = 50, Y0 = 290, QMAX = 170, RMAX = 22;
+const px = (q) => X0 + (q / QMAX) * 450;
+const py = (r) => Y0 - (r / RMAX) * 276;
+
+function bind(id){
+  const range = document.getElementById(id), num = document.getElementById(id + "-n");
+  range.addEventListener("input", () => { st[id] = Number(range.value); render(); });
+  num.addEventListener("change", () => { st[id] = Math.max(Number(num.min), Math.min(Number(num.max), Number(num.value) || 0)); render(); });
+}
+FIELDS.forEach(bind);
+
+(function grid(){
+  const g = document.getElementById("grid");
+  let html = "";
+  for (let r = 0; r <= 20; r += 5){ html += `<line class="grid" x1="${X0}" y1="${py(r)}" x2="500" y2="${py(r)}"/><text class="tick" x="${X0 - 6}" y="${py(r) + 3}" text-anchor="end">${r}</text>`; }
+  for (let q = 0; q <= 160; q += 40){ html += `<text class="tick" x="${px(q)}" y="${Y0 + 13}" text-anchor="middle">${q}</text>`; }
+  g.innerHTML = html;
+})();
+
+function line(id, q1, r1, q2, r2){
+  const el = document.getElementById(id);
+  el.setAttribute("x1", px(q1)); el.setAttribute("y1", py(r1));
+  el.setAttribute("x2", px(q2)); el.setAttribute("y2", py(r2));
+}
+function dot(id, q, r){ const el = document.getElementById(id); el.setAttribute("cx", px(q)); el.setAttribute("cy", py(r)); }
+const f1 = (v) => (Math.round(v * 10) / 10).toLocaleString("ru-RU");
+
+function render(){
+  FIELDS.forEach((id) => { document.getElementById(id).value = st[id]; document.getElementById(id + "-n").value = st[id]; });
+  const B = st.def * (1 - st.em / 100);
+  const E = st.def - B;
+  // равновесие без госзаймов и с ними
+  const r0 = Math.max(0, (I0 - st.sv) / (st.ks + st.ki));
+  const r1 = Math.max(0, (I0 + B - st.sv) / (st.ks + st.ki));
+  const iP0 = I0 - st.ki * r0;
+  const iP1 = I0 - st.ki * r1;
+  const crowd = iP0 - iP1;
+
+  // кривые: S от r=0 до RMAX; спрос фирм I(r) и общий спрос I(r)+B
+  const sAt = (r) => st.sv + st.ks * r;
+  line("s", sAt(0), 0, sAt(RMAX), RMAX);
+  const rTop = Math.min(RMAX, I0 / st.ki);
+  line("dp", I0, 0, I0 - st.ki * rTop, rTop);
+  line("dt", I0 + B, 0, I0 + B - st.ki * rTop, rTop);
+  document.getElementById("dt").style.display = B > 0 ? "" : "none";
+  document.getElementById("t-dt").style.display = B > 0 ? "" : "none";
+
+  dot("e0", sAt(r0), r0);
+  dot("e1", sAt(r1), r1);
+  dot("ep", iP1, r1);
+  line("r-line", 0, r1, sAt(r1), r1);
+  line("r0-line", 0, r0, sAt(r0), r0);
+  line("ip-line", iP1, 0, iP1, r1);
+  const crowdEl = document.getElementById("crowd");
+  crowdEl.setAttribute("x", px(iP1)); crowdEl.setAttribute("width", Math.max(0, px(iP0) - px(iP1)));
+  crowdEl.setAttribute("y", Y0 - 10); crowdEl.setAttribute("height", 10);
+
+  const tS = document.getElementById("t-s"); tS.setAttribute("x", Math.min(px(sAt(RMAX * .9)) - 10, 470)); tS.setAttribute("y", py(RMAX * .9) - 4); tS.setAttribute("text-anchor", "end");
+  const tD = document.getElementById("t-dp"); tD.setAttribute("x", px(I0) + 4); tD.setAttribute("y", Y0 - 16);
+  const tT = document.getElementById("t-dt"); tT.setAttribute("x", Math.min(px(I0 + B) + 4, 470)); tT.setAttribute("y", Y0 - 34); tT.setAttribute("text-anchor", px(I0 + B) > 400 ? "end" : "start");
+  const tR = document.getElementById("t-r"); tR.setAttribute("x", X0 + 4); tR.setAttribute("y", py(r1) - 4); tR.textContent = `r = ${f1(r1)}%`;
+
+  document.getElementById("k-r").textContent = `${f1(r1)}%`;
+  document.getElementById("k-r").className = "k-v " + (r1 > r0 + .05 ? "up" : "");
+  document.getElementById("k-r0").textContent = `без госзаймов ${f1(r0)}%`;
+  document.getElementById("k-i").textContent = f1(iP1);
+  document.getElementById("k-i0").textContent = `без госзаймов ${f1(iP0)}`;
+  document.getElementById("k-c").textContent = f1(crowd);
+  document.getElementById("k-c2").textContent = B > 0 ? `${Math.round((crowd / B) * 100)}% от госзаймов` : "госзаймов нет";
+  document.getElementById("b-out").textContent = f1(B);
+  document.getElementById("e-out").textContent = f1(E);
+
+  let t;
+  if (st.def === 0) t = "<b>Бюджет сбалансирован.</b>Государство не занимает: все сбережения достаются фирмам, ставку задают только семьи и бизнес.";
+  else if (B === 0) t = `<b>Дефицит ${f1(st.def)} покрыт эмиссией.</b>Ставка не выросла и инвестиции не вытеснены, но в экономику вброшено ${f1(E)} новых денег без новых товаров — растёт риск инфляции.`;
+  else t = `<b>Государство заняло ${f1(B)} на рынке капитала.</b>Ставка выросла с ${f1(r0)}% до ${f1(r1)}%. Фирмы сократили инвестиции на ${f1(crowd)} — это и есть эффект вытеснения. Остальное покрыли дополнительные сбережения: при высокой ставке семьи сберегают больше.`;
+  if (E > 0 && B > 0) t += ` Эмиссия ${f1(E)} добавляет риск инфляции.`;
+  document.getElementById("verdict").innerHTML = t;
+}
+
+document.querySelectorAll("[data-p]").forEach((b) => b.addEventListener("click", () => {
+  const p = b.dataset.p;
+  if (p === "balance") st = {...BASE, def:0};
+  if (p === "def") st = {...BASE, def:30, em:0};
+  if (p === "emis") st = {...BASE, def:30, em:100};
+  if (p === "save") st = {...BASE, def:30, em:0, sv:65};
+  render();
+}));
+render();
+</script>
+</body>
+</html>
