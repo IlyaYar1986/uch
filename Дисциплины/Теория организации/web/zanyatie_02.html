@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Теория организации — занятие 2: оргструктуры и внешние связи</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --indigo:#7c3aed;
+  --indigo-dk:#5b21b6;
+  --indigo-lt:#f5f3ff;
+  --cyan:#0ea5e9;
+  --cyan-lt:#e0f2fe;
+  --amber:#f59e0b;
+  --amber-lt:#fffbeb;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+  --nav-h:56px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(124,58,237,.14),transparent 32%),
+    radial-gradient(circle at 85% 6%,rgba(14,165,233,.13),transparent 34%),
+    linear-gradient(180deg,#f8fafc 0%,#f5f3ff 30%,#f8fafc 100%);
+  color:var(--text);
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;z-index:900;
+  gap:2px;overflow-x:auto;scrollbar-width:none;
+}
+nav.top::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:.93rem;color:var(--indigo-dk);white-space:nowrap;margin:0 10px 0 4px;flex-shrink:0}
+.nav-sep{width:1px;height:18px;background:var(--border);margin:0 6px;flex-shrink:0}
+.nav-link{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;transition:color .2s,background .2s;flex-shrink:0}
+.nav-link:hover,.nav-link.active{color:var(--indigo);background:var(--indigo-lt)}
+.nav-link:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* HERO */
+#hero{
+  min-height:100vh;padding:calc(var(--nav-h) + 56px) 24px 64px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
+.hero-badge{padding:5px 14px;background:var(--indigo-lt);border:1px solid #ddd6fe;border-radius:100px;font-size:.78rem;font-weight:700;color:var(--indigo-dk)}
+.hero-title{font-size:clamp(2rem,5.5vw,3.6rem);font-weight:900;line-height:1.12;letter-spacing:-1.5px;margin-bottom:16px;max-width:900px}
+.hero-title em{color:var(--indigo);font-style:normal}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:660px;margin-bottom:36px}
+.hero-img{max-width:900px;width:100%;margin-bottom:40px}
+.hero-nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:820px}
+.hero-nav a{padding:8px 16px;border-radius:10px;background:var(--card);border:1px solid var(--border);font-size:.82rem;font-weight:600;color:var(--text);text-decoration:none;box-shadow:0 2px 8px rgba(15,23,42,.05);transition:transform .15s,box-shadow .15s}
+.hero-nav a:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(124,58,237,.15)}
+
+/* SECTIONS */
+.sec{max-width:1180px;margin:0 auto;padding:72px 24px}
+.sec-head{margin-bottom:36px}
+.num-badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:13px;font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:14px}
+.n1{background:linear-gradient(135deg,#7c3aed,#a78bfa)}
+.n2{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
+.n3{background:linear-gradient(135deg,#8b5cf6,#a78bfa)}
+.n4{background:linear-gradient(135deg,#16a34a,#4ade80)}
+.n5{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+.n6{background:linear-gradient(135deg,#ec4899,#f472b6)}
+.n7{background:linear-gradient(135deg,#dc2626,#f87171)}
+.n8{background:linear-gradient(135deg,#0891b2,#22d3ee)}
+.n9{background:linear-gradient(135deg,#5b21b6,#7c3aed)}
+.sec-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.sec-desc{font-size:1rem;color:var(--muted);max-width:760px;line-height:1.75}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+
+/* CARD GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.grid .c-name{font-weight:800;margin-bottom:8px;font-size:.96rem}
+.grid p:not(.c-name){color:var(--muted);font-size:.88rem;line-height:1.6}
+
+/* CALLOUTS */
+.note-callout{background:var(--indigo-lt);border:1px solid #ddd6fe;border-radius:14px;padding:16px 20px;margin-bottom:24px}
+.note-callout p{color:var(--indigo-dk);font-size:.92rem;line-height:1.7}
+.warn-callout{background:var(--amber-lt);border:1px solid #fcd34d;border-radius:16px;padding:20px 24px;margin-top:20px}
+.warn-callout p{color:#78350f;line-height:1.7;font-size:.93rem}
+
+/* IMAGE CARD + PLACEHOLDER */
+.img-card{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.12);cursor:zoom-in}
+.img-card img{display:block;width:100%;height:auto}
+.img-card .img-missing-caption{display:none}
+.img-card.img-missing{border:2px dashed var(--border);background:var(--indigo-lt);min-height:220px;display:flex;align-items:center;justify-content:center;box-shadow:none;cursor:default}
+.img-card.img-missing img{display:none}
+.img-card.img-missing .img-missing-caption{display:block;color:var(--muted);font-size:.85rem;text-align:center;padding:24px;max-width:340px}
+
+/* VIZ CARD (iframe) */
+.viz{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.viz-bar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#f8fafc;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#febb2c}.dg{background:#27c840}
+.viz-lbl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);flex:1}
+.viz-fs{display:flex;align-items:center;gap:5px;padding:4px 10px;background:transparent;border:1px solid var(--border);border-radius:6px;font-size:.71rem;font-weight:600;color:var(--muted);cursor:pointer;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+.viz-fs:hover{background:var(--indigo-lt);color:var(--indigo);border-color:#ddd6fe}
+.viz iframe{width:100%;border:none;display:block}
+
+/* PROMPT BOX */
+.prompt-box{background:#0f172a;border-radius:14px;overflow:hidden;margin-bottom:18px}
+.prompt-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#1e293b;color:#e2e8f0;font-size:.82rem;font-weight:700}
+.copy-btn{padding:5px 12px;border-radius:8px;border:1px solid #475569;background:transparent;color:#e2e8f0;font-size:.76rem;font-weight:700;cursor:pointer;transition:background .2s}
+.copy-btn:hover{background:#334155}
+.prompt-box pre{margin:0;padding:18px 16px;color:#e2e8f0;font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+
+/* LIGHTBOX */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.92);z-index:2000;display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:auto}
+.overlay img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.overlay-close{position:absolute;top:18px;right:22px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.overlay-close:hover{background:rgba(255,255,255,.22)}
+.overlay-download{position:absolute;top:18px;right:72px;height:40px;padding:0 16px;border-radius:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;z-index:2}
+.overlay-download:hover{background:rgba(255,255,255,.22)}
+
+/* FULLSCREEN IFRAME OVERLAY */
+#fs-overlay{position:fixed;inset:0;background:rgba(2,6,23,.94);z-index:2100;display:none;flex-direction:column}
+#fs-overlay.open{display:flex}
+#fs-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(255,255,255,.08)}
+#fs-title{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.65);flex:1}
+#fs-close{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.8);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#fs-close:hover{background:rgba(255,255,255,.2)}
+#fs-frame{flex:1;border:none;background:#fff}
+
+/* CHECKLIST */
+.checklist-progress-bar{height:10px;border-radius:100px;background:var(--indigo-lt);overflow:hidden;margin-bottom:20px}
+.checklist-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--indigo),var(--cyan));border-radius:100px;transition:width .3s ease}
+.checklist-items{list-style:none;display:flex;flex-direction:column;gap:12px}
+.checklist-items label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.95rem}
+.checklist-items input{width:18px;height:18px;accent-color:var(--indigo);cursor:pointer;flex-shrink:0}
+.checklist-done{margin-top:18px;padding:12px 16px;background:var(--green-lt);color:var(--green);border-radius:10px;font-weight:700}
+
+/* QUIZ */
+.quiz{display:flex;flex-direction:column;gap:18px}
+.quiz-question{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.quiz-text{font-weight:700;margin-bottom:12px}
+.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.quiz-options label{display:flex;align-items:center;gap:8px;font-size:.92rem;cursor:pointer}
+.quiz-options label.quiz-correct-answer{color:var(--green);font-weight:700}
+.quiz-options input{accent-color:var(--indigo)}
+.quiz-check{padding:8px 16px;border-radius:9px;border:none;background:var(--indigo);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer}
+.quiz-check:hover{background:var(--indigo-dk)}
+.quiz-feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem}
+.quiz-feedback.correct{background:var(--green-lt);color:var(--green)}
+.quiz-feedback.incorrect{background:var(--red-lt);color:var(--red)}
+.quiz-score-box{text-align:center;font-weight:800;color:var(--indigo-dk)}
+
+/* CONCLUSION */
+.conclusion-list{list-style:none;counter-reset:concl;display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.conclusion-list li{counter-increment:concl;padding-left:38px;position:relative;font-size:1rem}
+.conclusion-list li::before{content:counter(concl);position:absolute;left:0;top:-2px;width:26px;height:26px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+.svc-link{color:var(--indigo);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+
+/* SCROLL REVEAL */
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.fade.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.fade{opacity:1;transform:none;transition:none}}
+@media (max-width:900px){.sec{padding:56px 18px}}
+
+
+/* ДОПОЛНИТЕЛЬНЫЕ БЛОКИ УЧЕБНОЙ СТРАНИЦЫ */
+.legend-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:-14px 0 30px;max-width:900px}
+.legend-row span{font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:var(--card);color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.card h3{font-size:1.02rem;font-weight:800;margin-bottom:8px}
+.card p,.card li{font-size:.94rem;line-height:1.7}
+.card ul,.card ol{padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.lecture-tag,.extra-tag,.practice-tag,.trap-tag,.opinion-tag{display:inline-block;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:100px;margin-bottom:8px}
+.lecture-tag{background:var(--indigo-lt);color:var(--indigo-dk)}
+.extra-tag{background:var(--cyan-lt);color:#0369a1}
+.practice-tag{background:var(--green-lt);color:var(--green)}
+.trap-tag{background:var(--red-lt);color:var(--red)}
+.opinion-tag{background:var(--amber-lt);color:#92400e}
+.extra{background:linear-gradient(180deg,#f0f9ff,#fff);border:1px solid #bae6fd;border-left:5px solid var(--cyan);border-radius:16px;padding:18px 22px}
+.practice{background:linear-gradient(180deg,var(--green-lt),#fff);border:1px solid #bbf7d0;border-left:5px solid var(--green);border-radius:16px;padding:18px 22px}
+.trap{background:var(--red-lt);border:1px solid #fecaca;border-left:5px solid var(--red);border-radius:16px;padding:16px 22px}
+.opinion{background:var(--amber-lt);border:1px solid #fcd34d;border-left:5px solid var(--amber);border-radius:16px;padding:18px 22px}
+.extra h3,.practice h3,.trap h3,.opinion h3{font-size:1rem;font-weight:800;margin-bottom:6px}
+.extra p,.extra li,.practice p,.practice li,.trap p,.trap li,.opinion p,.opinion li{font-size:.93rem;line-height:1.7}
+.extra ul,.practice ul,.practice ol,.trap ul,.opinion ul{padding-left:20px;display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.src{font-size:.8rem;color:var(--muted);margin-top:8px}
+.src a{color:#0369a1}
+.def{background:var(--card);border:1px solid #ddd6fe;border-left:5px solid var(--indigo);border-radius:14px;padding:14px 20px;font-size:1rem;line-height:1.7}
+.def b{color:var(--indigo-dk)}
+.formula{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:clamp(1.2rem,2.6vw,1.7rem);font-weight:800;text-align:center;padding:16px;background:var(--indigo-lt);border-radius:14px;color:var(--indigo-dk);letter-spacing:.5px}
+details.ref{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0 18px}
+details.ref + details.ref{margin-top:8px}
+details.ref summary{cursor:pointer;padding:12px 0;font-weight:800;font-size:.93rem;list-style:none;display:flex;gap:8px;align-items:center}
+details.ref summary::before{content:"🧭"}
+details.ref summary::-webkit-details-marker{display:none}
+details.ref[open] summary{border-bottom:1px dashed var(--border)}
+details.ref .ref-body{padding:10px 0 14px;font-size:.92rem;line-height:1.7;color:#334155}
+details.ref .ref-body p + p{margin-top:6px}
+table.cmp{width:100%;border-collapse:collapse;background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--border);font-size:.92rem}
+table.cmp th{background:var(--indigo-lt);color:var(--indigo-dk);text-align:left;padding:10px 14px;font-size:.84rem}
+table.cmp td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top;line-height:1.6}
+table.cmp td:first-child{font-weight:700}
+.table-wrap{overflow-x:auto}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.flow .step{flex:1 1 140px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;position:relative}
+.flow .step b{display:block;color:var(--indigo-dk);font-size:.92rem}
+.flow .step span{font-size:.84rem;color:var(--muted)}
+.flow .step .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.78rem;font-weight:800;align-items:center;justify-content:center;margin-bottom:6px}
+.quiz-feedback .explain{display:block;margin-top:6px;color:var(--text);font-weight:500}
+
+footer{text-align:center;padding:32px 20px 48px;color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Навигация по странице">
+  <a class="nav-link" href="../index.html">← Все уроки</a>
+  <span class="nav-sep"></span>
+  <span class="nav-logo">Теория организации · занятие 2</span>
+  <span class="nav-sep"></span>
+  <a class="nav-link" href="#s1">Законы</a>
+  <a class="nav-link" href="#s2">Эффективность</a>
+  <a class="nav-link" href="#s3">Структура</a>
+  <a class="nav-link" href="#s4">Дивизиональная</a>
+  <a class="nav-link" href="#s5">Плоская и проектная</a>
+  <a class="nav-link" href="#s6">Матричная</a>
+  <a class="nav-link" href="#s7">Процесс</a>
+  <a class="nav-link" href="#s8">Внутри и снаружи</a>
+  <a class="nav-link" href="#s9">Интеграция</a>
+  <a class="nav-link" href="#s10">Типы связей</a>
+  <a class="nav-link" href="#checklist">Чек-лист</a>
+  <a class="nav-link" href="#quiz">Квиз</a>
+</nav>
+
+<header id="hero">
+  <div class="hero-badges">
+    <span class="hero-badge">Занятие 2 · 16.10.2026</span>
+    <span class="hero-badge">Оргструктуры и внешние связи</span>
+    <span class="hero-badge">Преподаватель — И. Л. Рудая, д. э. н.</span>
+  </div>
+  <h1 class="hero-title">Структура идёт за процессом, <em>цель — за клиентом</em></h1>
+  <p class="hero-sub">После этой страницы вы сможете выбрать оргструктуру под задачу: понять, когда пирамиду пора резать на дивизионы, почему плоская структура невозможна при собственном заводе и чем платят за гибкость матрицы. А ещё — разложить внешние связи своей организации по четырём типам Дафта и подготовиться к тесту в конце курса.</p>
+  <div class="legend-row" aria-label="Обозначения на странице">
+    <span>📘 Из лекции</span>
+    <span>🗣 Пример слушателя</span>
+    <span>➕ Дополнение: не из лекции, с источником</span>
+    <span>🧭 Справка: кто это и в чём суть</span>
+    <span>🛠 На практике</span>
+    <span>⚠️ Ловушка теста</span>
+    <span>💬 Мнение преподавателя</span>
+  </div>
+  <figure class="img-card hero-img" data-lightbox>
+    <img src="../png/zanyatie_02/00_karta_zanyatiya.webp" width="1672" height="941" alt="Карта занятия: 10 разделов в четырёх блоках — законы и цели, структура внутри, взгляд наружу, внешние связи; у каждого раздела свой вопрос" loading="eager" fetchpriority="high" onerror="this.closest('.img-card').classList.add('img-missing')">
+    <figcaption class="img-missing-caption">Карта занятия: 10 разделов и их вопросы (промпт 00)</figcaption>
+  </figure>
+  <nav class="hero-nav" aria-label="Разделы страницы">
+    <a href="#s1">1 · Законы общие</a>
+    <a href="#s2">2 · Эффективность и цели</a>
+    <a href="#s3">3 · Что показывает структура</a>
+    <a href="#s4">4 · Дивизиональная</a>
+    <a href="#s5">5 · Плоская и проектная</a>
+    <a href="#s6">6 · Матричная</a>
+    <a href="#s7">7 · Процесс и структура</a>
+    <a href="#s8">8 · Внутри и снаружи</a>
+    <a href="#s9">9 · Интеграция</a>
+    <a href="#s10">10 · Четыре типа связей</a>
+    <a href="#quiz">Проверить себя</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ══════════ БЛОК 1: законы общие ══════════ -->
+<section class="sec" id="s1">
+  <div class="sec-head fade">
+    <div class="num-badge n1">1</div>
+    <h2 class="sec-title">Закон один — проявляется по-разному</h2>
+    <p class="sec-desc">Менеджмент изучает организацию в условиях рынка. Но его закономерности работают и в некоммерческих организациях, и в государстве. Преподаватель объяснила это на примере из физики.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_02/01_zakon_odin.webp" width="1672" height="941" alt="Яблоко Ньютона и три мира: на Земле падает быстро, на Луне медленно, в космосе двое притягиваются друг к другу; самолёт по расчёту и сломанная телега «на глаз»" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Закон один — проявления разные (промпт 01)</figcaption>
+    </figure>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Тяготение действует везде</h3>
+        <p>Закон всемирного тяготения действует на Земле, на Луне и в космосе. Это <b>фундаментальный закон, но проявляется он по-разному</b>: зависит от масс, которые рядом. На Земле мы все притягиваемся к Земле. Вдали от неё двое будут притягиваться друг к другу («расскажите это всем, у кого конфликты в семье»).</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Законы менеджмента тоже</h3>
+        <p>Классический менеджмент — это управление <b>организацией в условиях рынка</b>. Но его закономерности общие: они действуют <b>независимо от среды и формы собственности</b>. В госуправлении есть и стратегическое, и проектное управление: почти в каждой госпрограмме. Как именно закон проявится, зависит от <b>ситуации</b>. Её нужно считывать.</p>
+      </div>
+    </div>
+
+    <div class="def fade"><b>Закон можно не знать и даже игнорировать — он всё равно действует.</b> Механизм без знания законов построить можно, «эмпирическим путём». Но работать он будет плохо. «Управлять можно. Ездить не будет».</div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Плановой экономикой управлять сложнее</h3>
+        <p>Нужно всё планировать и предвидеть, нужны огромные модели. В рынке проще: «сейчас поглядим и сделаем». Лучший советский опыт изучили и японцы, и китайцы. <b>«Никто не пренебрегает в управлении тем, что может повысить его эффективность»</b>.</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Кондратьев и длинные циклы</h3>
+        <p>Н. Д. Кондратьев в 1920-х вывел теорию <b>длинных циклов конъюнктуры</b>: социально-экономические процессы циклические. Теория построена на эмпирических данных. Кондратьев выступал против коллективизации и пострадал. Подробнее — в курсе инновационного менеджмента.</p>
+      </div>
+    </div>
+
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Мнение преподавателя</span>
+      <h3>Нормативные суждения, а не теория</h3>
+      <ul>
+        <li>«Плановой экономикой управлять значительно труднее. Видимо, поэтому и не сложилось».</li>
+        <li>«Менеджмент — серьёзная наука». Там, где закономерности отрицали из-за идеологии, «отрицать их не надо было».</li>
+        <li>«Сейчас мы живём в очередном кондратьевском цикле».</li>
+      </ul>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Две неточности из лекции</h3>
+      <ul>
+        <li>Закон тяготения: сила пропорциональна произведению масс и обратно пропорциональна <b>квадрату</b> расстояния: F = G·m₁·m₂ / r².</li>
+        <li>«Кондратьев предсказал Великую депрессию» — популярное, но спорное утверждение. Его теория говорила о спаде длинной волны, а не о конкретном кризисе 1929 года.</li>
+      </ul>
+    </div>
+
+    <div class="fade">
+      <details class="ref"><summary>Исаак Ньютон и «конфликт с академией»</summary><div class="ref-body">
+        <p>На лекции прозвучало, что Ньютон поссорился с Королевской академией, а потом академики пришли к нему за формулой. Точнее так: в Лондонском королевском обществе у Ньютона был спор с Робертом Гуком о законе обратных квадратов. В 1684 году Эдмунд Галлей спросил Ньютона об орбитах планет, и это подтолкнуло его написать «Математические начала натуральной философии» (1687), где закон всемирного тяготения выведен строго.</p>
+      </div></details>
+      <details class="ref"><summary>Николай Кондратьев (1892–1938) — длинные волны</summary><div class="ref-body">
+        <p>Русский экономист, директор Конъюнктурного института. В работе «Большие циклы конъюнктуры» (1925) показал по ценам, процентам и производству, что экономика движется волнами длиной 48–55 лет. Выступал за развитие сельского хозяйства на рыночных началах, против форсированной коллективизации. Арестован в 1930 году по делу «Трудовой крестьянской партии», расстрелян в 1938-м, реабилитирован в 1987-м. Длинные волны позже назвали «циклами Кондратьева» (Й. Шумпетер).</p>
+      </div></details>
+      <details class="ref"><summary>Ситуационный подход</summary><div class="ref-body">
+        <p>Направление теории организации 1960-х (Дж. Вудворд, П. Лоуренс и Дж. Лорш): нет единственно лучшего способа управлять, лучший способ зависит от ситуации — технологии, среды, размера. Отсюда мысль преподавателя: законы одни, а решения в разных ситуациях разные.</p>
+      </div></details>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Переносите лучшие практики между отраслями</h3>
+      <ul>
+        <li>Agile родился в IT, а теперь работает в госпрограммах. «Закон оторвался от отрасли и стал общей закономерностью». Ищите идеи не только у конкурентов, но и в совсем других сферах.</li>
+        <li>Перед внедрением чужой практики спросите: какие условия той среды делали её эффективной и есть ли они у вас.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 2: эффективность и цели ══════════ -->
+<section class="sec" id="s2">
+  <div class="sec-head fade">
+    <div class="num-badge n2">2</div>
+    <h2 class="sec-title">Эффективность — это попасть в цель</h2>
+    <p class="sec-desc">«Оптимизировать» — значит снизить затраты? Нет. Сначала надо договориться о цели и о критериях, иначе показатель незаметно подменит цель.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_02/02_effektivnost_celi.webp" width="1672" height="941" alt="Лучник попадает в центр мишени — эффективность; второй лучник быстро стреляет из полного колчана — производительность; вывеска «Нанотехнологии» над весами капитализации; пустой цех за сияющим графиком" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Эффективность, производительность и подмена цели (промпт 02)</figcaption>
+    </figure>
+
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <tr><th>Понятие</th><th>Что значит</th><th>Пример</th></tr>
+        <tr><td>Эффективность (effectiveness)</td><td><b>Достижение поставленной цели.</b> Категория управления.</td><td>Вышли на новый рынок, как и планировали</td></tr>
+        <tr><td>Производительность (efficiency)</td><td>Больше результата <b>теми же ресурсами</b>.</td><td>Снизили затраты на единицу продукции</td></tr>
+        <tr><td>Оптимальное</td><td>Не большое и не маленькое, а <b>соответствующее заранее выбранным критериям</b>.</td><td>Запас на складе — в «зелёной зоне» по оборачиваемости и сервису</td></tr>
+      </table>
+    </div>
+
+    <div class="def fade"><b>Снижение затрат — это производительность, а не эффективность.</b> Эффективность всегда отвечает на вопрос: «Достигли ли мы цели?» <b>Оптимизация предполагает набор критериев</b>, выбранных заранее.</div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Цели декларативные и фактические: «Роснано»</h3>
+        <p>Заявленная цель госкорпорации — развитие нанотехнологий. А успех измеряли <b>капитализацией</b> входящих в неё компаний, которая может быть никак не связана с технологиями. Что оптимально для общества, для руководства и для акционеров — разные вещи.</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Игра «Дельта»</h3>
+        <p>В имитационной игре нужно было к концу показать лучшие финансовые результаты. Студенты к последнему периоду увольняли людей и продавали оборудование: цифры блестящие, а работать дальше не на чем. Поэтому преподаватель не объявляла, какой период последний: «Вы не знаете, когда закончится ваша жизнь». Показатели нужно держать <b>постоянно</b>.</p>
+      </div>
+    </div>
+
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции</span>
+      <h3>Работа менеджера — принятие решений</h3>
+      <p>Управление — это воздействие. Менеджер воздействует не молотком, а <b>решениями</b>: отсюда ЛПР — лицо, принимающее решение. Решения должны вести к цели, а критерии выбираются заранее. <b>Главная задача менеджмента — повысить эффективность своей организации.</b> В выпускном проекте нужно показать, что ваше предложение оптимизирует или совершенствует деятельность и ведёт к целям.</p>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>«Понятия госкорпорации в законе нет» — неверно</h3>
+      <p>На лекции прозвучало, что госкорпорации в законодательстве нет. На самом деле её определяет <b>ст. 7.1 Федерального закона № 7-ФЗ «О некоммерческих организациях»</b>: некоммерческая организация без членства, учреждённая РФ на основе имущественного взноса для социальных, управленческих или иных общественно полезных функций. Каждая госкорпорация создаётся отдельным федеральным законом. «Роснано» создана так в 2007 году, а в 2011-м преобразована в акционерное общество.</p>
+      <p class="src">Источник: <a href="https://www.consultant.ru/document/cons_doc_LAW_8824/" target="_blank" rel="noopener">7-ФЗ «О некоммерческих организациях», КонсультантПлюс</a>.</p>
+    </div>
+
+    <div class="extra fade">
+      <span class="extra-tag">➕ Дополнение</span>
+      <h3>Формула Друкера</h3>
+      <p>Питер Друкер различал: <b>effectiveness — «делать правильные вещи»</b>, <b>efficiency — «делать вещи правильно»</b>. Можно очень производительно делать то, что не нужно.</p>
+      <p class="src">P. F. Drucker, «The Effective Executive», 1966.</p>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Проверка «показатель не подменил цель»</h3>
+      <ol>
+        <li>Запишите цель своего подразделения одной фразой — так, чтобы она была направлена вовне.</li>
+        <li>Запишите, по какому показателю вас на самом деле оценивают.</li>
+        <li>Спросите: можно ли улучшить показатель, ухудшив цель? Если да — как в «Дельте», — добавьте второй показатель, который это поймает.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 3: что показывает структура ══════════ -->
+<section class="sec" id="s3">
+  <div class="sec-head fade">
+    <div class="num-badge n3">3</div>
+    <h2 class="sec-title">Что показывает оргструктура</h2>
+    <p class="sec-desc">Схема из «кубиков и палочек» кажется скучной формальностью. Но по ней видно, кто сколько решает и сколько времени уйдёт на любое важное решение.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_02/03_chto_pokazyvaet_struktura.webp" width="1672" height="941" alt="Узкая башня на 19 этажей: записка поднимается на лифте и теряет буквы, наверху «президент не знает»; рядом пять линз — иерархия, полномочия, специализация, связи, документы" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Что показывает структура и почему высокая пирамида медлительна (промпт 03)</figcaption>
+    </figure>
+
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <tr><th>Что видно по структуре</th><th>Как это называется</th></tr>
+        <tr><td>Кто кому подчиняется; воздействие сверху вниз, обратная связь снизу вверх</td><td><b>Иерархия</b>, уровни управления</td></tr>
+        <tr><td>Где принимаются решения: всё наверху или часть на местах</td><td><b>Централизация / децентрализация</b> (делегирование полномочий)</td></tr>
+        <tr><td>Как поделена работа по функциям</td><td><b>Специализация</b> — горизонтальное разделение труда</td></tr>
+        <tr><td>Вертикальные и горизонтальные линии</td><td><b>Связи</b>: «кубики и палочки»</td></tr>
+        <tr><td>Сколько всего надо описать</td><td><b>Организационная документация</b>: положения, инструкции</td></tr>
+      </table>
+    </div>
+
+    <div class="def fade"><b>Уровни управления показывают полномочия.</b> Если важное решение проходит через все уровни по <b>скалярной цепи</b>, это долго. Поэтому <b>вертикально интегрированные структуры медлительны</b>.</div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Линейная → линейно-функциональная</h3>
+        <p>Разделение труда <b>по вертикали</b> — между управленцем и исполнителем, <b>по горизонтали</b> — функциональное. Когда внутри функциональных подразделений появляются свои уровни, получается <b>линейно-функциональная</b> структура. Исполнителей на схеме не рисуют — они «внутри кубиков». Уровней теоретически может быть сколько угодно.</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>19 уровней «Северстали»</h3>
+        <p>Европейские консультанты нарисовали структуру «Северстали» как есть и насчитали <b>19 уровней управления</b>. Растущая структура растёт в основании — и неизбежно <b>вверх</b>. Минусы большой пирамиды: начальники забывают, чем управляют, становятся «небожителями»; это <b>дорого</b>; решения задерживаются; <b>информация теряется</b> по пути наверх («президент не знает»). А рынок требует быстрой реакции.</p>
+      </div>
+    </div>
+
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр «Пирамида управления» (из занятия 1)</span>
+        <button type="button" class="viz-fs" data-fs-src="piramida_upravleniya.html" data-fs-title="Тренажёр «Пирамида управления»">⛶ На весь экран</button>
+      </div>
+      <iframe src="piramida_upravleniya.html" height="790" loading="lazy" title="Тренажёр «Пирамида управления»"></iframe>
+    </div>
+
+    <div class="note-callout fade"><p><b>Попробуйте в тренажёре.</b> Подберите число исполнителей и норму управляемости так, чтобы получилось около 19 уровней. Посмотрите, сколько звеньев проходит вопрос между двумя соседними отделами. Затем уменьшите число уровней вдвое: что для этого пришлось изменить?</p></div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Посчитайте свою скалярную цепь</h3>
+      <ul>
+        <li>Сколько уровней между вами и исполнителем, который видит клиента? Между вами и первым лицом?</li>
+        <li>Возьмите одно типовое решение (закупка выше лимита, найм) и посчитайте, через сколько подписей оно проходит. Каждая подпись — день задержки и шанс потерять смысл.</li>
+        <li>Решения, которые можно принимать на месте, — кандидаты на делегирование (децентрализацию).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 4: дивизиональная ══════════ -->
+<section class="sec" id="s4">
+  <div class="sec-head fade">
+    <div class="num-badge n4">4</div>
+    <h2 class="sec-title">Дивизиональная структура: срезать верхушку</h2>
+    <p class="sec-desc">Что делать с разросшейся пирамидой? Поделить на много маленьких — у каждой будет своя «корона» и своя цель. Работает другое решение.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_02/04_divizionalnaya.webp" width="1672" height="941" alt="Ножницы срезают верхушку пирамиды; домик с общей крышей «стратегия, финансы, IT» и разными фундаментами-дивизионами; цепочка цехов с общим счётчиком «6 500 на сляб»" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Дивизиональная структура и сквозная цель (промпт 04)</figcaption>
+    </figure>
+
+    <div class="def fade"><b>Дивизиональная структура:</b> срезать верхушку, а низ поделить на подразделения по признаку — <b>функциональному, территориальному, клиентскому или продуктовому</b>. Каждое оптимизирует свою деятельность, но наверху остаются стратегия, финансы и <b>консолидированный бюджет</b>.</div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Что наверху, что внизу</h3>
+        <ul>
+          <li>Наверху: стратегия, финансы, маркетинг, крупные решения, тендеры, общая IT-система, корпоративные стандарты — «вплоть до одинаковых ботинок».</li>
+          <li>Внизу: у дивизионов могут быть совершенно разные продукты, клиенты, стратегии, инфраструктура, активы. Своих денег нет, всё уходит наверх.</li>
+          <li>Рисуют как <b>«домик»</b>: разные фундаменты, общая крыша. Так устроены крупные, особенно государственные корпорации (пример с лекции — «Газпром»).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">🗣 Пример слушателя</span>
+        <h3>Минус: «работать некому»</h3>
+        <p>Дивизионы заполняют таблички, чтобы информация дошла наверх, «а работать остаётся некому или некогда». Центр дорогой, и его аппарат может быть очень большим.</p>
+      </div>
+    </div>
+
+    <div class="card fade">
+      <span class="lecture-tag">🗣 Пример слушателя</span>
+      <h3>Кейс «Северстали»: одна цифра на всю цепочку</h3>
+      <p>Слушатель рассказал о своём опыте. Все дивизионы объединили <b>сквозным показателем</b>: себестоимость передела от сырья до готового сляба (заготовки после выплавки весом в десятки тонн) — <b>6 500</b> на всю цепочку. Кто сколько «даёт» — договариваются сами: можно работать на 1 200, можно на 2 000, но в сумме 6 500. Ввели общий KPI руководителей: не сделали — достойной премии нет ни у кого. «Контролируем не процесс, а результат». Перед этим команда «Навигаторы» из молодых сильных специалистов сделала карты процессов и хронометраж. «Сначала мы их ненавидели, а потом, как договорились, полюбили».</p>
+    </div>
+
+    <div class="def fade">Структура не развалится, если есть <b>общая глобальная, разделяемая цель</b>. А цель должна быть <b>достижимой</b> — это требование SMART.</div>
+
+    <div class="flow fade">
+      <div class="step"><span class="n">S</span><b>Specific</b><span>конкретная</span></div>
+      <div class="step"><span class="n">M</span><b>Measurable</b><span>измеримая</span></div>
+      <div class="step"><span class="n">A</span><b>Achievable</b><span>достижимая</span></div>
+      <div class="step"><span class="n">R</span><b>Relevant</b><span>значимая, связанная с главной целью</span></div>
+      <div class="step"><span class="n">T</span><b>Time-bound</b><span>ограниченная по времени</span></div>
+    </div>
+
+    <div class="fade">
+      <details class="ref"><summary>Альфред Чандлер — «структура следует за стратегией»</summary><div class="ref-body">
+        <p>Историк бизнеса. В книге «Стратегия и структура» (1962) показал на DuPont, General Motors, Standard Oil и Sears: когда компания расширяет ассортимент и рынки, функциональная структура перестаёт справляться, и появляется <b>дивизиональная</b>. Отсюда формула «структура следует за стратегией». В GM это сделал Альфред Слоун в 1920-х: децентрализованные дивизионы и сильный финансовый центр.</p>
+      </div></details>
+      <details class="ref"><summary>SMART — откуда взялась аббревиатура</summary><div class="ref-body">
+        <p>Впервые — в статье Джорджа Дорана «There's a S.M.A.R.T. way to write management's goals and objectives» (Management Review, 1981). Буквы расшифровывают по-разному, суть одна: цель, которую можно проверить.</p>
+      </div></details>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Найдите свою «цифру 6 500»</h3>
+      <ul>
+        <li>Если ваша работа проходит через несколько подразделений, придумайте один показатель на всю цепочку: срок от заявки до отгрузки, стоимость обслуживания клиента, процент брака на выходе.</li>
+        <li>Дайте подразделениям договориться, кто сколько вносит, и привяжите премию всех к общему результату. Так конкурирующие «короны» начинают работать на одну цель.</li>
+        <li>Перед этим убедитесь, что цифра достижима: без карт процессов она превратится в лозунг.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 5: плоская и проектная ══════════ -->
+<section class="sec" id="s5">
+  <div class="sec-head fade">
+    <div class="num-badge n5">5</div>
+    <h2 class="sec-title">Плоская и проектная: оторваться от фундамента</h2>
+    <p class="sec-desc">Плоская структура сейчас в моде. Но она возможна только при одном условии — когда под зданием нет материального фундамента.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_02/05_ploskaya_proektnaya.webp" width="1672" height="941" alt="Здание на фундаменте-заводе, вросшем корнями в землю, и дирижабль с брендом и R&amp;D, от которого тросы идут к лицензионным фабрикам; песочные часы проекта и внешний заказчик с кошельком" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Плоская структура и проект (промпт 05)</figcaption>
+    </figure>
+
+    <div class="def fade"><b>Пока есть активы — материальное производство, — плоской структуры не будет.</b> У здания есть фундамент, и его не сбросишь. Особенно в добывающих и перерабатывающих отраслях: «вы привязаны прямо к земле».</div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Что остаётся, если сбросить активы</h3>
+        <ul>
+          <li><b>Разработки, торговая марка, бренд</b> и управленческие функции.</li>
+          <li>Производство — <b>лицензионное</b>, на стороне. Не обязательно франчайзинг: копировать всю бизнес-модель не нужно.</li>
+          <li>Такие компании <b>не привязаны к сырью и к производству</b>: оно не уникально и может быть где угодно.</li>
+          <li>Главное подразделение — <b>R&amp;D, исследования и дизайн</b>: поддерживать марку для своего клиента.</li>
+          <li>Подходит для лёгкой промышленности, услуг, электроники, а сильнее всего — для <b>финансов, IT и медиа</b>.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>«Теперь важно не где, а как сделано»</h3>
+        <p>Клиента интересует <b>набор потребительских свойств</b>, а не место производства. <b>Гарантия качества — торговая марка.</b> Пример — Hewlett-Packard: под её маркой продают компьютеры и принтеры лицензионного производства в Азии. Коллеги преподавателя шьют одежду в Ярославле, Узбекистане и Турции и продают под своей маркой. Главное — качественно сшить по своим лекалам.</p>
+      </div>
+    </div>
+
+    <div class="card fade">
+      <span class="lecture-tag">🗣 Пример слушателя</span>
+      <h3>«Откуда масло?»</h3>
+      <p>Покупатели спрашивают, где произведено автомобильное масло, а китайскую марку отвергают сразу. Преподаватель: здесь людям важно не место, а <b>качество</b> и подлинность (нет ли контрафакта). «Важно не кто производит, а что производит этот кто».</p>
+    </div>
+
+    <div class="def fade"><b>Проект</b> — ограниченное по времени мероприятие с конкретными целями, ресурсами, сроками, исполнителями и результатом. <b>Каждый проект уникален</b>: этим проектная деятельность отличается от операционной.</div>
+
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <tr><th></th><th>Проектное управление</th><th>Проектная структура</th></tr>
+        <tr><td>Где бывает</td><td>В любой структуре: реорганизация, внедрение IT, выход на рынок</td><td>Только там, где реализация проектов — основная деятельность</td></tr>
+        <tr><td>Заказчик</td><td>Может быть внутренний</td><td>Обязательно <b>внешний</b>: «деньги должны прийти извне»</td></tr>
+        <tr><td>Как устроена</td><td>Проект внутри существующих подразделений</td><td>«Плоская верхушка» собирает команду под каждый проект; штатных сотрудников может не быть</td></tr>
+        <tr><td>Срок жизни</td><td>Срок проекта</td><td>Структура <b>временная</b>, живёт, пока есть проекты</td></tr>
+      </table>
+    </div>
+
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Мнение преподавателя</span>
+      <h3>О массовом производстве</h3>
+      <p>«В целях удешевления массового производства нас завалили некачественным товаром». При массовом пошиве мы носим моду позапрошлого сезона: год уходит на разработку и заказ, год — на пошив и доставку. Но такие структуры живучи, потому что дёшевы.</p>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Проектная структура ≠ проектное управление</h3>
+      <p>Проектное управление возможно в любой структуре. Проектная структура — только в организациях, которые живут реализацией проектов (строительство, судостроение, консалтинг). Признаки: временная, есть управляющее звено, обязательно внешний заказчик.</p>
+      <p class="src">Мелкая неточность лекции: штаб-квартира HP — в Пало-Алто (США), а не в Ирландии или Великобритании.</p>
+    </div>
+
+    <div class="extra fade">
+      <span class="extra-tag">➕ Дополнение</span>
+      <h3>Определение проекта по стандарту PMI</h3>
+      <p>Проект — <b>временное</b> предприятие, предпринятое для создания <b>уникального</b> продукта, услуги или результата. Те же два признака, что и на лекции: ограниченность во времени и уникальность.</p>
+      <p class="src">PMI, «A Guide to the Project Management Body of Knowledge (PMBOK Guide)».</p>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Что у вас фундамент, а что можно отпустить</h3>
+      <ul>
+        <li>Разделите активы на два списка: что действительно уникально (технология, марка, знания людей) и что может сделать кто угодно (пошив, сборка, склад, бухгалтерия).</li>
+        <li>Второй список — кандидаты на лицензию, аутсорс или субподряд. Чем он длиннее, тем ближе вы к плоской структуре.</li>
+        <li>Спросите клиента, что для него «качество». Если марка — им и управляйте; если место — его и показывайте.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 6: матричная ══════════ -->
+<section class="sec" id="s6">
+  <div class="sec-head fade">
+    <div class="num-badge n6">6</div>
+    <h2 class="sec-title">Матричная структура: люди на пересечении</h2>
+    <p class="sec-desc">Её почти никогда не рисуют в документах, но живут в ней многие. Матрица даёт гибкость, а платят за неё двойным подчинением.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_02/06_matrichnaya.webp" width="1672" height="941" alt="Ткацкий станок: горизонтальные нити — отделы, вертикальные — проекты; на узле человека тянут два начальника; куратор-диспетчер поднимает сигнал наверх; треугольник ресурсы, время, бюджет" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Матричная структура и двойное подчинение (промпт 06)</figcaption>
+    </figure>
+
+    <div class="def fade"><b>Матричная структура:</b> функциональные отделы (IT, финансы, дизайн, маркетинг, кадры, клиентский сервис) плюс проекты. Под проект набирают людей из разных отделов. Связи внутри проекта — <b>горизонтальные</b>. Руководители отделов взаимодействуют с <b>куратором проекта</b> наверху.</div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Плюсы</h3>
+        <ul>
+          <li>Много горизонтальных связей — взаимодействие проще.</li>
+          <li><b>Очень подвижная</b>: живёт, пока идёт проект; сегодня одна, завтра перестроится.</li>
+          <li>Легко подключать <b>людей извне</b> и работать с <b>партнёрами</b>. Это гибкое управление (agile — в курсе проектного управления).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Минусы</h3>
+        <ul>
+          <li><b>Двойное подчинение</b>: у человека функциональный руководитель со своими (часто операционными) задачами и проект.</li>
+          <li>Проекты <b>конкурируют за одних и тех же людей</b>: в одном нужно трое, в другом четверо, а всего их трое.</li>
+          <li>«Каждый начальник считает себя главным» — людей рвут на части.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · 🗣 обсуждение</span>
+      <h3>Куратор проекта: «рецептов нет»</h3>
+      <p>Как решать двойное подчинение? «Рецептов в принципе нет». <b>Куратор</b> доносит до верхнего уровня проблемы, которые внизу не решаются из-за нехватки ресурсов, функционала или полномочий; руководство или заказчик расставляют <b>приоритеты</b>. Слушатели добавили: роли куратора и руководителя проекта надо распределить <b>до старта</b>, иначе ответ будет «реши свои проблемы сам». Слушатель из сетевой компании: у руководителя района есть кураторы в головном аппарате, через них решаются вопросы административного ресурса. Проект всегда ограничен <b>ресурсами, временем и бюджетом</b>.</p>
+    </div>
+
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр «Матрица проектов»</span>
+        <button type="button" class="viz-fs" data-fs-src="matrichnaya_struktura.html" data-fs-title="Тренажёр «Матрица проектов»">⛶ На весь экран</button>
+      </div>
+      <iframe src="matrichnaya_struktura.html" height="640" loading="lazy" title="Тренажёр «Матрица проектов»"></iframe>
+    </div>
+
+    <div class="note-callout fade"><p><b>Попробуйте в тренажёре.</b> (1) Поставьте операционную нагрузку отделов 60% и запустите три проекта: где возникает дефицит и сколько людей работают «на двух начальников»? (2) Нажмите «Привлечь людей извне» — что изменилось и чем за это платим? (3) Вместо этого «Снимите один проект»: это и есть решение руководства о приоритетах.</p></div>
+
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Мнение преподавателя</span>
+      <p>«Матричная структура — это некая условность. Если вы возьмёте организационную документацию любой компании, вы никогда не увидите там нарисованную матричную структуру». (Слушатель из проектной организации возразил: у них видели.)</p>
+    </div>
+
+    <div class="fade">
+      <details class="ref"><summary>Матрица у Дафта и «треугольник проекта»</summary><div class="ref-body">
+        <p>У Р. Дафта матричная структура — это две линии власти одновременно: функциональная (вертикальная) и продуктовая или проектная (горизонтальная). Он советует её, когда давят сразу два требования: техническая глубина и быстрая реакция на клиента, а ресурсов мало и их надо делить. Главная трудность — двойное подчинение и конфликты, нужны сильные навыки договариваться.</p>
+        <p>«Треугольник проекта» — содержание, сроки, стоимость: изменить одну сторону без других нельзя. Подробно — в курсе проектного управления.</p>
+      </div></details>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Договоритесь до старта проекта</h3>
+      <ul>
+        <li>Запишите, сколько процентов времени каждый участник отдаёт проекту, и подпишите это у его функционального руководителя.</li>
+        <li>Назначьте куратора и определите, с какими вопросами к нему идут (ресурсы, полномочия, конфликт приоритетов), а какие руководитель проекта решает сам.</li>
+        <li>Если людей не хватает, у руководства три хода: привлечь извне, сдвинуть сроки, снять проект. Предложите их сами, а не просто жалуйтесь.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 7: процесс и структура ══════════ -->
+<section class="sec" id="s7">
+  <div class="sec-head fade">
+    <div class="num-badge n7">7</div>
+    <h2 class="sec-title">Структура идёт за процессом</h2>
+    <p class="sec-desc">Схема на бумаге и жизнь расходятся. Преподаватель предложила простой инструмент, чтобы это увидеть, и правило, как проектировать структуру заново.</p>
+  </div>
+
+  <div class="stack">
+    <div class="note-callout fade"><p><b>✏️ Сначала сделайте сами.</b> Распечатайте или нарисуйте оргструктуру своего подразделения. Возьмите красный карандаш и за 10 минут нарисуйте поверх неё стрелки: кто с кем <b>на самом деле</b> работает, у кого вы реально согласуете решения, к кому идут за информацией. Отметьте кружком людей и отделы, про которые неясно, что они делают. Только потом читайте дальше и сравните свои выводы с лекцией.</p></div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Красный карандаш</h3>
+        <p>Возьмите красный или зелёный карандаш и нарисуйте поверх схемы, как <b>на самом деле</b> идёт взаимодействие в «этой красивой, из кирпичиков состоящей структуре». <b>Много стрелок — структуру пора пересмотреть.</b> Особенно в организациях, которые долго живут в одной схеме, а люди и полномочия меняются.</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Функционал «в воздухе»</h3>
+        <p>Кейс консультирования: структуру рисовали пять лет назад, все — «начальники», а про одного сотрудника <b>все открестились</b>: «не мой». Хуже непонятных людей — <b>подразделения с непонятным функционалом</b>: с новыми технологиями функционал «размазывается» по организации, а ответственные остаются не у дел.</p>
+      </div>
+    </div>
+
+    <div class="def fade"><b>Структура должна показывать, кто конкретно что делает.</b> В ней не должно быть пустых мест, когда функционал висит в воздухе.</div>
+
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции</span>
+      <h3>Новый процесс меняет структуру: пример ЭЦП</h3>
+      <p>Электронные подписи и документооборот — это <b>отдельный постоянный процесс</b>: подписи выдаются на срок, их надо отслеживать. Часто функцию «навешивают» на сообразительного человека. А если он заболеет или уволится? Нужно <b>обучить людей или закрепить функцию</b>. Тогда меняются полномочия, обязанности, должностные инструкции, а иногда и структура. Структура видна не только на картинке: в <b>штатном расписании</b>, <b>положениях о подразделениях</b> и <b>должностных инструкциях</b>. Связи там зафиксированы, и при новом функционале их пересматривают.</p>
+    </div>
+
+    <div class="def fade"><b>Сначала проектируют бизнес-процессы, потом оргструктуру. Структура идёт за процессом, а не наоборот.</b> Выяснение того, кто за какой процесс отвечает, — это <b>реинжиниринг</b>.</div>
+
+    <div class="flow fade">
+      <div class="step"><span class="n">1</span><b>Кому продадим</b><span>Найти потребителя — это конец процесса</span></div>
+      <div class="step"><span class="n">2</span><b>Требования к результату</b><span>Что именно нужно потребителю</span></div>
+      <div class="step"><span class="n">3</span><b>Цепочка процессов</b><span>Проектировать от требований назад</span></div>
+      <div class="step"><span class="n">4</span><b>Сам, купить или заказать</b><span>Уникальное — сами; остальное — субподряд, рынок</span></div>
+      <div class="step"><span class="n">5</span><b>Структура</b><span>Складывается из этой цепочки</span></div>
+    </div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">🗣 Вопрос слушателя</span>
+        <h3>«Строю деревообрабатывающий завод — с чего начать?»</h3>
+        <p>Ответ преподавателя: с того, <b>кому вы продадите</b>. «Не обязательно всё уметь делать самим»: из лучшего, что есть на рынке, складывается цепочка, а из неё — структура. Учесть таможню, маркировку, есть ли нужное на рынке. Слушатель привёл пример: ярославское предприятие делает коробочки для парфюмерии <b>для Китая</b> — выгодно за счёт логистики. Вывод: «Наши структуры должны быть очень живыми».</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Организация на липучках</h3>
+        <p>Раньше связи в корпорациях были <b>сварными швами</b>, теперь организация — <b>конструкция на липучках</b> («Бизнес в стиле фанк»). Преподаватель за три года работы замруководителя перерисовывала структуру <b>около пяти раз</b>. Одна компания попросила «оставить как было, так привычнее» — и это нормально: <b>«неважно, как нарисовано, важно понимать, как оно работает»</b>. Не бояться менять. Сейчас многие перестраивают структуру под ИИ, потому что «работать некому».</p>
+      </div>
+    </div>
+
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_02/07_process_struktura.webp" width="1672" height="941" alt="Схема из кубиков, исчерканная красными стрелками; кубик с вопросом «функционал в воздухе»; стрелка от довольного потребителя назад: требования, процессы, структура; сварной шов против липучки" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Структура идёт за процессом (промпт 07)</figcaption>
+    </figure>
+
+    <div class="extra fade">
+      <span class="extra-tag">➕ Дополнение</span>
+      <h3>Реинжиниринг и «структура следует за стратегией»</h3>
+      <p><b>Реинжиниринг</b> — коренное перепроектирование бизнес-процессов ради резкого улучшения стоимости, качества, сервиса и скорости (М. Хаммер, Дж. Чампи, «Реинжиниринг корпорации», 1993). Тезис лекции «структура идёт за процессом» сочетается с формулой Чандлера «структура следует за стратегией»: <b>стратегия → процессы → структура</b>.</p>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Что первично?</h3>
+      <p>При проектировании организации <b>первичен бизнес-процесс</b>, структура — вторична. Вариант «сначала нарисовать структуру, потом распределить процессы» — неверный. Ещё одна мелочь: авторы «Бизнеса в стиле фанк» (1999) К. Нордстрем и Й. Риддерстрале — шведы, а не норвежцы.</p>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Что делать с вашим рисунком</h3>
+      <ul>
+        <li>Стрелки идут мимо формального начальника? Узаконьте реальный канал или верните решение туда, где его принимают.</li>
+        <li>Кружок «непонятно, что делает»: опишите его процесс и потребителя результата. Нет потребителя — функция лишняя.</li>
+        <li>Найдите отчёт, который никто не читает. Это кандидат на отмену и повод пересмотреть процесс.</li>
+        <li>Функция держится на одном «сообразительном» человеке? Запишите её в инструкцию и назначьте замену.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 8: внутри и снаружи ══════════ -->
+<section class="sec" id="s8">
+  <div class="sec-head fade">
+    <div class="num-badge n8">8</div>
+    <h2 class="sec-title">Внутри — затраты, снаружи — возможности</h2>
+    <p class="sec-desc">Во второй половине занятия взгляд разворачивается наружу. Акцент переносится с механизмов эффективного <b>воздействия</b> на механизмы эффективного <b>взаимодействия</b>.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_02/08_atom.webp" width="1672" height="941" alt="Атом: в ядре организация со счётчиком затрат и сейфом «прибыль», ближняя орбита — контрагенты, дальняя — факторы среды; стрела цели уходит к счастливому клиенту, от него идут деньги; весы КСО" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Модель «атом»: среда прямого и косвенного воздействия (промпт 08)</figcaption>
+    </figure>
+
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <tr><th>Слой «атома»</th><th>Что там</th><th>Как с этим работать</th></tr>
+        <tr><td>Ядро — организация</td><td><b>Затраты</b>. «Никого не волнуют ваши затраты»</td><td>Управлять, но не искать там цель</td></tr>
+        <tr><td>Среда прямого воздействия</td><td><b>Контрагенты</b>: конкретные субъекты, с которыми вступаем в отношения</td><td>Выстраивать взаимодействие</td></tr>
+        <tr><td>Среда косвенного воздействия</td><td><b>Факторы</b>: политические, экономические, социальные, технологические, нормативные</td><td>Отслеживать: они формируют прямую среду</td></tr>
+      </table>
+    </div>
+
+    <div class="def fade"><b>Прибыль — не цель, потому что она внутри.</b> Цель организации, то, зачем она существует, <b>всегда направлена вовне</b> — к потребителю. «Все деньги мира снаружи, а внутри только те, которые мы смогли затащить». Деньги приходят только от <b>счастливого клиента</b>. <b>Клиентоориентированность — это и есть счастье клиента.</b></div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · 🗣 обсуждение</span>
+        <h3>Дилемма социальной ответственности</h3>
+        <p>Слушатель вспомнил «невидимую руку» Адама Смита: заботьтесь о своей выгоде. Преподаватель: это дилемма. Стандарт <b>корпоративной социальной ответственности</b> требует заботиться об обществе и среде. Бизнес отвечает: «Я даю рабочие места, плачу налоги, обеспечиваю регион — это и есть моя ответственность». Дилемма уходит корнями в послевоенный менеджмент.</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Формулы конкуренции</h3>
+        <p>Практический вывод — формулы-руководства к действию. <b>«Найди клиента, недовольного конкурентом, и сделай его счастливым — он приведёт других»</b>. Внутри только затраты, возможности снаружи, значит, акцент — на <b>построение эффективного взаимодействия</b> и <b>интеграцию во внешнюю среду</b>.</p>
+      </div>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Где законы и госорганы — в прямой или косвенной среде?</h3>
+      <p>На лекции «нормативные» факторы названы в среде <b>косвенного</b> воздействия. В учебнике М. Мескона «Основы менеджмента» <b>законы и государственные органы</b> — в среде <b>прямого</b> воздействия (вместе с поставщиками, потребителями, конкурентами), а к косвенной отнесены технология, экономика, социокультурные и политические факторы, международные события. В тесте курса ориентируйтесь на формулировку курса, но знайте обе.</p>
+    </div>
+
+    <div class="extra fade">
+      <span class="extra-tag">➕ Дополнение</span>
+      <h3>Две классические позиции</h3>
+      <ul>
+        <li><b>П. Друкер:</b> «Существует только одно обоснованное определение цели бизнеса — создание клиента» («Практика менеджмента», 1954). Это тезис «цель вовне».</li>
+        <li><b>М. Фридман:</b> «Социальная ответственность бизнеса — увеличивать свою прибыль» (New York Times Magazine, 1970). Это позиция бизнесмена из лекции.</li>
+      </ul>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Переформулируйте цель наружу</h3>
+      <ul>
+        <li>Если в целях вашего подразделения стоит «прибыль» или «снижение затрат», допишите: для какого клиента и что изменится у него.</li>
+        <li>Составьте три свои «формулы конкуренции»: где есть клиенты, недовольные конкурентом, и что сделает их счастливыми.</li>
+        <li>Нарисуйте свой «атом»: 5–7 ключевых контрагентов и 3–4 фактора, которые сейчас сильнее всего меняют вашу прямую среду.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 9: интеграция ══════════ -->
+<section class="sec" id="s9">
+  <div class="sec-head fade">
+    <div class="num-badge n9">9</div>
+    <h2 class="sec-title">Интеграция: объединяться, чтобы хватило ресурсов</h2>
+    <p class="sec-desc">Организация не существует отдельно от среды. Объединяться можно жёстко — капиталом — или мягко — общим интересом.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_02/09_integraciya.webp" width="1672" height="941" alt="Холдинг — общий сейф с цепями к компаниям; консорциум — круглый стол, у каждого свой кошелёк; разные устройства говорят на одном языке Bluetooth; песочные часы ресурсов и раздувающийся шар потребностей" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Холдинг, консорциум и ограниченность ресурсов (промпт 09)</figcaption>
+    </figure>
+
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <tr><th>Форма</th><th>Основа объединения</th><th>Зависимость</th><th>Зачем</th></tr>
+        <tr><td>Холдинг</td><td><b>Капитал</b>: общие активы, общий учредитель</td><td><b>Зависимые</b> отношения</td><td>Устойчивая конструкция под общим контролем</td></tr>
+        <tr><td>Консорциум</td><td><b>Общие интересы</b>, соглашение о консорциуме</td><td>Нет общей финансовой основы, нет зависимости по активам, финансам, людям; можно продолжать конкурировать</td><td>Совместно участвовать в торгах, конкурсах, грантах</td></tr>
+      </table>
+    </div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Консорциум под грант</h3>
+        <p>Тот, кто даёт деньги, хочет, чтобы опыт <b>распространялся</b>. Поэтому заявке нужно показать поддержку профессионального или отраслевого сообщества и механизм «диффузии инноваций». «Очень часто это остаётся на бумаге».</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Bluetooth: никто не главный</h3>
+        <p>Чтобы технология заработала, совершенно разные устройства должны говорить на одном протоколе. Производители, даже конкурирующие, договорились — «и никто не главный». Так часто бывает в <b>инновациях</b>, где не хватает ресурсов.</p>
+      </div>
+    </div>
+
+    <div class="def fade"><b>Основное противоречие экономики — между ограниченностью ресурсов и безграничностью потребностей.</b> В современном мире его преодолевают <b>взаимодействием</b>: у кого-то есть то, чего нет у нас.</div>
+
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Мнение преподавателя</span>
+      <p>Формула коммунизма «от каждого по способностям, каждому по потребностям» несостоятельна: «потребности имеют нехорошую тенденцию всё время увеличиваться». Идеологические формулы «мешали пониманию рыночных механизмов». Слушатель возразил версией про «тёмные заводы» и роботов, выращивающих еду. Преподаватель: «Хорошая мысль, надо подумать».</p>
+    </div>
+
+    <div class="fade">
+      <details class="ref"><summary>Bluetooth SIG — как конкуренты создали общий стандарт</summary><div class="ref-body">
+        <p>Bluetooth Special Interest Group основали в 1998 году Ericsson, IBM, Intel, Nokia и Toshiba. Сегодня в ней десятки тысяч компаний. Стандарт открыт для участников, а производители продолжают конкурировать устройствами.</p>
+        <p class="src"><a href="https://www.bluetooth.com/about-us/bluetooth-origin/" target="_blank" rel="noopener">Bluetooth SIG: история</a>.</p>
+      </div></details>
+      <details class="ref"><summary>Клиффорд Саймак, «Кольцо вокруг Солнца» (1953)</summary><div class="ref-body">
+        <p>Преподаватель советовала роман о том, как вечные лампочки, вечные бритвенные лезвия, почти бесплатная еда и дешёвые дома ломают экономику, построенную на дефиците. Это мысленный эксперимент: что станет с организациями, если исчезнет ограниченность ресурсов.</p>
+        <p class="src"><a href="https://fantlab.ru/work6896" target="_blank" rel="noopener">FantLab: «Кольцо вокруг Солнца»</a>.</p>
+      </div></details>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Когда нужен консорциум</h3>
+      <ul>
+        <li>Идёте на крупный грант или тендер, где нужны компетенции, которых у вас нет? Консорциум даёт их без слияния капиталов.</li>
+        <li>Пропишите в соглашении, кто ведущий, кто что вносит и как делится результат. Иначе объединение «останется на бумаге».</li>
+        <li>Нужен общий стандарт с конкурентами (формат данных, протокол обмена, отраслевые правила)? Это пример Bluetooth: договориться и дальше конкурировать продуктом.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 10: четыре типа связей ══════════ -->
+<section class="sec" id="s10">
+  <div class="sec-head fade">
+    <div class="num-badge n1">10</div>
+    <h2 class="sec-title">Четыре типа внешних связей (по Дафту)</h2>
+    <p class="sec-desc">Чтобы разобраться во внешних связях, преподаватель применила портфельный анализ: два парных критерия делят всё поле на четыре клетки. «Это не во всех книжках написано, а только у Дафта».</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_02/10_chetyre_tipa_svyazej.webp" width="1672" height="941" alt="Матрица 2×2: зависимость от ресурсов — магнит тянет поставщика; сети — зонтик, который держат разные поставщики; экология популяций — пруд с рыбками; институционализм — одинаковые здания под общим сводом правил; рельсы-платформа и город-экосистема" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Четыре типа межорганизационных отношений (промпт 10)</figcaption>
+    </figure>
+
+    <div class="def fade"><b>Портфельный анализ</b> делит любое множество на группы по <b>парным критериям</b> (как матрица бизнес-портфеля в маркетинге). Здесь критерии: <b>тип организаций — различные или сходные</b> и <b>характер отношений — конкуренция или кооперация</b>. Анализируются <b>не сами организации, а связи между ними</b> («стрелочки»).</div>
+
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <tr><th></th><th>Конкуренция</th><th>Кооперация</th></tr>
+        <tr><td>Различные организации</td><td><b>Зависимость от ресурсов</b> (ресурсная теория): обеспечить доступ к дешёвым ресурсам, привязать поставщика</td><td><b>Сети</b>: разные организации вокруг интегратора — поставщики, субподряд, аутсорсинг, кейрэцу</td></tr>
+        <tr><td>Сходные организации</td><td><b>Экология популяций</b>: общая среда и общий клиент; выживает тот, кому хватает «корма»</td><td><b>Институционализм</b>: общие рамки, требования и ожидания; все делают одинаково</td></tr>
+      </table>
+    </div>
+
+    <div class="grid fade">
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">Ресурсная теория 🧲</p><p>Все организации живут при ограниченности ресурсов. Преимущество — низкая цена, низкая цена — дешёвые ресурсы. Мотив связей — доступ к ресурсам и привязка поставщика. Связь с пятью силами Портера: <b>рыночная сила поставщиков</b>.</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">Сети ☂️</p><p>Производитель зонтиков привлекает продавцов, разработчиков, поставщиков ткани и спиц — получается сетевая структура. Так устроены все крупные машиностроительные компании; в Японии — <b>кейрэцу</b>. Способов выстроить отношения — «тысяча».</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">Экология популяций 🐟</p><p>Пруд: жучки и рыбки живут, пока есть питательная среда, иначе их съедят. Объединяет <b>общий потребитель</b>, а связующая основа — <b>цифровые технологии</b>. Примеры: «Яндекс Такси», который предлагает товары; экосистема Сбера — «больше, чем банк».</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">Институционализм 🏛</p><p>Организации одной сферы в общих рамках: вузы, госкорпорации. Спустили сверху электронный документооборот — «все построились и пошли». Сюда же <b>электронные торговые площадки</b>: «играешь по нашим правилам».</p></div>
+    </div>
+
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр «Карта внешних связей»</span>
+        <button type="button" class="viz-fs" data-fs-src="tipy_svyazej.html" data-fs-title="Тренажёр «Карта внешних связей»">⛶ На весь экран</button>
+      </div>
+      <iframe src="tipy_svyazej.html" height="700" loading="lazy" title="Тренажёр «Карта внешних связей»"></iframe>
+    </div>
+
+    <div class="note-callout fade"><p><b>Попробуйте в тренажёре.</b> Сначала разберите готовые примеры из лекции: куда попадают поставщик спиц, Bluetooth, электронная площадка, маркетплейс? Потом добавьте 6–8 своих партнёров и двигайте ползунки. Где у вас больше всего связей — там ваша главная зависимость или сила.</p></div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Платформа ≠ экосистема</h3>
+        <p>Цифровая платформа может и не быть экосистемой. <b>Экосистема объединяет разные по характеру бизнесы общим клиентом.</b> Часто её строят на основе платформы, потому что так быстрее. Каждый маркетплейс хочет свой банк, а банки хотят «присесть» на прикормленного потребителя и делят территории (слушатели: ПСБ, «Совкомбанк» в Костроме).</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Кластеры</h3>
+        <p><b>Кластер</b> — взаимозависимые предприятия одной цепочки на одной территории (Ярославль: химия, нефтепереработка, фармацевтика). Банки фактически строят себе «кластеры». Тенденция: <b>кластерная политика смещается от производственных систем к IT и финансам</b>. «Наблюдайте: в книжках этого нет».</p>
+      </div>
+    </div>
+
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Мнение преподавателя</span>
+      <ul>
+        <li>Экосистема Сбера существует только в национальных границах, за счёт созданных условий. Без них или при жёстком внешнем воздействии «популяция» не выживет.</li>
+        <li>Цифровые системы хрупки: сбой Яндекс Диска останавливает ролики в Moodle, «ИИ выдерните из розетки — и он перестанет».</li>
+        <li>«Основа экономики — материальное производство: деньги и информацию нельзя есть». Конкуренция за ресурсы всё равно будет превалировать.</li>
+      </ul>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Экология популяций у Дафта и на лекции</h3>
+      <p>У Дафта <b>экология популяций</b> — это конкуренция <b>сходных</b> организаций за ниши: новые заполняют свободные ниши, неприспособленные отмирают. На лекции в эту клетку поставлена «экосистема», объединяющая <b>разные</b> бизнесы вокруг общего клиента. У Дафта <b>организационная экосистема</b> — отдельное, более широкое понятие: сообщество организаций разных отраслей и их среда. На тесте курса, скорее всего, будет формулировка лекции: экология популяций = экосистема, объединяет общий потребитель. Держите в голове обе.</p>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Консорциум — не сеть</h3>
+      <p>На вопрос «разные организации объединяются вокруг интегратора — что возникает?» слушатели ответили «консорциум». Преподаватель поправила: <b>сеть</b>. В консорциуме нет финансовых взаимоотношений, а в сети интегратор платит поставщикам и привязывает их к себе.</p>
+    </div>
+
+    <div class="fade">
+      <details class="ref"><summary>Ричард Дафт — четыре взгляда на межорганизационные отношения</summary><div class="ref-body">
+        <p>В учебнике «Организационная теория и дизайн» глава о межорганизационных отношениях строится на той же матрице: по горизонтали — конкуренция или кооперация, по вертикали — различные или сходные организации. В клетках — четыре теоретических взгляда: зависимость от ресурсов (Дж. Пфеффер и Дж. Саланчик), сети сотрудничества, экология популяций (М. Ханнан и Дж. Фримен) и институциональный подход (Дж. Майер, Б. Роуэн, П. Димаджио и У. Пауэлл: организации копируют друг друга, чтобы выглядеть легитимными).</p>
+      </div></details>
+      <details class="ref"><summary>Кейрэцу — японские сети поставщиков</summary><div class="ref-body">
+        <p>Послевоенные японские объединения компаний. Вертикальное кейрэцу — крупный производитель (например, Toyota) и многоуровневая сеть поставщиков, связанных долгосрочными контрактами, перекрёстным владением акциями и обменом людьми. Классический пример сети сотрудничества.</p>
+      </div></details>
+      <details class="ref"><summary>Пять сил Портера и кластеры</summary><div class="ref-body">
+        <p>М. Портер («How Competitive Forces Shape Strategy», 1979): конкуренцию в отрасли определяют пять сил — соперничество, угроза новых участников, угроза заменителей, рыночная власть покупателей и <b>рыночная власть поставщиков</b>. Он же ввёл понятие <b>кластера</b> («Конкурентное преимущество стран», 1990): географическая концентрация связанных компаний, поставщиков и институтов.</p>
+      </div></details>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Карта внешних связей для выпускного проекта</h3>
+      <ol>
+        <li>Выпишите 8–10 ключевых внешних связей: поставщики, подрядчики, регуляторы, площадки, партнёры, конкуренты.</li>
+        <li>Разложите по четырём клеткам. Где «зависимость от ресурсов» — там риск: нужен второй поставщик или долгосрочный договор.</li>
+        <li>Где «институционализм» — правила задаёт не вы; ваша задача — соответствовать быстрее других.</li>
+        <li>Где «сети» — ваша сила; подумайте, кто здесь интегратор и можете ли им стать вы.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ЧЕК-ЛИСТ ══════════ -->
+<section class="sec" id="checklist">
+  <div class="sec-head fade">
+    <div class="num-badge n1">✓</div>
+    <h2 class="sec-title">Что выучить к тесту</h2>
+    <p class="sec-desc">По курсу будет тест в конце, в Moodle. Отмечайте пункт, когда можете объяснить его своими словами без подсказки. Отметки сохраняются в браузере.</p>
+  </div>
+
+  <div class="card fade">
+    <div class="checklist-progress-bar"><div class="checklist-progress-fill" id="checklist-progress"></div></div>
+    <ul class="checklist-items">
+      <li><label><input type="checkbox" data-checklist-item="c1"> Менеджмент — управление организацией в условиях рынка; законы общие для любых сфер и форм собственности, проявляются по-разному (ситуационный подход)</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c2"> Эффективность = достижение цели; производительность = больше результата теми же ресурсами; снижение затрат — производительность</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c3"> Оптимальное — соответствующее заранее выбранным критериям</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c4"> Цели декларативные и фактические; показатель может подменить цель («Роснано», «Дельта»)</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c5"> Работа менеджера — принятие решений; ЛПР; главная задача — повысить эффективность организации</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c6"> Что показывает структура: иерархия, централизация/децентрализация, специализация, связи, документация; уровни = полномочия</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c7"> Вертикальное и горизонтальное разделение труда; линейная и линейно-функциональная структуры</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c8"> Минусы высокой пирамиды: медленные решения, потеря информации, дорогой аппарат; скалярная цепь</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c9"> Дивизиональная: срезать верхушку; признаки — функции, территории, клиенты, продукты; наверху стратегия, финансы, консолидированный бюджет</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c10"> Общая разделяемая цель держит дивизионы; SMART</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c11"> Плоская структура невозможна при материальных активах; основа — бренд, R&amp;D, лицензионное производство</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c12"> Проект: ограничен во времени, уникален; проектная структура — временная, с внешним заказчиком</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c13"> Матричная: горизонтальные связи и гибкость; двойное подчинение; роль куратора проекта</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c14"> Структура идёт за процессом; проектирование от потребителя и требований; реинжиниринг; пустых мест быть не должно</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c15"> Модель «атом»: среда прямого (контрагенты) и косвенного (факторы) воздействия; внутри затраты, снаружи возможности</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c16"> Прибыль — не цель; цель всегда вовне; клиентоориентированность = счастье клиента; дилемма КСО</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c17"> Холдинг (капитал, зависимость) и консорциум (общие интересы); основное противоречие экономики</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c18"> Четыре типа связей по Дафту: оси и клетки; платформа ≠ экосистема; кластер</label></li>
+    </ul>
+    <p class="checklist-done" id="checklist-done" hidden>Вторая тема готова к тесту.</p>
+  </div>
+</section>
+
+<!-- ══════════ КВИЗ ══════════ -->
+<section class="sec" id="quiz">
+  <div class="sec-head fade">
+    <div class="num-badge n2">?</div>
+    <h2 class="sec-title">Проверьте себя</h2>
+    <p class="sec-desc">Пятнадцать вопросов в формате теста. После ответа — правильный вариант и короткий разбор.</p>
+  </div>
+
+  <div class="quiz fade">
+    <div class="quiz-question" data-quiz="1" data-explain="Закономерности менеджмента открыты в условиях рынка, но они общие и проявляются везде; как именно — зависит от ситуации.">
+      <p class="quiz-text">1. Действуют ли закономерности менеджмента в государственных и некоммерческих организациях?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q1" value="wrong"> Нет, менеджмент изучает только коммерческие организации</label>
+        <label><input type="radio" name="q1" value="right"> Да, законы общие, но проявляются по-разному в зависимости от ситуации</label>
+        <label><input type="radio" name="q1" value="wrong"> Только если организация перешла на рыночные отношения</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="1">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="1" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="2" data-explain="Эффективность — достижение поставленной цели. Снижение затрат при том же результате — это производительность (efficiency).">
+      <p class="quiz-text">2. Компания снизила затраты на 10% при том же объёме выпуска. Это прежде всего рост…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q2" value="wrong"> эффективности</label>
+        <label><input type="radio" name="q2" value="right"> производительности</label>
+        <label><input type="radio" name="q2" value="wrong"> капитализации</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="2">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="2" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="3" data-explain="Оптимизация предполагает набор критериев: оптимальный — не большой и не маленький, а соответствующий заранее сформулированным критериям.">
+      <p class="quiz-text">3. Что такое «оптимальный» вариант?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q3" value="wrong"> Самый дешёвый</label>
+        <label><input type="radio" name="q3" value="wrong"> С максимальным результатом</label>
+        <label><input type="radio" name="q3" value="right"> Соответствующий заранее сформулированным критериям</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="3">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="3" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="4" data-explain="Пример «Роснано»: заявленная цель — развитие нанотехнологий, а измеряли капитализацию. Это расхождение декларативной и фактической цели.">
+      <p class="quiz-text">4. Заявленная цель — развитие технологий, а успех измеряют капитализацией. Это пример…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q4" value="right"> расхождения декларативных и фактических целей</label>
+        <label><input type="radio" name="q4" value="wrong"> SMART-цели</label>
+        <label><input type="radio" name="q4" value="wrong"> децентрализации управления</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="4">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="4" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="5" data-explain="Централизация — решения принимаются наверху; децентрализация — часть решений делегирована на места. Это видно по уровням полномочий в структуре.">
+      <p class="quiz-text">5. Большая часть решений в организации принимается на местах. Это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q5" value="wrong"> централизация</label>
+        <label><input type="radio" name="q5" value="right"> децентрализация (делегирование полномочий)</label>
+        <label><input type="radio" name="q5" value="wrong"> специализация</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="5">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="5" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="6" data-explain="Растущая пирамида растёт и вширь, и вверх: решения проходят длинную скалярную цепь, информация теряется, аппарат дорогой.">
+      <p class="quiz-text">6. Что НЕ является следствием разрастания пирамиды управления?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q6" value="wrong"> Задержка в принятии решений</label>
+        <label><input type="radio" name="q6" value="wrong"> Потеря информации по пути наверх</label>
+        <label><input type="radio" name="q6" value="right"> Ускорение реакции на рынок</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="6">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="6" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="7" data-explain="В дивизиональной структуре наверху — стратегия, финансы, маркетинг, консолидированный бюджет; у дивизионов своих денег нет.">
+      <p class="quiz-text">7. Что в дивизиональной структуре остаётся в управляющем центре?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q7" value="wrong"> Только кадровый учёт</label>
+        <label><input type="radio" name="q7" value="right"> Стратегия, финансы и консолидированный бюджет</label>
+        <label><input type="radio" name="q7" value="wrong"> Производство всех продуктов</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="7">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="7" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="8" data-explain="Пока есть материальные активы, у «здания» есть фундамент: добыча и переработка привязаны к земле. Плоская структура возможна в услугах, IT, финансах.">
+      <p class="quiz-text">8. В какой организации плоская структура управления наименее возможна?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q8" value="wrong"> IT-компания с лицензионным производством устройств</label>
+        <label><input type="radio" name="q8" value="right"> Горнодобывающее предприятие</label>
+        <label><input type="radio" name="q8" value="wrong"> Медийная компания</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="8">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="8" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="9" data-explain="Проектная структура временная и существует, пока есть проекты; деньги должны прийти извне, поэтому нужен внешний заказчик. Проектное управление возможно в любой структуре.">
+      <p class="quiz-text">9. Обязательный признак проектной структуры:</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q9" value="right"> внешний заказчик и временный характер</label>
+        <label><input type="radio" name="q9" value="wrong"> большой штат постоянных сотрудников</label>
+        <label><input type="radio" name="q9" value="wrong"> собственное материальное производство</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="9">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="9" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="10" data-explain="Главный минус матрицы — двойное подчинение: у человека функциональный руководитель и руководитель проекта, а проекты конкурируют за одних людей.">
+      <p class="quiz-text">10. Главный минус матричной структуры:</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q10" value="wrong"> мало горизонтальных связей</label>
+        <label><input type="radio" name="q10" value="right"> двойное подчинение и борьба проектов за людей</label>
+        <label><input type="radio" name="q10" value="wrong"> невозможность привлекать людей извне</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="10">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="10" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="11" data-explain="Сначала проектируют бизнес-процессы, затем оргструктуру: «структура идёт за процессом, не наоборот».">
+      <p class="quiz-text">11. При проектировании организации что делают сначала?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q11" value="wrong"> Рисуют оргструктуру и штатное расписание</label>
+        <label><input type="radio" name="q11" value="right"> Проектируют бизнес-процессы от требований потребителя</label>
+        <label><input type="radio" name="q11" value="wrong"> Назначают руководителей подразделений</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="11">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="11" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="12" data-explain="Прибыль внутри организации, а цель всегда направлена вовне — к потребителю; деньги приходят только от счастливого клиента.">
+      <p class="quiz-text">12. Почему, по логике курса, прибыль — не цель организации?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q12" value="wrong"> Потому что её облагают налогом</label>
+        <label><input type="radio" name="q12" value="right"> Потому что прибыль внутри, а цель всегда направлена вовне, к потребителю</label>
+        <label><input type="radio" name="q12" value="wrong"> Потому что коммерческие организации не должны стремиться к прибыли</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="12">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="12" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="13" data-explain="В модели «атом» среда прямого воздействия — контрагенты (конкретные субъекты), косвенного — факторы, которые формируют прямую среду.">
+      <p class="quiz-text">13. Поставщики, клиенты и конкуренты относятся к среде…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q13" value="right"> прямого воздействия</label>
+        <label><input type="radio" name="q13" value="wrong"> косвенного воздействия</label>
+        <label><input type="radio" name="q13" value="wrong"> внутренней</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="13">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="13" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="14" data-explain="Консорциум — объединение на основе общих интересов и соглашения, без общей финансовой основы и зависимости; участники могут продолжать конкурировать. Холдинг — объединение на основе капитала.">
+      <p class="quiz-text">14. Объединение компаний ради совместного участия в конкурсе, без общих активов и финансов, — это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q14" value="wrong"> холдинг</label>
+        <label><input type="radio" name="q14" value="right"> консорциум</label>
+        <label><input type="radio" name="q14" value="wrong"> дивизион</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="14">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="14" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="15" data-explain="По Дафту: различные + кооперация = сети; различные + конкуренция = зависимость от ресурсов; сходные + конкуренция = экология популяций; сходные + кооперация = институционализм.">
+      <p class="quiz-text">15. Различные организации кооперируются вокруг интегратора (производитель зонтиков и его поставщики). Какой это тип связей по Дафту?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q15" value="wrong"> Институционализм</label>
+        <label><input type="radio" name="q15" value="wrong"> Экология популяций</label>
+        <label><input type="radio" name="q15" value="right"> Сети (сетевая структура)</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="15">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="15" hidden></p>
+    </div>
+  </div>
+
+  <p class="quiz-score-box fade" id="quiz-score" style="margin-top:18px">Отвечено: 0 / 15</p>
+</section>
+
+<!-- ══════════ ЗАКЛЮЧЕНИЕ ══════════ -->
+<section class="sec" id="final">
+  <div class="sec-head fade">
+    <div class="num-badge n3">★</div>
+    <h2 class="sec-title">Шпаргалка: главное из занятия</h2>
+  </div>
+
+  <figure class="img-card fade" data-lightbox style="margin-bottom:28px">
+    <img src="../png/zanyatie_02/11_final_shpargalka.webp" width="1672" height="941" alt="Дворец памяти: яблоко, мишень, башня, домик, дирижабль, ткацкий станок, красный карандаш, атом, круглый стол и зонтик над прудом с подписями-определениями" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+    <figcaption class="img-missing-caption">Шпаргалка — дворец памяти (промпт 11)</figcaption>
+  </figure>
+
+  <ol class="conclusion-list fade">
+    <li><strong>Законы управления общие, проявляются по-разному.</strong> Незнание закона его не отменяет.</li>
+    <li><strong>Эффективность — достижение цели</strong>, производительность — результат на ресурс. Следите, чтобы показатель не подменил цель.</li>
+    <li><strong>Структура показывает полномочия.</strong> Высокая пирамида — медленно, дорого, с потерей информации.</li>
+    <li><strong>Дивизиональная:</strong> срезать верхушку, низ поделить по признаку, держать общей разделяемой целью.</li>
+    <li><strong>Плоская — только без материального фундамента</strong>; проектная — временная, с внешним заказчиком; матричная — гибкость ценой двойного подчинения.</li>
+    <li><strong>Структура идёт за процессом</strong>, а процесс — от требований потребителя. Не бойтесь перерисовывать.</li>
+    <li><strong>Внутри — затраты, снаружи — возможности.</strong> Прибыль — не цель; цель — счастье клиента.</li>
+    <li><strong>Внешние связи раскладываются на четыре типа</strong> по двум осям: различные/сходные и конкуренция/кооперация.</li>
+  </ol>
+
+</section>
+
+</main>
+
+<div class="overlay" id="lightbox" aria-hidden="true">
+  <a class="overlay-download" id="lightbox-download" download aria-label="Скачать изображение">⬇ Скачать</a>
+  <button class="overlay-close" id="lightbox-close" aria-label="Закрыть">✕</button>
+  <img id="lightbox-img" alt="">
+</div>
+
+<div id="fs-overlay" aria-hidden="true">
+  <div id="fs-bar">
+    <span id="fs-title"></span>
+    <button type="button" id="fs-close" aria-label="Закрыть полноэкранный режим">✕</button>
+  </div>
+  <iframe id="fs-frame" title="Полноэкранная визуализация"></iframe>
+</div>
+
+<footer>
+  <p>Президентская программа · «Теория организации» · преподаватель И. Л. Рудая · материалы с пометкой «Дополнение» добавлены к лекции</p>
+</footer>
+
+<script>
+/* Префикс имени файла при скачивании инфографики */
+const BRAND = "teoriya-org-z2";
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (!reduceMotion && "IntersectionObserver" in window) {
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in");
+        reveal.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.06, rootMargin: "0px 0px -24px"});
+  document.querySelectorAll(".fade").forEach((element) => reveal.observe(element));
+} else {
+  document.querySelectorAll(".fade").forEach((element) => element.classList.add("in"));
+}
+
+/* Подсветка активной секции в навбаре */
+const navLinks = [...document.querySelectorAll(".nav-link")];
+const sections = [...document.querySelectorAll("main section[id]")];
+if ("IntersectionObserver" in window) {
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach((link) => {
+        link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`);
+      });
+    });
+  }, {rootMargin: "-35% 0px -55%", threshold: 0});
+  sections.forEach((section) => sectionObserver.observe(section));
+}
+
+/* Лайтбокс */
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const lightboxDownload = document.getElementById("lightbox-download");
+function brandedFilename(url) {
+  const name = url.split("/").pop().split("?")[0];
+  return `${BRAND}_${name}`;
+}
+document.querySelectorAll(".img-card[data-lightbox]").forEach((card) => {
+  card.addEventListener("click", () => {
+    if (card.classList.contains("img-missing")) return;
+    const img = card.querySelector("img");
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightboxDownload.href = img.src;
+    lightboxDownload.download = brandedFilename(img.src);
+    lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
+  });
+});
+function closeLightbox() {
+  if (lightbox.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  lightboxImg.src = "";
+}
+document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (event) => { if (event.target === lightbox) closeLightbox(); });
+
+/* Фуллскрин для iframe-карточек */
+const fsOverlay = document.getElementById("fs-overlay");
+const fsFrame = document.getElementById("fs-frame");
+const fsTitle = document.getElementById("fs-title");
+document.querySelectorAll(".viz-fs").forEach((button) => {
+  button.addEventListener("click", () => {
+    fsFrame.src = button.dataset.fsSrc;
+    fsTitle.textContent = button.dataset.fsTitle;
+    fsOverlay.classList.add("open");
+    fsOverlay.setAttribute("aria-hidden", "false");
+  });
+});
+function closeFs() {
+  if (fsOverlay.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  fsOverlay.classList.remove("open");
+  fsOverlay.setAttribute("aria-hidden", "true");
+  fsFrame.src = "";
+}
+document.getElementById("fs-close").addEventListener("click", closeFs);
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if (fsOverlay.classList.contains("open")) { closeFs(); } else { closeLightbox(); }
+});
+
+/* Копирование промптов */
+document.querySelectorAll("[data-copy]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const code = document.getElementById(button.dataset.copy);
+    if (!code) return;
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(code.innerText);
+      button.textContent = "Скопировано";
+    } catch {
+      button.textContent = "Выделите текст";
+    }
+    window.setTimeout(() => { button.textContent = original; }, 1600);
+  });
+});
+
+/* Чек-лист готовности */
+const CHECKLIST_KEY = "teoriya-org-z2-checklist";
+const checklistInputs = [...document.querySelectorAll("[data-checklist-item]")];
+const checklistProgress = document.getElementById("checklist-progress");
+const checklistDone = document.getElementById("checklist-done");
+function loadChecklistState() {
+  try { return JSON.parse(localStorage.getItem(CHECKLIST_KEY) || "{}"); } catch { return {}; }
+}
+function saveChecklistState(state) {
+  try { localStorage.setItem(CHECKLIST_KEY, JSON.stringify(state)); } catch { /* приватный режим */ }
+}
+function renderChecklistProgress() {
+  const checked = checklistInputs.filter((input) => input.checked).length;
+  checklistProgress.style.width = `${Math.round((checked / checklistInputs.length) * 100)}%`;
+  checklistDone.hidden = checked !== checklistInputs.length;
+}
+const savedChecklist = loadChecklistState();
+checklistInputs.forEach((input) => {
+  const key = input.dataset.checklistItem;
+  input.checked = Boolean(savedChecklist[key]);
+  input.addEventListener("change", () => {
+    const state = loadChecklistState();
+    state[key] = input.checked;
+    saveChecklistState(state);
+    renderChecklistProgress();
+  });
+});
+renderChecklistProgress();
+
+/* Квиз */
+const QUIZ_TOTAL = document.querySelectorAll(".quiz-question").length;
+let quizAnswered = 0;
+let quizCorrect = 0;
+const quizScoreEl = document.getElementById("quiz-score");
+document.querySelectorAll(".quiz-check").forEach((button) => {
+  button.addEventListener("click", () => {
+    const index = button.dataset.quizCheck;
+    const question = document.querySelector(`.quiz-question[data-quiz="${index}"]`);
+    const selected = question.querySelector(`input[name="q${index}"]:checked`);
+    const feedback = document.querySelector(`[data-quiz-feedback="${index}"]`);
+    if (!selected) {
+      feedback.textContent = "Выберите вариант ответа.";
+      feedback.className = "quiz-feedback incorrect";
+      feedback.hidden = false;
+      return;
+    }
+    const alreadyAnswered = button.disabled;
+    const isCorrect = selected.value === "right";
+    feedback.textContent = isCorrect ? "Верно!" : "Не совсем — правильный вариант выделен выше.";
+    if (question.dataset.explain) {
+      const explain = document.createElement("span");
+      explain.className = "explain";
+      explain.textContent = question.dataset.explain;
+      feedback.appendChild(explain);
+    }
+    feedback.className = `quiz-feedback ${isCorrect ? "correct" : "incorrect"}`;
+    feedback.hidden = false;
+    question.querySelectorAll("input").forEach((input) => { input.disabled = true; });
+    question.querySelector('input[value="right"]').closest("label").classList.add("quiz-correct-answer");
+    button.disabled = true;
+    if (!alreadyAnswered) {
+      quizAnswered += 1;
+      if (isCorrect) quizCorrect += 1;
+      quizScoreEl.textContent = `Отвечено: ${quizAnswered} / ${QUIZ_TOTAL} · верно: ${quizCorrect}`;
+    }
+  });
+});
+</script>
+</body>
+</html>

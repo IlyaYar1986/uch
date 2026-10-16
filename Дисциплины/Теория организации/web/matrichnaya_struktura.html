@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр «Матрица проектов»</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--border:#e2e8f0;--acc:#7c3aed;--acc-dk:#5b21b6;--acc-lt:#f5f3ff;--gold:#b45309;--gold-lt:#fffbeb;--red:#dc2626;--red-lt:#fef2f2;--green:#16a34a;--green-lt:#f0fdf4;--text:#0f172a;--muted:#64748b}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.5;padding:16px 20px 18px}
+h1{font-size:clamp(1.05rem,2.4vw,1.3rem);font-weight:800}
+.sub{color:var(--muted);font-size:.86rem;margin:2px 0 12px;max-width:940px}
+.layout{display:grid;grid-template-columns:minmax(300px,1fr) minmax(320px,1.15fr);gap:18px}
+@media (max-width:780px){.layout{grid-template-columns:1fr}}
+.group{border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.group h2{font-size:.84rem;font-weight:800;margin-bottom:8px}
+.ctrl{display:grid;grid-template-columns:1fr 70px;gap:2px 10px;align-items:center;margin-bottom:8px}
+.ctrl label{font-size:.8rem;font-weight:700}
+.ctrl label small{font-weight:500;color:var(--muted)}
+.ctrl input[type=range]{width:100%;accent-color:var(--acc)}
+.ctrl input[type=number]{grid-row:1 / 3;grid-column:2;width:70px;padding:6px;border:1px solid var(--border);border-radius:8px;font-size:.92rem;font-weight:800;text-align:right;color:var(--acc-dk)}
+table.m{width:100%;border-collapse:collapse;font-size:.8rem}
+table.m th{font-size:.72rem;color:var(--muted);font-weight:800;text-align:center;padding:4px 2px}
+table.m th:first-child{text-align:left}
+table.m td{padding:3px 2px;text-align:center}
+table.m td:first-child{text-align:left;font-weight:700}
+table.m input[type=number]{width:52px;padding:4px;border:1px solid var(--border);border-radius:7px;font-weight:800;text-align:center;color:var(--acc-dk);font-size:.86rem}
+table.m input.staff{background:var(--acc-lt)}
+.pchk{display:flex;align-items:center;justify-content:center;gap:4px;font-size:.72rem;font-weight:800;cursor:pointer}
+.pchk input{accent-color:var(--acc)}
+.btns{display:flex;flex-wrap:wrap;gap:6px}
+.btn{padding:6px 10px;border-radius:9px;border:1px solid var(--border);background:#fff;font-size:.76rem;font-weight:700;color:var(--text);cursor:pointer}
+.btn:hover{border-color:#ddd6fe;color:var(--acc)}
+.btn.on{background:var(--acc-lt);border-color:#c4b5fd;color:var(--acc-dk)}
+input:focus-visible,button:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+.board{border:1px solid var(--border);border-radius:14px;padding:10px 12px;background:#faf9ff}
+.row{display:grid;grid-template-columns:118px 1fr 52px;gap:8px;align-items:center;margin-bottom:8px}
+.row .nm{font-size:.8rem;font-weight:800}
+.people{display:flex;flex-wrap:wrap;gap:4px}
+.pp{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:900;color:#fff;background:#a78bfa;position:relative}
+.pp.b2{background:#f59e0b}
+.pp.b3{background:#dc2626}
+.pp.free{background:#cbd5e1;color:#475569}
+.pp.ext{background:#fff;color:var(--acc-dk);border:2px dashed #a78bfa}
+.bar{height:8px;border-radius:100px;background:#ede9fe;overflow:hidden;margin-top:4px;grid-column:2}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:100px}
+.bar i.over{background:var(--red)}
+.pct{font-size:.86rem;font-weight:900;text-align:right;color:var(--acc-dk)}
+.pct.over{color:var(--red)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:.72rem;color:var(--muted);margin:2px 0 8px}
+.legend span{display:flex;align-items:center;gap:4px}
+.legend b{width:12px;height:12px;border-radius:50%;display:inline-block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+@media (max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{border:1px solid var(--border);border-radius:12px;padding:8px 10px;background:#fff}
+.stat .l{font-size:.66rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;line-height:1.3}
+.stat .v{font-size:1.35rem;font-weight:900;color:var(--acc-dk);line-height:1.2}
+.stat .v.bad{color:var(--red)}
+.note{font-size:.8rem;color:#78350f;background:var(--gold-lt);border:1px solid #fcd34d;border-radius:12px;padding:9px 12px;margin-top:8px}
+.note.ok{color:#14532d;background:var(--green-lt);border-color:#bbf7d0}
+.foot{margin-top:8px;font-size:.74rem;color:var(--muted)}
+.back{display:inline-block;margin-bottom:8px;font-size:.8rem;font-weight:700;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--acc)}
+.back[hidden]{display:none}
+</style>
+</head>
+<body>
+<a class="back" id="back" href="../index.html" hidden>← Все уроки</a>
+<h1>Матрица проектов: кто кому подчиняется</h1>
+<p class="sub">Отделы по строкам, проекты по столбцам. Задайте, сколько людей в каждом отделе и сколько участников нужно проекту. Тренажёр раскладывает людей по проектам и показывает загрузку, дефицит и двойное подчинение.</p>
+
+<div class="layout">
+  <div>
+    <div class="group">
+      <h2>Люди и потребности проектов <small style="font-weight:500;color:var(--muted)">(число участников от отдела)</small></h2>
+      <table class="m" aria-label="Матрица: отделы и проекты">
+        <thead><tr><th>Отдел</th><th>Людей</th>
+          <th><label class="pchk"><input type="checkbox" id="on0" checked> П1</label></th>
+          <th><label class="pchk"><input type="checkbox" id="on1" checked> П2</label></th>
+          <th><label class="pchk"><input type="checkbox" id="on2" checked> П3</label></th></tr></thead>
+        <tbody id="mbody"></tbody>
+      </table>
+    </div>
+    <div class="group">
+      <h2>Время людей</h2>
+      <div class="ctrl"><label for="op-r">Операционная работа в отделе, % <small>(задачи функционального начальника)</small></label><input type="range" id="op-r" min="0" max="90" step="5"><input type="number" id="op" min="0" max="90" step="5" aria-label="Операционная работа, процентов"></div>
+      <div class="ctrl"><label for="pj-r">Одно участие в проекте, % времени</label><input type="range" id="pj-r" min="10" max="80" step="5"><input type="number" id="pj" min="10" max="80" step="5" aria-label="Участие в проекте, процентов"></div>
+    </div>
+    <div class="group">
+      <h2>Решения куратора и руководства</h2>
+      <div class="btns">
+        <button type="button" class="btn" id="b-ext">Привлечь людей извне</button>
+        <button type="button" class="btn" id="b-shift">Сдвинуть П3 по срокам</button>
+        <button type="button" class="btn" id="b-drop">Снять П3</button>
+        <button type="button" class="btn" id="b-reset">Сбросить</button>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="board" id="board" aria-live="polite"></div>
+    <div class="legend">
+      <span><b style="background:#cbd5e1"></b>только отдел</span>
+      <span><b style="background:#a78bfa"></b>2 начальника</span>
+      <span><b style="background:#f59e0b"></b>3 начальника</span>
+      <span><b style="background:#dc2626"></b>4 начальника</span>
+      <span><b style="background:#fff;border:2px dashed #a78bfa"></b>человек извне</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="l">Людей с двойным подчинением</div><div class="v" id="o-dual">–</div></div>
+      <div class="stat"><div class="l">Из них у 3+ начальников</div><div class="v" id="o-tri">–</div></div>
+      <div class="stat"><div class="l">Перегруженных отделов</div><div class="v" id="o-over">–</div></div>
+      <div class="stat"><div class="l">Людей извне</div><div class="v" id="o-ext">–</div></div>
+    </div>
+    <div class="note" id="msg"></div>
+    <p class="foot">Модель упрощена: участия распределяются по людям отдела поровну, загрузка = операционная работа + участия × доля времени. Цифры 100%+ означают, что люди «рвутся на части».</p>
+  </div>
+</div>
+
+<script>
+const DEPTS = ["IT", "Дизайн", "Маркетинг", "Клиентский сервис"];
+const DEFAULT = {staff:[3,3,2,4], need:[[2,1,1],[1,2,1],[1,1,1],[1,1,2]], on:[true,true,true], op:60, pj:40, ext:false, shift:false};
+let st = JSON.parse(JSON.stringify(DEFAULT));
+const mbody = document.getElementById("mbody");
+
+function buildTable(){
+  mbody.innerHTML = "";
+  DEPTS.forEach((d, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${d}</td><td><input class="staff" type="number" min="1" max="6" data-s="${i}" aria-label="Людей в отделе ${d}"></td>` +
+      [0,1,2].map((p) => `<td><input type="number" min="0" max="4" data-n="${i}-${p}" aria-label="${d}: участников в проекте ${p+1}"></td>`).join("");
+    mbody.appendChild(tr);
+  });
+  mbody.querySelectorAll("input").forEach((inp) => inp.addEventListener("input", () => {
+    const v = Math.round(Number(inp.value));
+    if (Number.isNaN(v)) return;
+    if (inp.dataset.s !== undefined) st.staff[+inp.dataset.s] = Math.min(6, Math.max(1, v));
+    else { const [i, p] = inp.dataset.n.split("-").map(Number); st.need[i][p] = Math.min(4, Math.max(0, v)); }
+    render(false);
+  }));
+}
+
+function bindPair(id, key){
+  const r = document.getElementById(id + "-r"), n = document.getElementById(id);
+  const set = (v) => { st[key] = Math.min(+r.max, Math.max(+r.min, Number(v) || 0)); render(); };
+  r.addEventListener("input", () => set(r.value));
+  n.addEventListener("input", () => set(n.value));
+}
+bindPair("op", "op"); bindPair("pj", "pj");
+[0,1,2].forEach((p) => document.getElementById("on"+p).addEventListener("change", (e) => { st.on[p] = e.target.checked; render(); }));
+document.getElementById("b-ext").addEventListener("click", () => { st.ext = !st.ext; render(); });
+document.getElementById("b-shift").addEventListener("click", () => { st.shift = !st.shift; render(); });
+document.getElementById("b-drop").addEventListener("click", () => { st.on[2] = !st.on[2]; render(); });
+document.getElementById("b-reset").addEventListener("click", () => { st = JSON.parse(JSON.stringify(DEFAULT)); render(); });
+
+function render(syncTable = true){
+  if (syncTable){
+    mbody.querySelectorAll("input").forEach((inp) => {
+      if (inp.dataset.s !== undefined) inp.value = st.staff[+inp.dataset.s];
+      else { const [i, p] = inp.dataset.n.split("-").map(Number); inp.value = st.need[i][p]; }
+    });
+  }
+  ["op","pj"].forEach((k) => { document.getElementById(k).value = st[k]; document.getElementById(k + "-r").value = st[k]; });
+  [0,1,2].forEach((p) => { document.getElementById("on"+p).checked = st.on[p]; });
+  document.getElementById("b-ext").classList.toggle("on", st.ext);
+  document.getElementById("b-shift").classList.toggle("on", st.shift);
+  document.getElementById("b-drop").classList.toggle("on", !st.on[2]);
+
+  let dual = 0, tri = 0, over = 0, extTotal = 0;
+  const board = document.getElementById("board");
+  board.innerHTML = "";
+  DEPTS.forEach((d, i) => {
+    // Участия: П3 при сдвиге сроков требует вдвое меньше времени в неделю
+    const parts = [0,1,2].map((p) => st.on[p] ? st.need[i][p] : 0);
+    const weight = (p) => (p === 2 && st.shift ? 0.5 : 1);
+    let staff = st.staff[i];
+    const load = (n) => st.op + (parts.reduce((s, k, p) => s + k * weight(p), 0) * st.pj) / n;
+    // Люди извне закрывают дефицит до загрузки 100%
+    let ext = 0;
+    if (st.ext){ while (load(staff + ext) > 100 && ext < 6) ext += 1; }
+    extTotal += ext;
+    // Распределяем участия по штатным людям поровну, внешние берут только проектную работу
+    const totalParts = parts.reduce((s, k) => s + k, 0);
+    const perPerson = new Array(staff).fill(0);
+    let rest = Math.max(0, totalParts - Math.round(totalParts * ext / (staff + ext)));
+    let idx = 0;
+    while (rest > 0){ perPerson[idx % staff] += 1; idx += 1; rest -= 1; }
+    const L = Math.round(load(staff + ext));
+    if (L > 100) over += 1;
+    const row = document.createElement("div");
+    row.className = "row";
+    const people = perPerson.map((k) => {
+      const bosses = 1 + k;
+      if (bosses >= 2) dual += 1;
+      if (bosses >= 3) tri += 1;
+      const cls = k === 0 ? "free" : k === 1 ? "" : k === 2 ? "b2" : "b3";
+      return `<span class="pp ${cls}" title="Начальников: ${bosses}">${bosses}</span>`;
+    }).join("") + Array.from({length: ext}, () => `<span class="pp ext" title="Человек извне: подчиняется только проекту">+</span>`).join("");
+    row.innerHTML = `<span class="nm">${d}</span><div><div class="people">${people}</div><div class="bar"><i class="${L>100?"over":""}" style="width:${Math.min(100,L)}%"></i></div></div><span class="pct ${L>100?"over":""}">${L}%</span>`;
+    board.appendChild(row);
+  });
+  const dEl = document.getElementById("o-dual"); dEl.textContent = dual;
+  const tEl = document.getElementById("o-tri"); tEl.textContent = tri; tEl.classList.toggle("bad", tri > 0);
+  const oEl = document.getElementById("o-over"); oEl.textContent = over; oEl.classList.toggle("bad", over > 0);
+  document.getElementById("o-ext").textContent = extTotal;
+  const msg = document.getElementById("msg");
+  const active = st.on.filter(Boolean).length;
+  if (active === 0){
+    msg.className = "note"; msg.textContent = "Проектов нет — это обычная функциональная структура: у каждого один начальник.";
+  } else if (over > 0){
+    msg.className = "note";
+    msg.textContent = `Дефицит в ${over} отд. Людей «рвут на части»: у ${tri} человек три и больше начальников. Рецептов нет — куратор поднимает проблему наверх, а руководство выбирает: привлечь людей извне, сдвинуть сроки или снять проект.`;
+  } else {
+    msg.className = "note ok";
+    msg.textContent = `Нагрузка в пределах 100%. Но двойное подчинение остаётся у ${dual} человек: роли куратора и руководителя проекта стоит договорить до старта.` + (extTotal ? ` Людей извне: ${extTotal} — гибкость матрицы оплачена бюджетом проекта.` : "");
+  }
+}
+
+buildTable();
+render();
+if (window.self === window.top) document.getElementById("back").hidden = false;
+</script>
+</body>
+</html>
