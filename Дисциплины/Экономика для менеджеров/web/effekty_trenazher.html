@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: эффект дохода и эффект замещения</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --cyan:#0ea5e9;
+  --red:#dc2626;
+  --green:#16a34a;
+  --amber:#f59e0b;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.78rem}
+.presets{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.presets .lbl{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-right:2px}
+.preset{padding:4px 9px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer}
+.preset:hover{border-color:#c7d2fe;color:var(--indigo)}
+.preset:focus-visible,input:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+.layout{display:grid;grid-template-columns:minmax(300px,1.3fr) minmax(250px,1fr);gap:12px;align-items:start}
+@media (max-width:720px){.layout{grid-template-columns:1fr}}
+.panel{border:1px solid var(--border);border-radius:12px;padding:8px 10px;background:#fcfcff}
+.eff{display:grid;grid-template-columns:118px 1fr 58px;align-items:center;gap:6px;font-size:.74rem;font-weight:700}
+.eff + .eff{margin-top:6px}
+.track{position:relative;height:22px;background:#f1f5f9;border-radius:6px}
+.track::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;border-left:2px solid #94a3b8}
+.fill{position:absolute;top:3px;bottom:3px;border-radius:4px;transition:all .2s}
+.val{text-align:right;font-weight:900}
+.scale{display:flex;justify-content:space-between;font-size:.62rem;color:var(--muted);margin:4px 0 0 124px;padding-right:64px}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+svg{width:100%;height:auto;display:block;max-width:300px}
+.axis{stroke:#94a3b8;stroke-width:1.5}
+.tick{font-size:10px;fill:var(--muted)}
+.ax-lbl{font-size:11px;font-weight:700;fill:var(--text)}
+.badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:.78rem;font-weight:900;color:#fff}
+.verdict{margin-top:8px;border-radius:10px;padding:8px 11px;font-size:.78rem;line-height:1.45;border:1px solid #c7d2fe;background:var(--indigo-lt);color:var(--indigo-dk)}
+.verdict b{display:block;margin-bottom:2px}
+.group{border:1px solid var(--border);border-radius:12px;padding:9px 11px}
+.group + .group{margin-top:8px}
+.group h2{font-size:.8rem;font-weight:800;margin-bottom:6px}
+.ctrl{margin-bottom:6px}
+.ctrl .row{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.ctrl label{font-size:.75rem;font-weight:700;line-height:1.2}
+.ctrl label small{font-weight:500;color:var(--muted)}
+.ctrl input[type=range]{width:100%;height:16px;accent-color:var(--indigo);display:block}
+.ctrl input[type=number]{width:58px;flex-shrink:0;padding:2px 5px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;font-weight:800;text-align:right;color:var(--indigo-dk)}
+.ends{display:flex;justify-content:space-between;font-size:.62rem;color:var(--muted)}
+details.info{font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45}
+details.info summary{cursor:pointer;font-weight:700}
+details.info p + p{margin-top:4px}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>Цена товара упала: из чего складывается реакция покупателя</h1>
+  <span class="sub">Общий эффект = эффект замещения + эффект дохода. Учебная модель: изменение покупок в % от исходного объёма.</span>
+</div>
+
+<div class="presets" role="group" aria-label="Готовые ситуации">
+  <span class="lbl">Товары</span>
+  <button type="button" class="preset" data-p="normal">Зелёные яблоки (нормальный)</button>
+  <button type="button" class="preset" data-p="inferior">Дешёвая крупа (низший)</button>
+  <button type="button" class="preset" data-p="giffen">Картофель бедняка (Гиффен)</button>
+</div>
+
+<div class="layout">
+  <div>
+    <div class="panel">
+      <div class="eff"><span>🔄 Эффект замещения</span><div class="track"><div class="fill" id="f-se" style="background:var(--cyan)"></div></div><span class="val" id="v-se"></span></div>
+      <div class="eff"><span>👛 Эффект дохода</span><div class="track"><div class="fill" id="f-ie" style="background:var(--amber)"></div></div><span class="val" id="v-ie"></span></div>
+      <div class="eff"><span>Σ Общий эффект</span><div class="track"><div class="fill" id="f-te"></div></div><span class="val" id="v-te"></span></div>
+      <div class="scale"><span>покупают меньше</span><span>0</span><span>покупают больше</span></div>
+      <div class="charts">
+        <svg viewBox="0 0 220 170" role="img" aria-label="Кривая спроса: две точки до и после снижения цены">
+          <line class="axis" x1="34" y1="140" x2="210" y2="140"/>
+          <line class="axis" x1="34" y1="140" x2="34" y2="10"/>
+          <text class="ax-lbl" x="210" y="160" text-anchor="end">Q</text>
+          <text class="ax-lbl" x="20" y="16">P</text>
+          <line id="dcurve" stroke="#6366f1" stroke-width="3"/>
+          <circle id="pA" r="5" fill="#94a3b8"/><circle id="pB" r="5.5" fill="#dc2626"/>
+          <text id="lA" class="tick" style="font-weight:800">до</text><text id="lB" class="tick" fill="#dc2626" style="font-weight:800">после</text>
+          <text id="dlbl" class="tick" x="206" y="132" text-anchor="end" style="font-weight:800"></text>
+        </svg>
+        <div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:6px;padding:4px">
+          <span class="badge" id="type"></span>
+          <span style="font-size:.74rem;color:var(--muted)" id="type-note"></span>
+        </div>
+      </div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+
+  <div>
+    <div class="group" style="border-left:4px solid var(--indigo)">
+      <h2>Что случилось с ценой</h2>
+      <div class="ctrl"><div class="row"><label for="d">Цена товара снизилась на, %</label><input type="number" id="d-n" min="5" max="50" step="5" aria-label="Снижение цены, число"></div><input type="range" id="d" min="5" max="50" step="5"></div>
+    </div>
+    <div class="group" style="border-left:4px solid var(--cyan)">
+      <h2>Замещение</h2>
+      <div class="ctrl"><div class="row"><label for="s">Есть ли чем заменить <small>(сила замещения)</small></label><input type="number" id="s-n" min="0" max="2" step="0.1" aria-label="Сила замещения, число"></div><input type="range" id="s" min="0" max="2" step="0.1"><div class="ends"><span>заменителей нет</span><span>легко заменить</span></div></div>
+    </div>
+    <div class="group" style="border-left:4px solid var(--amber)">
+      <h2>Доход</h2>
+      <div class="ctrl"><div class="row"><label for="b">Доля товара в бюджете, %</label><input type="number" id="b-n" min="1" max="90" step="1" aria-label="Доля в бюджете, число"></div><input type="range" id="b" min="1" max="90" step="1"></div>
+      <div class="ctrl"><div class="row"><label for="k">Реакция на рост дохода <small>(− низший, + нормальный)</small></label><input type="number" id="k-n" min="-5" max="2" step="0.1" aria-label="Реакция на доход, число"></div><input type="range" id="k" min="-5" max="2" step="0.1"><div class="ends"><span>богаче — покупаю меньше</span><span>богаче — покупаю больше</span></div></div>
+    </div>
+    <details class="info"><summary>Как устроена модель</summary>
+      <p>Цена упала на d%. Эффект замещения всегда толкает покупки вверх: товар стал относительно дешевле, им замещают другие (сила × d).</p>
+      <p>Реальный доход вырос тем сильнее, чем больше доля товара в бюджете. Эффект дохода = реакция на доход × доля × d. У нормального товара он плюс, у низшего — минус.</p>
+      <p>Если эффект дохода отрицательный и по модулю больше эффекта замещения, покупки падают вслед за ценой — это товар Гиффена. Так бывает, только когда товар низший, занимает большую долю бюджета и у него нет заменителей.</p>
+    </details>
+  </div>
+</div>
+
+<script>
+const PRESETS = {
+  normal:   {d:20, s:1.0, b:5,  k:1.0},
+  inferior: {d:20, s:1.0, b:20, k:-2.0},
+  giffen:   {d:20, s:0.3, b:70, k:-4.0}
+};
+const FIELDS = ["d","s","b","k"];
+let st = {...PRESETS.normal};
+
+function bind(id){
+  const range = document.getElementById(id), num = document.getElementById(id + "-n");
+  range.addEventListener("input", () => { st[id] = Number(range.value); render(); });
+  num.addEventListener("change", () => { st[id] = Math.max(Number(num.min), Math.min(Number(num.max), Number(num.value) || 0)); render(); });
+}
+FIELDS.forEach(bind);
+document.querySelectorAll(".preset").forEach((b) => b.addEventListener("click", () => { st = {...PRESETS[b.dataset.p]}; render(); }));
+
+const fmt = (v) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(Math.round(v * 10) / 10).toLocaleString("ru-RU") + "%";
+const LIM = 60;
+function setFill(id, v, color){
+  const el = document.getElementById(id);
+  const w = Math.min(Math.abs(v), LIM) / LIM * 50;
+  el.style.width = w + "%";
+  el.style.left = v >= 0 ? "50%" : (50 - w) + "%";
+  if (color) el.style.background = color;
+}
+
+function render(){
+  FIELDS.forEach((id) => { document.getElementById(id).value = st[id]; document.getElementById(id + "-n").value = st[id]; });
+  const se = st.s * st.d;
+  const ie = st.k * (st.b / 100) * st.d;
+  const te = se + ie;
+  setFill("f-se", se); setFill("f-ie", ie);
+  setFill("f-te", te, te >= 0 ? "var(--green)" : "var(--red)");
+  document.getElementById("v-se").textContent = fmt(se);
+  document.getElementById("v-ie").textContent = fmt(ie);
+  document.getElementById("v-te").textContent = fmt(te);
+
+  let type, color, note;
+  if (st.k >= 0){ type = "Нормальный товар"; color = "var(--green)"; note = "Оба эффекта в одну сторону. Закон спроса выполняется."; }
+  else if (te >= 0){ type = "Низший товар"; color = "var(--amber)"; note = "Эффекты в разные стороны, замещение сильнее. Закон спроса выполняется."; }
+  else { type = "Товар Гиффена"; color = "var(--red)"; note = "Эффект дохода сильнее замещения. Закон спроса нарушен."; }
+  const badge = document.getElementById("type"); badge.textContent = type; badge.style.background = color;
+  document.getElementById("type-note").textContent = note;
+
+  // кривая спроса по двум точкам: цена 100 → 100 − d, объём 100 → 100 + te
+  const px = (q) => 34 + (q / 200) * 170, py = (p) => 140 - (p / 110) * 125;
+  const qA = 100, pA = 100, qB = Math.max(5, 100 + te), pB = 100 - st.d;
+  const A = [px(qA), py(pA)], B = [px(qB), py(pB)];
+  const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1, ext = 30;
+  const c = document.getElementById("dcurve");
+  c.setAttribute("x1", A[0] - dx / L * ext); c.setAttribute("y1", A[1] - dy / L * ext);
+  c.setAttribute("x2", B[0] + dx / L * ext); c.setAttribute("y2", B[1] + dy / L * ext);
+  c.setAttribute("stroke", te >= 0 ? "#6366f1" : "#dc2626");
+  const pa = document.getElementById("pA"), pb = document.getElementById("pB");
+  pa.setAttribute("cx", A[0]); pa.setAttribute("cy", A[1]); pb.setAttribute("cx", B[0]); pb.setAttribute("cy", B[1]);
+  const la = document.getElementById("lA"), lb = document.getElementById("lB");
+  la.setAttribute("x", A[0] + 7); la.setAttribute("y", A[1] - 6); lb.setAttribute("x", B[0] + 7); lb.setAttribute("y", B[1] + 14);
+  document.getElementById("dlbl").textContent = te >= 0 ? "кривая спроса нисходящая" : "кривая спроса восходящая";
+
+  const v = document.getElementById("verdict");
+  if (type === "Товар Гиффена") v.innerHTML = `<b>Парадокс: цена упала — покупают меньше (${fmt(te)})</b>Человек стал реально богаче и уходит от «вынужденного» товара к более дорогим. Эффект дохода (${fmt(ie)}) перекрыл эффект замещения (${fmt(se)}). В обратную сторону: подорожание беднит, и такого товара покупают больше.`;
+  else if (type === "Низший товар") v.innerHTML = `<b>Покупают больше, но слабее (${fmt(te)})</b>Замещение тянет покупки вверх (${fmt(se)}), а эффект дохода — вниз (${fmt(ie)}): став богаче, человек сам переходит к лучшему товару. Попробуйте увеличить долю в бюджете и убрать заменители — получите товар Гиффена.`;
+  else v.innerHTML = `<b>Покупают больше (${fmt(te)})</b>Товар стал относительно дешевле — им замещают другие (${fmt(se)}); человек стал реально богаче — и тоже покупает больше (${fmt(ie)}). Оба эффекта работают на закон спроса.`;
+}
+render();
+</script>
+</body>
+</html>

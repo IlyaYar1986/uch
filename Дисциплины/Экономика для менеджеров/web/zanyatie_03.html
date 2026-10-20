@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Экономика для менеджеров — занятие 3: спрос, предложение, равновесие</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --cyan:#0ea5e9;
+  --cyan-lt:#e0f2fe;
+  --amber:#f59e0b;
+  --amber-lt:#fffbeb;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+  --nav-h:56px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(99,102,241,.14),transparent 32%),
+    radial-gradient(circle at 85% 6%,rgba(14,165,233,.13),transparent 34%),
+    linear-gradient(180deg,#f8fafc 0%,#eef2ff 30%,#f8fafc 100%);
+  color:var(--text);
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;z-index:900;
+  gap:2px;overflow-x:auto;scrollbar-width:none;
+}
+nav.top::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:.93rem;color:var(--indigo-dk);white-space:nowrap;margin:0 10px 0 4px;flex-shrink:0}
+.nav-sep{width:1px;height:18px;background:var(--border);margin:0 6px;flex-shrink:0}
+.nav-link{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;transition:color .2s,background .2s;flex-shrink:0}
+.nav-link:hover,.nav-link.active{color:var(--indigo);background:var(--indigo-lt)}
+.nav-link:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* HERO */
+#hero{
+  min-height:100vh;padding:calc(var(--nav-h) + 56px) 24px 64px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
+.hero-badge{padding:5px 14px;background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:100px;font-size:.78rem;font-weight:700;color:var(--indigo-dk)}
+.hero-title{font-size:clamp(2rem,5.5vw,3.6rem);font-weight:900;line-height:1.12;letter-spacing:-1.5px;margin-bottom:16px;max-width:900px}
+.hero-title em{color:var(--indigo);font-style:normal}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:660px;margin-bottom:36px}
+.hero-img{max-width:900px;width:100%;margin-bottom:40px}
+.hero-nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:820px}
+.hero-nav a{padding:8px 16px;border-radius:10px;background:var(--card);border:1px solid var(--border);font-size:.82rem;font-weight:600;color:var(--text);text-decoration:none;box-shadow:0 2px 8px rgba(15,23,42,.05);transition:transform .15s,box-shadow .15s}
+.hero-nav a:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,.15)}
+
+/* SECTIONS */
+.sec{max-width:1180px;margin:0 auto;padding:72px 24px}
+.sec-head{margin-bottom:36px}
+.num-badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:13px;font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:14px}
+.n1{background:linear-gradient(135deg,#6366f1,#818cf8)}
+.n2{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
+.n3{background:linear-gradient(135deg,#8b5cf6,#a78bfa)}
+.n4{background:linear-gradient(135deg,#16a34a,#4ade80)}
+.n5{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+.n6{background:linear-gradient(135deg,#ec4899,#f472b6)}
+.n7{background:linear-gradient(135deg,#dc2626,#f87171)}
+.n8{background:linear-gradient(135deg,#0891b2,#22d3ee)}
+.n9{background:linear-gradient(135deg,#4338ca,#6366f1)}
+.sec-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.sec-desc{font-size:1rem;color:var(--muted);max-width:760px;line-height:1.75}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+
+/* CARD GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.grid .c-name{font-weight:800;margin-bottom:8px;font-size:.96rem}
+.grid p:not(.c-name){color:var(--muted);font-size:.88rem;line-height:1.6}
+
+/* CALLOUTS */
+.note-callout{background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:14px;padding:16px 20px;margin-bottom:24px}
+.note-callout p{color:var(--indigo-dk);font-size:.92rem;line-height:1.7}
+.warn-callout{background:var(--amber-lt);border:1px solid #fcd34d;border-radius:16px;padding:20px 24px;margin-top:20px}
+.warn-callout p{color:#78350f;line-height:1.7;font-size:.93rem}
+
+/* IMAGE CARD + PLACEHOLDER */
+.img-card{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.12);cursor:zoom-in}
+.img-card img{display:block;width:100%;height:auto}
+.img-card .img-missing-caption{display:none}
+.img-card.img-missing{border:2px dashed var(--border);background:var(--indigo-lt);min-height:220px;display:flex;align-items:center;justify-content:center;box-shadow:none;cursor:default}
+.img-card.img-missing img{display:none}
+.img-card.img-missing .img-missing-caption{display:block;color:var(--muted);font-size:.85rem;text-align:center;padding:24px;max-width:340px}
+
+/* VIZ CARD (iframe) */
+.viz{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.viz-bar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#f8fafc;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#febb2c}.dg{background:#27c840}
+.viz-lbl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);flex:1}
+.viz-fs{display:flex;align-items:center;gap:5px;padding:4px 10px;background:transparent;border:1px solid var(--border);border-radius:6px;font-size:.71rem;font-weight:600;color:var(--muted);cursor:pointer;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+.viz-fs:hover{background:var(--indigo-lt);color:var(--indigo);border-color:#c7d2fe}
+.viz iframe{width:100%;border:none;display:block}
+
+/* PROMPT BOX */
+.prompt-box{background:#0f172a;border-radius:14px;overflow:hidden;margin-bottom:18px}
+.prompt-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#1e293b;color:#e2e8f0;font-size:.82rem;font-weight:700}
+.copy-btn{padding:5px 12px;border-radius:8px;border:1px solid #475569;background:transparent;color:#e2e8f0;font-size:.76rem;font-weight:700;cursor:pointer;transition:background .2s}
+.copy-btn:hover{background:#334155}
+.prompt-box pre{margin:0;padding:18px 16px;color:#e2e8f0;font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+
+/* LIGHTBOX */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.92);z-index:2000;display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:auto}
+.overlay img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.overlay-close{position:absolute;top:18px;right:22px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.overlay-close:hover{background:rgba(255,255,255,.22)}
+.overlay-download{position:absolute;top:18px;right:72px;height:40px;padding:0 16px;border-radius:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;z-index:2}
+.overlay-download:hover{background:rgba(255,255,255,.22)}
+
+/* FULLSCREEN IFRAME OVERLAY */
+#fs-overlay{position:fixed;inset:0;background:rgba(2,6,23,.94);z-index:2100;display:none;flex-direction:column}
+#fs-overlay.open{display:flex}
+#fs-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(255,255,255,.08)}
+#fs-title{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.65);flex:1}
+#fs-close{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.8);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#fs-close:hover{background:rgba(255,255,255,.2)}
+#fs-frame{flex:1;border:none;background:#fff}
+
+/* CHECKLIST */
+.checklist-progress-bar{height:10px;border-radius:100px;background:var(--indigo-lt);overflow:hidden;margin-bottom:20px}
+.checklist-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--indigo),var(--cyan));border-radius:100px;transition:width .3s ease}
+.checklist-items{list-style:none;display:flex;flex-direction:column;gap:12px}
+.checklist-items label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.95rem}
+.checklist-items input{width:18px;height:18px;accent-color:var(--indigo);cursor:pointer;flex-shrink:0}
+.checklist-done{margin-top:18px;padding:12px 16px;background:var(--green-lt);color:var(--green);border-radius:10px;font-weight:700}
+
+/* QUIZ */
+.quiz{display:flex;flex-direction:column;gap:18px}
+.quiz-question{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.quiz-text{font-weight:700;margin-bottom:12px}
+.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.quiz-options label{display:flex;align-items:center;gap:8px;font-size:.92rem;cursor:pointer}
+.quiz-options label.quiz-correct-answer{color:var(--green);font-weight:700}
+.quiz-options input{accent-color:var(--indigo)}
+.quiz-check{padding:8px 16px;border-radius:9px;border:none;background:var(--indigo);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer}
+.quiz-check:hover{background:var(--indigo-dk)}
+.quiz-feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem}
+.quiz-feedback.correct{background:var(--green-lt);color:var(--green)}
+.quiz-feedback.incorrect{background:var(--red-lt);color:var(--red)}
+.quiz-score-box{text-align:center;font-weight:800;color:var(--indigo-dk)}
+
+/* CONCLUSION */
+.conclusion-list{list-style:none;counter-reset:concl;display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.conclusion-list li{counter-increment:concl;padding-left:38px;position:relative;font-size:1rem}
+.conclusion-list li::before{content:counter(concl);position:absolute;left:0;top:-2px;width:26px;height:26px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+.svc-link{color:var(--indigo);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+
+/* SCROLL REVEAL */
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.fade.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.fade{opacity:1;transform:none;transition:none}}
+@media (max-width:900px){.sec{padding:56px 18px}}
+
+
+/* ДОПОЛНИТЕЛЬНЫЕ БЛОКИ УЧЕБНОЙ СТРАНИЦЫ */
+.legend-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:-14px 0 30px;max-width:900px}
+.legend-row span{font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:var(--card);color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.card h3{font-size:1.02rem;font-weight:800;margin-bottom:8px}
+.card p,.card li{font-size:.94rem;line-height:1.7}
+.card ul,.card ol{padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.lecture-tag,.extra-tag,.practice-tag,.trap-tag,.opinion-tag{display:inline-block;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:100px;margin-bottom:8px}
+.lecture-tag{background:var(--indigo-lt);color:var(--indigo-dk)}
+.extra-tag{background:var(--cyan-lt);color:#0369a1}
+.practice-tag{background:var(--green-lt);color:var(--green)}
+.trap-tag{background:var(--red-lt);color:var(--red)}
+.opinion-tag{background:var(--amber-lt);color:#92400e}
+.extra{background:linear-gradient(180deg,#f0f9ff,#fff);border:1px solid #bae6fd;border-left:5px solid var(--cyan);border-radius:16px;padding:18px 22px}
+.practice{background:linear-gradient(180deg,var(--green-lt),#fff);border:1px solid #bbf7d0;border-left:5px solid var(--green);border-radius:16px;padding:18px 22px}
+.trap{background:var(--red-lt);border:1px solid #fecaca;border-left:5px solid var(--red);border-radius:16px;padding:16px 22px}
+.opinion{background:var(--amber-lt);border:1px solid #fcd34d;border-left:5px solid var(--amber);border-radius:16px;padding:18px 22px}
+.extra h3,.practice h3,.trap h3,.opinion h3{font-size:1rem;font-weight:800;margin-bottom:6px}
+.extra p,.extra li,.practice p,.practice li,.trap p,.trap li,.opinion p,.opinion li{font-size:.93rem;line-height:1.7}
+.extra ul,.practice ul,.practice ol,.trap ul,.opinion ul{padding-left:20px;display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.src{font-size:.8rem;color:var(--muted);margin-top:8px}
+.src a{color:#0369a1}
+.def{background:var(--card);border:1px solid #c7d2fe;border-left:5px solid var(--indigo);border-radius:14px;padding:14px 20px;font-size:1rem;line-height:1.7}
+.def b{color:var(--indigo-dk)}
+.formula{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:clamp(1.2rem,2.6vw,1.7rem);font-weight:800;text-align:center;padding:16px;background:var(--indigo-lt);border-radius:14px;color:var(--indigo-dk);letter-spacing:.5px}
+details.ref{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0 18px}
+details.ref + details.ref{margin-top:8px}
+details.ref summary{cursor:pointer;padding:12px 0;font-weight:800;font-size:.93rem;list-style:none;display:flex;gap:8px;align-items:center}
+details.ref summary::before{content:"🧭"}
+details.ref summary::-webkit-details-marker{display:none}
+details.ref[open] summary{border-bottom:1px dashed var(--border)}
+details.ref .ref-body{padding:10px 0 14px;font-size:.92rem;line-height:1.7;color:#334155}
+details.ref .ref-body p + p{margin-top:6px}
+table.cmp{width:100%;border-collapse:collapse;background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--border);font-size:.92rem}
+table.cmp th{background:var(--indigo-lt);color:var(--indigo-dk);text-align:left;padding:10px 14px;font-size:.84rem}
+table.cmp td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top;line-height:1.6}
+table.cmp td:first-child{font-weight:700}
+.table-wrap{overflow-x:auto}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.flow .step{flex:1 1 140px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;position:relative}
+.flow .step b{display:block;color:var(--indigo-dk);font-size:.92rem}
+.flow .step span{font-size:.84rem;color:var(--muted)}
+.flow .step .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.78rem;font-weight:800;align-items:center;justify-content:center;margin-bottom:6px}
+.quiz-feedback .explain{display:block;margin-top:6px;color:var(--text);font-weight:500}
+
+footer{text-align:center;padding:32px 20px 48px;color:var(--muted);font-size:.85rem}
+/* podcast */
+.podcast{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;max-width:760px;width:100%;margin:0 auto 28px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 10px rgba(15,23,42,.06);text-align:left}
+.podcast-head{flex:1 1 220px}
+.podcast-title{font-weight:800;font-size:1rem;color:var(--indigo-dk)}
+.podcast-meta{font-size:.82rem;color:var(--muted)}
+.podcast audio{flex:1 1 280px;height:40px}
+.podcast-dl{padding:9px 16px;border-radius:10px;background:var(--indigo);color:#fff;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap}
+.podcast-dl:hover{filter:brightness(1.1)}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Навигация по странице">
+  <a class="nav-link" href="../index.html">← Все уроки</a>
+  <span class="nav-sep"></span>
+  <span class="nav-logo">Экономика · занятие 3</span>
+  <span class="nav-sep"></span>
+  <a class="nav-link" href="#s1">Альтернативная стоимость</a>
+  <a class="nav-link" href="#s2">Ценовая дискриминация</a>
+  <a class="nav-link" href="#s3">Спрос</a>
+  <a class="nav-link" href="#s4">Факторы спроса</a>
+  <a class="nav-link" href="#s5">Эффекты</a>
+  <a class="nav-link" href="#s6">Исключения</a>
+  <a class="nav-link" href="#s7">Предложение</a>
+  <a class="nav-link" href="#s8">Равновесие</a>
+  <a class="nav-link" href="#s9">8 ситуаций</a>
+  <a class="nav-link" href="#checklist">Чек-лист</a>
+  <a class="nav-link" href="#quiz">Квиз</a>
+</nav>
+
+<header id="hero">
+  <div class="hero-badges">
+    <span class="hero-badge">Занятие 3 · 19.10.2026</span>
+    <span class="hero-badge">Тема 2. Спрос, предложение, рыночное равновесие</span>
+    <span class="hero-badge">Подготовка к федеральному тестированию</span>
+  </div>
+  <h1 class="hero-title">Цена — место, где <em>спрос</em> встречает предложение</h1>
+  <p class="hero-sub">После этой страницы вы сможете посчитать альтернативную стоимость решения, отличить спрос от величины спроса, объяснить парадокс Гиффена через эффекты дохода и замещения и за десять секунд предсказать, что будет с ценой и объёмом при любом сдвиге рынка.</p>
+  <!-- podcast:start -->
+  <div class="podcast" aria-label="Подкаст по уроку">
+    <div class="podcast-head">
+      <div class="podcast-title">🎧 Подкаст по уроку</div>
+      <div class="podcast-meta">Беседа по опорному конспекту · 22 мин · MP3, 10 МБ</div>
+    </div>
+    <audio controls preload="none" src="../audio/zanyatie_03.mp3"></audio>
+    <a class="podcast-dl" href="../audio/zanyatie_03.mp3" download>⬇ Скачать</a>
+  </div>
+  <!-- podcast:end -->
+  <div class="legend-row" aria-label="Обозначения на странице">
+    <span>📘 Из лекции</span>
+    <span>➕ Дополнение: не из лекции, с источником</span>
+    <span>🧭 Справка: кто это и в чём суть</span>
+    <span>🛠 На практике</span>
+    <span>⚠️ Ловушка теста</span>
+    <span>💬 Мнение преподавателя</span>
+  </div>
+  <figure class="img-card hero-img" data-lightbox>
+    <img src="../png/zanyatie_03/00_karta_zanyatiya.webp" width="1672" height="941" alt="Карта занятия: план ярмарки с тремя павильонами — цена выбора, спрос, предложение и равновесие; девять остановок, у каждой свой вопрос" loading="eager" fetchpriority="high" onerror="this.closest('.img-card').classList.add('img-missing')">
+    <figcaption class="img-missing-caption">Карта занятия: 9 разделов и их вопросы (промпт 00)</figcaption>
+  </figure>
+  <nav class="hero-nav" aria-label="Разделы страницы">
+    <a href="#s1">1 · Альтернативная стоимость</a>
+    <a href="#s2">2 · Ценовая дискриминация</a>
+    <a href="#s3">3 · Спрос и закон спроса</a>
+    <a href="#s4">4 · Неценовые факторы спроса</a>
+    <a href="#s5">5 · Эффекты дохода и замещения</a>
+    <a href="#s6">6 · Исключения из закона спроса</a>
+    <a href="#s7">7 · Предложение</a>
+    <a href="#s8">8 · Рыночное равновесие</a>
+    <a href="#s9">9 · Восемь ситуаций</a>
+    <a href="#quiz">Проверить себя</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ══════════ БЛОК 1: альтернативная стоимость ══════════ -->
+<section class="sec" id="s1">
+  <div class="sec-head fade">
+    <div class="num-badge n1">1</div>
+    <h2 class="sec-title">Альтернативная стоимость и экономический выбор</h2>
+    <p class="sec-desc">Три часа на лекции стоят не ноль: за них вы отказались от чего-то другого. Лучшее из отвергнутого и есть цена вашего выбора.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_03/01_alternativnaya_stoimost.webp" width="1672" height="941" alt="Развилка дорог: выбранная дорога подсвечена, у лучшей из отвергнутых — золотой указатель «альтернативная стоимость»; у руководителя и студента разная цена выбора; песочные часы 18:00–21:00" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Развилка выбора и альтернативная стоимость (промпт 01)</figcaption>
+    </figure>
+
+    <div class="def fade"><b>Альтернативная стоимость</b> — мера того, что должно быть отдано, чтобы получить желаемое. Её измеряют ценностью <b>наилучшей из отвергнутых альтернатив</b>.</div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Объективна и субъективна одновременно</h3>
+        <p><b>Объективна</b>: ресурсы ограничены у всех, поэтому выбирают все. <b>Субъективна</b>: цена выбора зависит от того, <b>кто</b> выбирает.</p>
+        <p style="margin-top:6px">Пример преподавателя: её альтернатива занятию — подготовка к лекции в магистратуре; спортзал и прогулка с собакой — дальше по списку. В деньгах: 4 часа пары — 3 200 ₽, а премиальное репетиторство за те же 4 часа — 16 000 ₽. Она выбирает пару: обязательства, перспектива, «быть в креативной среде». Мотивы рационального выбора не обязаны быть денежными.</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Рациональность и экономический выбор</h3>
+        <p><b>Рациональность</b> — продуманность, взвешенность, целесообразность в принятии управленческих решений.</p>
+        <p style="margin-top:6px">Преподаватель продиктовала: «<b>Экономический выбор — выбор наилучшей из отвергнутых альтернатив</b>» и предупредила, что говорить «из упущенных» нельзя: выбранное не упущено.</p>
+      </div>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>«Выбор» и «цена выбора» — разные вещи</h3>
+      <ul>
+        <li><b>Выбирают</b> лучший вариант из всех доступных. <b>Цена выбора</b> (альтернативная стоимость) — лучший из <b>отвергнутых</b>. Формулировку с лекции разумно читать так: выбор оценивается через наилучшую из отвергнутых альтернатив.</li>
+        <li>В российских учебниках и тестах стандартен термин «<b>издержки упущенных возможностей</b>» — ценность наилучшей <b>упущенной</b> альтернативы. Если в тесте так написано, это верный ответ.</li>
+        <li>Альтернативная стоимость — <b>только одна</b>, лучшая отвергнутая альтернатива, а не сумма всех.</li>
+      </ul>
+    </div>
+
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · задачи «как в тестах»</span>
+      <h3>Сначала решите сами</h3>
+      <ol>
+        <li>Инна могла работать за 5–10 ₽ в час, выбрала работу инженера-исследователя за 7 ₽ в час и заключила контракт на год. Какова альтернативная стоимость часа свободного времени в течение рабочего дня?</li>
+        <li>Работа за 4–8 ₽ в час доступна только с 9 до 18, других возможностей нет. Какова альтернативная стоимость часа свободного времени с 20:00 до 8:00?</li>
+        <li>Москва — Красноярск: самолёт — сутки и 1 000 ₽, поезд — 4 дня и 580 ₽. Сколько инженер должен зарабатывать в будний день (получает, только если работает), чтобы ему было всё равно?</li>
+      </ol>
+      <details class="ref" style="margin-top:10px"><summary>Ответы и разбор</summary><div class="ref-body">
+        <p><b>1. 7 ₽.</b> Свободный час в рабочий день — это час, когда она не на своей работе. Контракт заключён, место за 10 ₽ ей больше не доступно.</p>
+        <p><b>2. Ноль.</b> Ночью оплачиваемой альтернативы нет — отказываться не от чего.</p>
+        <p><b>3. 140 ₽.</b> Полная цена = билет + неполученный заработок. «Всё равно» — знак равенства: 1 000 + x = 580 + 4x → 420 = 3x → x = 140.</p>
+      </div></details>
+    </div>
+
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · самолёт или поезд</span>
+        <button type="button" class="viz-fs" data-fs-src="alternativnaya_stoimost.html" data-fs-title="Тренажёр: самолёт или поезд">⛶ На весь экран</button>
+      </div>
+      <iframe src="alternativnaya_stoimost.html" height="590" loading="lazy" title="Тренажёр альтернативной стоимости: самолёт или поезд"></iframe>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Считайте полную цену решения</h3>
+      <ul>
+        <li><b>«Сэкономим на подрядчике — сделаем сами»</b>: добавьте к смете часы своих сотрудников, умноженные на то, что они принесли бы на основной работе.</li>
+        <li><b>Командировка поездом вместо самолёта</b> дешевле только для того, чьё время дешевле разницы в билетах. Для руководителя чаще наоборот.</li>
+        <li><b>Деньги на счёте не бесплатны</b>: их альтернатива — хотя бы ставка по депозиту. Проект, который приносит меньше, проигрывает «ничегонеделанию».</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 2: ценовая дискриминация ══════════ -->
+<section class="sec" id="s2">
+  <div class="sec-head fade">
+    <div class="num-badge n2">2</div>
+    <h2 class="sec-title">Ценовая дискриминация</h2>
+    <p class="sec-desc">Почему билет с ночёвкой на выходные дешевле, а купоны вырезают одни и те же люди: у разных покупателей разная альтернативная стоимость времени.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_03/02_cenovaya_diskriminaciya.webp" width="1672" height="941" alt="Один и тот же билет в кино за три цены; три рода ценовой дискриминации: базар и репетитор, пакеты больше — дешевле, музей с ценами для пенсионеров и студентов; ключ «рыночная власть»" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Три рода ценовой дискриминации (промпт 02)</figcaption>
+    </figure>
+
+    <div class="def fade"><b>Ценовая дискриминация</b> — продажа одного и того же товара или услуги разным категориям потребителей по разным ценам <b>без разницы в качестве</b>. Возможна, когда у фирмы есть <b>рыночная власть</b> — возможность назначать цену.</div>
+
+    <div class="grid fade">
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">1-го рода (совершенная)</p><p><b>Каждому покупателю — своя цена.</b> Клиента видят в лицо: репетиторы, стоматологи, косметологи, адвокаты. Восточный базар без ценников — продавец в торге нащупывает предел, сколько вы готовы заплатить. Цена может отклоняться и вниз.</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">2-го рода</p><p><b>Цена зависит от объёма покупки.</b> Фирма не видит покупателя, но знает, что за большой объём он готов платить меньше за единицу: тарифы связи и интернета, подписки, пакеты.</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">3-го рода</p><p><b>Цена зависит от категории покупателя.</b> Пенсионная скидка в определённые часы, студенческий билет в музей, абонемент в спортклуб для студентов на 30% дешевле, ночные промокоды для подписчиков телеграм-канала, утренний сеанс в кино.</p></div>
+    </div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · кейсы Мэнкью</span>
+        <h3>Авиабилеты и купоны</h3>
+        <p><b>Билеты дешевле, если пассажир остаётся в пункте назначения на выходные.</b> Деловой пассажир не останется: у него сделка в другом месте, его потери несопоставимы с ценой билета. Отдыхающий останется — для него это и есть отдых. «Это разные потоки», — сформулировал слушатель, и преподаватель согласилась: у потоков разная цена свободного времени.</p>
+        <p style="margin-top:6px"><b>Купоны вместо скидки для всех.</b> Вырезать купоны будут те, чьё время дешевле (пенсионеры, временно неработающие). Деловой человек придёт и купит без скидки — фирма получает с него полную цену.</p>
+      </div>
+      <div class="extra">
+        <span class="extra-tag">➕ Дополнение</span>
+        <h3>Три условия, а не одно</h3>
+        <p>Кроме рыночной власти, для ценовой дискриминации нужно: <b>разделить покупателей</b> на группы с разной готовностью платить (по объёму, возрасту, времени, месту) и <b>не допустить перепродажи</b> — иначе студент купит дешёвый билет и перепродаст его взрослому. Классификацию трёх родов предложил британский экономист Артур Пигу в «Экономической теории благосостояния» (1920).</p>
+        <p class="src">Источник: N. G. Mankiw, <i>Principles of Economics</i>, гл. «Монополия», раздел «Ценовая дискриминация»; A. C. Pigou, <i>The Economics of Welfare</i>, 1920.</p>
+      </div>
+    </div>
+
+    <div class="fade">
+      <details class="ref"><summary>Н. Грегори Мэнкью и «Принципы экономикс»</summary><div class="ref-body">
+        <p>Гарвардский профессор, в 2003–2005 годах — председатель Совета экономических консультантов при президенте США. Его учебник <i>Principles of Economics</i> (первое издание — 1998) — один из самых распространённых вводных курсов в мире, переведён на русский. Преподаватель рекомендует его для самостоятельного изучения; определение альтернативной стоимости на этом занятии — из Мэнкью.</p>
+      </div></details>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Разная цена — не всегда дискриминация</h3>
+      <p>Если товар отличается качеством, комплектацией или местом и временем доставки, разная цена — это <b>разные товары</b>, а не ценовая дискриминация. Поэтому пример слушателя с дорогой бутылкой воды в аэропорту спорен: там продают «воду здесь и сейчас», платят за аренду в терминале, а конкуренция ограничена. Классический пример — <b>один и тот же</b> товар для разных групп.</p>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Как это использовать честно</h3>
+      <ul>
+        <li><b>Сегментируйте по готовности платить</b>: тарифы «базовый / бизнес», скидка за объём, льготы для студентов — так вы забираете выручку, которую иначе отдали бы конкуренту.</li>
+        <li><b>Закройте перепродажу</b>: именные абонементы, привязка промокода к аккаунту.</li>
+        <li><b>Не путайте с обманом</b>: скрытые наценки «для своих» и разные цены за одинаковый товар в одном канале бьют по доверию — и подпадают под антимонопольное регулирование, если у компании доминирующее положение.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 3: спрос и закон спроса ══════════ -->
+<section class="sec" id="s3">
+  <div class="sec-head fade">
+    <div class="num-badge n3">3</div>
+    <h2 class="sec-title">Спрос, величина спроса и закон спроса</h2>
+    <p class="sec-desc">Центральная тема микроэкономики. Сначала — анализ: изучаем спрос отдельно от предложения. Потом — синтез: соединяем их «ножницами Маршалла».</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_03/03_spros_zakon_sprosa.webp" width="1672" height="941" alt="Лестница кривой спроса: человек идёт по ступеням при изменении цены, а рабочие двигают всю лестницу при неценовом факторе; сердце и кошелёк — желание и возможность; три стакана воды; ножницы Маршалла" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Спрос и величина спроса (промпт 03)</figcaption>
+    </figure>
+
+    <div class="two fade">
+      <div class="def"><b>Спрос (D)</b> — желание и возможность покупателя приобретать данное благо на данном рынке по каждой данной цене. <b>Качественная характеристика.</b></div>
+      <div class="def"><b>Величина спроса (Qd)</b> — объём, который потребители приобретут за определённый период времени. <b>Количественная характеристика</b>; измеряется в единицах рынка: штуки, килограммы, часы. Спрос — это <b>поток</b>.</div>
+    </div>
+
+    <div class="formula fade">Закон спроса: P ↑ → Qd ↓ (при прочих равных)</div>
+
+    <div class="def fade"><b>Закон спроса</b> отображает <b>обратную зависимость между величиной спроса и ценой при прочих равных условиях</b>. В его основе — <b>закон убывающей предельной полезности</b>: каждая следующая единица в однократном акте потребления полезна меньше, человеку свойственно насыщаться.</div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Цена — движение по кривой</h3>
+        <p>Тренировка у любимого тренера стоила 1 500 ₽ — посетитель ходил 6 раз в месяц. Клуб поднял цену — стал ходить 4 раза. Мы перешли из точки A в точку B <b>по той же кривой</b>: изменилась <b>величина спроса</b>, а сам спрос (желание и возможность) — нет.</p>
+        <p style="margin-top:6px">Полукомбинезон: за полную цену беру один, при скидке за второй — два («одни в город, другие в деревню»). Вторая единица нужна меньше — её купят только дешевле.</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Неценовой фактор — сдвиг кривой</h3>
+        <p>«Качество спроса меняется под воздействием неценовых факторов!» Посетитель стал больше зарабатывать: цена та же, 1 500 ₽, но ходит он уже 8 раз. Сдвинулась <b>вся линия</b> D → D1.</p>
+        <p style="margin-top:6px"><b>Рост — сдвиг вправо, падение — влево</b> («штуки растут вправо»). Цена — всегда по вертикальной оси: это экономическая традиция.</p>
+      </div>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Самая частая путаница темы</h3>
+      <ul>
+        <li>«Цена выросла, и <b>спрос</b> упал» — неверно. Упала <b>величина спроса</b>; спрос не изменился.</li>
+        <li>Определение закона без «<b>при прочих равных условиях</b>» — неполное. Преподаватель отдельно подчеркнула: в старых учебниках формулировку обрывали.</li>
+        <li>Зависимость <b>обратная</b>: переменные меняются в разные стороны.</li>
+      </ul>
+    </div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Анализ и синтез</h3>
+        <p><b>Моделирование — основной метод экономической науки, оно строится на допущениях.</b> <b>Анализ</b> — раскладываем рыночный механизм на части и изучаем каждую отдельно по одному плану: понятие и величина → закон → неценовые факторы. <b>Синтез</b> — соединяем спрос и предложение в одной системе координат, чтобы найти <b>параметры равновесия</b>: равновесную цену и равновесный объём (точка E).</p>
+      </div>
+      <div class="trap">
+        <span class="trap-tag">⚠️ Ловушка теста</span>
+        <h3>«Неоклассический синтез» — термин с двумя значениями</h3>
+        <p>На лекции так назвали соединение спроса и предложения у Маршалла. В большинстве учебников «<b>неоклассический синтез</b>» — это синтез <b>кейнсианства и неоклассики</b> (Хикс, Самуэльсон, 1940–1950-е). Маршалл соединил две теории ценности — по полезности и по издержкам. Если в тесте спросят про автора неоклассического синтеза, скорее всего имеют в виду Самуэльсона.</p>
+      </div>
+    </div>
+
+    <div class="fade">
+      <details class="ref"><summary>Альфред Маршалл (1842–1924) и его ножницы</summary><div class="ref-body">
+        <p>Кембриджский профессор, автор «Принципов экономической науки» (1890) — главного учебника экономики на полвека. Ввёл привычный нам график: цена по вертикали, количество по горизонтали, кривые спроса и предложения крест-накрест.</p>
+        <p>Его метафора: спорить, что определяет стоимость — полезность (спрос) или издержки производства (предложение), — всё равно что спорить, какое лезвие ножниц режет бумагу, верхнее или нижнее. Режут оба. Это закон 3 в <a class="svc-link" href="zakony.html#law-3">реестре законов</a>.</p>
+      </div></details>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Читайте продажи правильно</h3>
+      <ul>
+        <li><b>Продажи упали после повышения цены</b> — это движение по кривой, ожидаемая реакция. <b>Продажи упали при той же цене</b> — сдвинулся сам спрос: ищите неценовую причину (доходы клиентов, конкурент, мода).</li>
+        <li><b>Скидка на второй товар</b> работает из-за убывающей полезности: вторую единицу купят только дешевле.</li>
+        <li><b>Цена — независимая переменная, объём — зависимая.</b> В анализе продаж сначала фиксируйте цену, потом смотрите на объём.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 4: неценовые факторы ══════════ -->
+<section class="sec" id="s4">
+  <div class="sec-head fade">
+    <div class="num-badge n4">4</div>
+    <h2 class="sec-title">Неценовые факторы спроса</h2>
+    <p class="sec-desc">Детерминанты спроса — то, что двигает всю кривую. У преподавателя они выстроены по важности: на первом месте доходы.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_03/04_faktory_sprosa.webp" width="1672" height="941" alt="Кривая спроса — парусник, который толкают ветры: доходы, вкусы и мода, цены связанных товаров, ожидания, число покупателей; такси и маршрутка; пончики на весах — заменители; принтер и картридж — дополнения" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Неценовые факторы спроса (промпт 04)</figcaption>
+    </figure>
+
+    <div class="grid fade">
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">1. Доходы потребителей (I)</p><p>Главный фактор. <b>Нормальные (качественные) товары</b>: доход растёт — спрос растёт. <b>Низшие (инфериорные) блага</b>: доход растёт — спрос падает.</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">2. Вкусы и предпочтения</p><p>Формируются модой и рекламой; на них работает и нейромаркетолог. Модели мужского поведения из литературы: метросексуал, техносексуал, ретросексуал.</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">3. Цены связанных товаров</p><p><b>Субституты (заменители)</b>: пончики в «Магните» и в «Пятёрочке». <b>Комплементы (дополняющие)</b>: принтер и картридж.</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">4. Ожидания</p><p>Ничего ещё не произошло, но покупатели ждут подорожания — спрос растёт уже сегодня. Концепция адаптивных ожиданий — 1950-е годы.</p></div>
+      <div class="card"><span class="extra-tag">➕ Дополнение</span><p class="c-name">5. Число покупателей</p><p>Преподаватель назвала свой перечень исчерпывающим, но в учебниках (Мэнкью, Самуэльсон) есть ещё <b>размер рынка</b>: больше покупателей — спрос растёт. Пример: новый жилой квартал рядом с магазином.</p></div>
+    </div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Низшее — не значит плохое</h3>
+        <p>Это реакция на доход, а не оценка качества: для одного — низшее благо, для другого — нормальный товар. Примеры с занятия:</p>
+        <ul>
+          <li>школьный буфет с булками — столовая с полноценным обедом;</li>
+          <li>маршрутка — такси; гараж — дилерский сервис;</li>
+          <li>«Пятёрочка» — «Вкусно — и точка» — ресторан (для студента и для привыкшего к ресторанам — по-разному);</li>
+          <li>рафинированное подсолнечное масло — оливковое; онлайн-курсы — частный репетитор; секонд-хенд.</li>
+        </ul>
+        <p style="margin-top:6px">В 90-е разорились ателье: у людей не было денег, спрос ушёл на дешёвую массовую одежду.</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Заменитель появился — спрос упал</h3>
+        <p>Посетитель ходил к тренеру 6 раз по 1 500 ₽. В клубе открылся бассейн с тренером за 1 200 ₽ — теперь 4 раза к своему и 2 раза в бассейн. Цена его тренера не менялась, а спрос сдвинулся влево: на рынке появился более дешёвый субститут.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <tr><th>Связь товаров</th><th>Что случилось</th><th>Спрос на другой товар</th><th>Зависимость</th></tr>
+        <tr><td>Субституты</td><td>пончики в «Магните» подешевели</td><td>в «Пятёрочке» падает</td><td><b>прямая</b>: цена одного ↓ — спрос на другой ↓</td></tr>
+        <tr><td>Комплементы</td><td>картриджи подешевели</td><td>на принтеры растёт</td><td><b>обратная</b>: цена одного ↓ — спрос на другой ↑</td></tr>
+      </table>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>У комплементов связь обратная</h3>
+      <p>На занятии преподаватель про картриджи и принтеры оговорилась: «зависимость прямая». По теории для дополняющих товаров связь <b>цены одного</b> и <b>спроса на другой</b> — <b>обратная</b>: картриджи дорожают → спрос на принтеры падает. Прямая связь — у заменителей. Сами примеры на занятии разобраны верно.</p>
+    </div>
+
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · рынок гречи: двигайте неценовые факторы</span>
+        <button type="button" class="viz-fs" data-fs-src="rynok_trenazher.html" data-fs-title="Тренажёр: рынок гречи">⛶ На весь экран</button>
+      </div>
+      <iframe src="rynok_trenazher.html" height="790" loading="lazy" title="Тренажёр рынка гречи: неценовые факторы спроса и предложения"></iframe>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Карта факторов вашего спроса</h3>
+      <ul>
+        <li><b>Узнайте, нормальный у вас товар или низший</b> для вашего клиента. Низшее благо растёт в кризис (дискаунтеры, ремонт вместо покупки) и проседает в рост доходов.</li>
+        <li><b>Следите за ценами заменителей и дополнений</b>: подорожал субститут — у вас окно для роста; подорожал комплемент — ждите падения.</li>
+        <li><b>Управляйте ожиданиями</b>: анонс подорожания поднимает спрос сегодня, но «съедает» продажи завтрашнего дня.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 5: эффекты дохода и замещения ══════════ -->
+<section class="sec" id="s5">
+  <div class="sec-head fade">
+    <div class="num-badge n5">5</div>
+    <h2 class="sec-title">Эффект дохода и эффект замещения</h2>
+    <p class="sec-desc">Почему при снижении цены покупают больше? Две причины сразу: товар стал относительно дешевле, а покупатель — реально богаче.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_03/05_effekty_dohoda_zamescheniya.webp" width="1672" height="941" alt="Корзина зелёных и красных яблок; рука меняет красное яблоко на зелёное — эффект замещения; потяжелевший кошелёк — эффект дохода; стрелки эффектов для нормального, низшего товара и товара Гиффена" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Эффекты дохода и замещения (промпт 05)</figcaption>
+    </figure>
+
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции</span>
+      <h3>Корзина яблок</h3>
+      <p>В корзине X зелёных и Y красных яблок. Зелёные подешевели — теперь их в корзине относительно больше. Это <b>общий эффект</b>, и рациональный покупатель приходит к нему по двум причинам: он <b>замещает</b> дорогие красные дешёвыми зелёными и становится <b>реально богаче</b> — на ту же сумму покупает больше.</p>
+    </div>
+
+    <div class="two fade">
+      <div class="def"><b>Эффект замещения</b> — замещение в структуре потребления одного блага другим в результате изменения <b>относительных цен</b>.</div>
+      <div class="def"><b>Эффект дохода</b> — изменение в потреблении, связанное с изменением <b>реального дохода</b>.</div>
+    </div>
+
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <tr><th>Цена товара упала</th><th>Эффект замещения</th><th>Эффект дохода</th><th>Итог</th></tr>
+        <tr><td>Нормальный товар</td><td>покупают больше</td><td>покупают больше</td><td>эффекты в одну сторону — закон спроса выполняется</td></tr>
+        <tr><td>Низший товар</td><td>покупают больше</td><td>покупают меньше</td><td>в разные стороны, замещение сильнее — закон выполняется, реакция слабее</td></tr>
+        <tr><td>Товар Гиффена</td><td>покупают больше</td><td>покупают меньше, и <b>сильнее</b></td><td>эффект дохода перекрывает замещение — закон спроса нарушается</td></tr>
+      </table>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Эффекты не сдвигают кривую</h3>
+      <p>Эффекты дохода и замещения — реакция на изменение <b>цены</b>, то есть движение <b>по</b> кривой спроса. Они объясняют, почему кривая наклонена вниз (или, у товара Гиффена, вверх). Сдвиг кривой — только от неценовых факторов.</p>
+    </div>
+
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · эффект дохода и эффект замещения</span>
+        <button type="button" class="viz-fs" data-fs-src="effekty_trenazher.html" data-fs-title="Тренажёр: эффекты дохода и замещения">⛶ На весь экран</button>
+      </div>
+      <iframe src="effekty_trenazher.html" height="590" loading="lazy" title="Тренажёр эффектов дохода и замещения"></iframe>
+    </div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · учебник Кима</span>
+        <h3>Консервы, хлеб и килька</h3>
+        <p>Одна банка консервов «стоит» 2,5 буханки хлеба: столько хлеба вы не купите, взяв банку. Это альтернативная стоимость, посчитанная через <b>относительные цены</b>.</p>
+        <p style="margin-top:6px">Кейс с килькой: студенту подняли стипендию до 1 400 (номинально), а килька подорожала относительно хлеба. Он может купить прежнюю корзину, но кильки берёт меньше — её альтернативная стоимость выросла. Это <b>чистый эффект замещения</b>.</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Как сократить спрос на мясо, «не заведя ни одной коровы»</h3>
+        <p>Кейс советских экономистов (70-е, дефицит мяса): поднять цену мяса и <b>одновременно пропорционально поднять номинальные доходы</b>. Тогда благосостояние сохраняется, а люди сами заменяют мясо другими продуктами — работает только эффект замещения.</p>
+        <p style="margin-top:6px">Зачем повышать доходы? Без компенсации люди реально обеднеют, и потребление изменится через бедность, а не через замещение.</p>
+      </div>
+    </div>
+
+    <div class="extra fade">
+      <span class="extra-tag">➕ Дополнение</span>
+      <h3>Компенсация по Слуцкому — инструмент, а не только история</h3>
+      <p>Подъём номинального дохода ровно настолько, чтобы человек мог купить прежний набор, называют <b>компенсирующим изменением дохода по Слуцкому</b>. Так же устроена индексация зарплат и пенсий на инфляцию: государство пытается сохранить реальный доход, оставив людям сигнал относительных цен.</p>
+      <p class="src">Источник: E. Slutsky, «Sulla teoria del bilancio del consumatore», <i>Giornale degli Economisti</i>, 1915; J. R. Hicks, <i>Value and Capital</i>, 1939.</p>
+    </div>
+
+    <div class="fade">
+      <details class="ref"><summary>Евгений Слуцкий (1880–1948) — наш земляк</summary><div class="ref-body">
+        <p>Родился в селе Новое Мологского уезда Ярославской губернии. В 1915 году разложил реакцию покупателя на изменение цены на эффект замещения и эффект дохода и записал это уравнением, которое сейчас называют <b>уравнением Слуцкого</b>. Работа на итальянском языке долго оставалась незамеченной, пока её не «переоткрыли» Хикс и Аллен в 1930-е. Позже Слуцкий занимался статистикой и теорией вероятностей.</p>
+      </div></details>
+      <details class="ref"><summary>Джон Хикс (1904–1989) и Нобелевская премия</summary><div class="ref-body">
+        <p>Британский экономист. В книге «Стоимость и капитал» (1939) развил разложение общего эффекта на эффект замещения и эффект дохода. Нобелевскую премию получил в 1972 году вместе с Кеннетом Эрроу — формально «за новаторский вклад в теорию общего экономического равновесия и теорию благосостояния»; разложение эффектов — часть этой работы. На лекции сказано проще: «за это Хикс получил Нобелевскую премию».</p>
+        <p class="src">Источник: <a href="https://www.nobelprize.org/prizes/economic-sciences/1972/summary/" target="_blank" rel="noopener">Нобелевский комитет, 1972</a>.</p>
+      </div></details>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Две силы скидки</h3>
+      <ul>
+        <li><b>Скидка на товар, который занимает большую долю бюджета клиента</b> (ипотека, обучение, автомобиль), даёт сильный эффект дохода — клиент «богатеет» и покупает больше смежного.</li>
+        <li><b>Скидка на мелочь</b> работает почти только через замещение — клиент уходит от конкурента, но больше в целом не тратит.</li>
+        <li><b>Если ваш товар для клиента низший</b>, рост его доходов уведёт его к более дорогому аналогу. Готовьте «следующую ступень» в своей линейке.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 6: исключения ══════════ -->
+<section class="sec" id="s6">
+  <div class="sec-head fade">
+    <div class="num-badge n6">6</div>
+    <h2 class="sec-title">Исключения из закона спроса: Гиффен, Веблен, сноб и большинство</h2>
+    <p class="sec-desc">Бывает, что цена растёт — и покупают больше. Но у каждого исключения свои строгие условия.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_03/06_isklyucheniya.webp" width="1672" height="941" alt="Бедная семья с мешком картофеля и восходящей кривой спроса; толпа скупает гречку и туалетную бумагу — это ажиотаж, а не Гиффен; золотая сумка — эффект Веблена; человек против толпы — эффект сноба; разобранная полка — эффект присоединения к большинству" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Исключения из закона спроса (промпт 06)</figcaption>
+    </figure>
+
+    <div class="def fade"><b>Парадокс Гиффена</b> — исключение из закона спроса: <b>цена растёт, и величина спроса растёт</b>; кривая спроса восходящая. Открыт при изучении спроса ирландских бедняков на картофель в неурожайный год.</div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Условия товара Гиффена</h3>
+        <ul>
+          <li>это <b>низший</b> товар, товар первой необходимости;</li>
+          <li>на него уходит <b>значительная часть бюджета</b> (у бедняка на еду — 80–90% дохода);</li>
+          <li><b>нет заменителей</b>;</li>
+          <li>востребован у <b>малообеспеченных</b>.</li>
+        </ul>
+        <p style="margin-top:6px">Маски в пандемию — не товар Гиффена: дешёвые, заменителей нет, но доля в бюджете мала (разбор преподавателя).</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · с уточнением</span>
+        <h3>Механизм</h3>
+        <p>Картофель подорожал, но мясо, овощи и рыба в неурожай дорожают ещё сильнее. Подорожание основного продукта делает бедняка <b>реально беднее</b> (эффект дохода), и он отказывается от всего дорогого, докупая ещё больше самого дешёвого — картофеля. Эффект замещения тянет в обратную сторону (картофель стал дороже), но <b>эффект дохода сильнее</b>.</p>
+      </div>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Что перекрывает что</h3>
+      <ul>
+        <li>У товара Гиффена <b>эффект дохода сильнее эффекта замещения</b>. На лекции прозвучали обе версии, вторая («замещение перекрывает доход») — оговорка.</li>
+        <li><b>Ажиотаж — не парадокс Гиффена.</b> Гречка, бензин, туалетная бумага «перед подорожанием» — это <b>ожидания</b>, неценовой фактор: кривая спроса сдвигается вправо, а не меняет наклон. Преподаватель отдельно это развела.</li>
+        <li>Товар Гиффена — всегда <b>низший</b>, но не каждый низший товар — товар Гиффена.</li>
+      </ul>
+    </div>
+
+    <div class="extra fade">
+      <span class="extra-tag">➕ Дополнение</span>
+      <h3>Нашли ли Гиффена в жизни</h3>
+      <p>Историю об ирландском картофеле привёл Альфред Маршалл в 3-м издании «Принципов» (1895), сославшись на Роберта Гиффена. Позже историки поставили этот случай под сомнение: в годы голода картофеля просто не хватало. Самое известное современное подтверждение — эксперимент Роберта Йенсена и Нолана Миллера (2008): беднейшим семьям в китайской провинции Хунань субсидировали рис, и они стали покупать его <b>меньше</b>, переходя на мясо и овощи. Сами авторы подчёркивают: «Гиффеном» бывает не товар, а <b>поведение</b> конкретных людей в конкретной ситуации. По словам преподавателя, подобные исследования есть и по России 90-х.</p>
+      <p class="src">Источник: R. Jensen, N. Miller, «Giffen Behavior and Subsistence Consumption», <i>American Economic Review</i>, 98(4), 2008; G. Dwyer, C. Lindsay, «Robert Giffen and the Irish Potato», <i>AER</i>, 1984.</p>
+    </div>
+
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · классификация из учебника Р. М. Нуреева</span>
+      <h3>Функциональный и нефункциональный спрос</h3>
+      <p><b>Функциональный</b> спрос — рациональный, по теории потребительского поведения. <b>Нефункциональный</b> — социальный, спекулятивный, нерациональный. Социальный включает три эффекта (оговорка преподавателя: подход не стандартный, не все учебники с ним согласны):</p>
+    </div>
+
+    <div class="grid fade">
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">Эффект присоединения к большинству</p><p>Покупаю, потому что покупают все: беру ту банку консервов, которую разобрали; шампунь как у подруги.</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">Эффект сноба</p><p>Не покупаю, потому что покупают все: не пойду на популярный фильм, читаю только нобелевских лауреатов.</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">Эффект Веблена</p><p><b>Престижное (демонстративное) потребление</b>: покупают, <b>потому что дорого</b>, чтобы произвести впечатление. Сумки Биркин; соседи лотерейных победителей влезают в кредиты, чтобы «не хуже». В кодификаторе по обществознанию стоит рядом с Гиффеном.</p></div>
+    </div>
+
+    <div class="fade">
+      <details class="ref"><summary>Торстейн Веблен и «Теория праздного класса» (1899)</summary><div class="ref-body">
+        <p>Американский экономист и социолог. Описал «демонстративное потребление»: богатые тратят не ради пользы вещей, а ради статуса, который им даёт сама дороговизна. Отсюда эффект Веблена: снижение цены престижного товара может <b>уменьшить</b> спрос — товар перестаёт быть знаком отличия.</p>
+      </div></details>
+      <details class="ref"><summary>Харви Лейбенстайн и три социальных эффекта (1950)</summary><div class="ref-body">
+        <p>В статье «Эффекты присоединения к большинству, сноба и Веблена в теории потребительского спроса» (<i>Quarterly Journal of Economics</i>, 1950) Лейбенстайн показал, что спрос одного человека зависит от того, сколько покупают другие. Эту классификацию и пересказывает учебник Нуреева.</p>
+      </div></details>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Когда «дороже» действительно продаёт</h3>
+      <ul>
+        <li><b>Премиальный сегмент</b> живёт на эффекте Веблена: скидка может разрушить статус бренда. Распродажи — закрытые, для своих.</li>
+        <li><b>Эффект большинства</b> — социальное доказательство: «хит продаж», счётчики заказов, отзывы.</li>
+        <li><b>Эффект сноба</b> — лимитированные серии и «не для всех».</li>
+        <li><b>Не объясняйте рост продаж после подорожания «парадоксом Гиффена»</b> — почти всегда это ожидания или престиж.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 7: предложение ══════════ -->
+<section class="sec" id="s7">
+  <div class="sec-head fade">
+    <div class="num-badge n7">7</div>
+    <h2 class="sec-title">Предложение и закон предложения</h2>
+    <p class="sec-desc">Тот же план, что у спроса. Главное отличие: для производителя цена — сигнал к действию.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_03/07_predlozhenie.webp" width="1672" height="941" alt="Светофор «цена» над воротами завода; аппарат для масок работает, потом накрыт чехлом; пульт с рычагами: цены ресурсов, технологии, налоги и субсидии, ожидания; восходящая кривая предложения" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Предложение и его факторы (промпт 07)</figcaption>
+    </figure>
+
+    <div class="two fade">
+      <div class="def"><b>Предложение (S)</b> — желание и возможность продать благо по каждой данной цене. <b>Качественная характеристика.</b> <b>Величина предложения</b> — сколько поставят на рынок по данной цене за период. <b>Количественная.</b></div>
+      <div class="def"><b>Закон предложения</b> отображает <b>прямую зависимость</b> между ценой и величиной предложения <b>при прочих равных условиях</b>: цена растёт — предлагают больше.</div>
+    </div>
+
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции</span>
+      <h3>Маски: цена — сигнал к действию</h3>
+      <p>В пандемию маска подорожала с копеек до 50 ₽ и выше. Предприятие, которое делало продукты питания, купило два аппарата для масок. Рыбинская фабрика детской одежды летом отвечала на звонки: «Вам какие маски? Комбинезоны — забудьте». Рынок насытился — аппараты зачехлили.</p>
+      <p style="margin-top:6px">Эксперты предлагали ограничить цену — <b>цену потолка</b> (не дороже) или <b>цену пола</b> (не дешевле). Им возразили: если лишить производителя ценового сигнала, как он поймёт, что товар нужен? <b>В основе закона спроса — убывающая предельная полезность, в основе закона предложения — цена как сигнал для производителя.</b></p>
+    </div>
+
+    <div class="grid fade">
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">Цены ресурсов</p><p>Главный фактор. Ресурсы дешевеют — по той же цене производитель готов поставить больше: S сдвигается вправо.</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции · с уточнением</span><p class="c-name">Технологии</p><p>Производительность ресурсов растёт — предложение растёт. Пример преподавателя — конвейер Ford «в 12 раз»; по историческим данным сборку шасси ускорили с 12,5 ч до 93 мин, то есть <b>примерно в 8 раз</b> (1913–1914).</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">Налоги и субсидии</p><p>«Налоги — субсидии наоборот, субсидии — налоги наоборот». Налог сдвигает S влево, субсидия и госзаказ — вправо.</p></div>
+      <div class="card"><span class="lecture-tag">📘 Из лекции</span><p class="c-name">Ожидания производителей</p><p>Ждут роста цен — придерживают товар, предложение сегодня падает; ждут падения — стараются продать сейчас.</p></div>
+      <div class="card"><span class="extra-tag">➕ Дополнение</span><p class="c-name">Число продавцов</p><p>В учебниках есть ещё <b>число производителей</b> и <b>цены других товаров, которые фирма могла бы выпускать</b>: швейная фабрика переключилась с комбинезонов на маски, потому что маски стали выгоднее.</p></div>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Тот же подвох, что со спросом</h3>
+      <p>Цена товара выросла — растёт <b>величина предложения</b> (движение по кривой), а не предложение. Предложение (сдвиг кривой) меняют только неценовые факторы. Неценовые факторы предложения — про <b>производителя</b>; доходы покупателей и мода на предложение не влияют.</p>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Читайте ценовой сигнал раньше конкурентов</h3>
+      <ul>
+        <li><b>Высокая маржа на рынке — сигнал, что скоро придут новые продавцы.</b> Сверхприбыль масок продержалась недолго: рынок насытился.</li>
+        <li><b>Перед большим вложением в мощности</b> спросите: это сдвиг спроса надолго или ажиотаж на месяцы? Чехол на аппарате — дорогой урок.</li>
+        <li><b>Субсидии и налоги</b> меняют вашу кривую предложения так же, как цены ресурсов: закладывайте их в план.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 8: равновесие ══════════ -->
+<section class="sec" id="s8">
+  <div class="sec-head fade">
+    <div class="num-badge n8">8</div>
+    <h2 class="sec-title">Рыночное равновесие, избыток и дефицит</h2>
+    <p class="sec-desc">Синтез: соединяем спрос и предложение, которые «никогда не договариваются». Их сводит конкуренция.</p>
+  </div>
+
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_03/08_ravnovesie.webp" width="1672" height="941" alt="Неваляшка стоит в точке равновесия E на пересечении спроса и предложения; склад шерстяных носков — избыток, цена вниз; толпа у такси — дефицит, цена вверх; невидимая рука конкуренции; потолок и пол цены" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Рыночное равновесие (промпт 08)</figcaption>
+    </figure>
+
+    <div class="two fade">
+      <div class="def"><b>Рыночное равновесие (эквилибриум)</b> — состояние, в котором отсутствует тенденция к изменению (формулировка лекции). Параметры равновесия — <b>равновесная цена и равновесный объём</b>.</div>
+      <div class="extra">
+        <span class="extra-tag">➕ Дополнение</span>
+        <h3>Рабочее определение для тестов</h3>
+        <p>Равновесие — ситуация, когда <b>величина спроса равна величине предложения</b> (Qd = Qs). Обе формулировки об одном: при Qd = Qs ни у кого нет причин менять цену.</p>
+      </div>
+    </div>
+
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции</span>
+      <h3>Метод сравнительной статики: неваляшка</h3>
+      <p>Неваляшка стоит ровно — первый снимок: равновесие. Отклонилась в одну сторону — второй снимок: избыток. В другую — третий снимок: дефицит. <b>Метод сравнительной статики</b> сравнивает такие «снимки» рынка и показывает, как отклонение влияет на параметры. Это основной метод базового курса экономики.</p>
+    </div>
+
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <tr><th>Цена</th><th>Что на рынке</th><th>Сколько продано</th><th>Кто конкурирует и куда толкает цену</th></tr>
+        <tr><td>Выше равновесной</td><td><b>избыток</b>: Qs &gt; Qd</td><td>столько, сколько хотят купить</td><td>производители — цена <b>вниз</b> (шерстяные носки после сезона)</td></tr>
+        <tr><td>Ниже равновесной</td><td><b>дефицит</b>: Qd &gt; Qs</td><td>столько, сколько продают</td><td>покупатели — цена <b>вверх</b> (все разом вызвали такси)</td></tr>
+      </table>
+    </div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Взгляд классиков</h3>
+        <p><b>Рынок — эффективная саморегулирующаяся система, потому что, отклонившись от положения равновесия, он возвращается в него под воздействием внутренних сил.</b> Эта сила — <b>невидимая рука Адама Смита, то есть конкуренция.</b></p>
+        <p style="margin-top:6px"><b>Допущения модели:</b> 1) рынок совершенной конкуренции — однородный товар, много производителей; 2) гибкость относительных цен. Рассматривается краткосрочный период.</p>
+      </div>
+      <div class="opinion">
+        <span class="opinion-tag">💬 Мнение преподавателя</span>
+        <h3>Гибкие цены — допущение, а не жизнь</h3>
+        <p>Мелкий ремесленник может за день снизить цену носков на 30%. Современное производство — нет: обязательства перед поставщиками, зарплаты, длинные цепочки (по словам преподавателя, Airbus — полторы тысячи предприятий в 30 странах). В кризис 2008 года автопром сокращал тысячи людей, а не цены. Поэтому классическая концепция объясняет явление «односторонне».</p>
+      </div>
+    </div>
+
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Потолок и пол цены</h3>
+      <ul>
+        <li><b>Потолок цены ниже равновесной</b> → <b>дефицит</b>: хотят купить больше, чем продают; продано меньше, чем в равновесии.</li>
+        <li><b>Пол цены выше равновесной</b> → <b>избыток</b>.</li>
+        <li>Потолок <b>выше</b> равновесной цены и пол <b>ниже</b> — ни на что не влияют. Проверьте в тренажёре ниже: включите «Потолок цены» и подвигайте уровень.</li>
+      </ul>
+    </div>
+
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · потолок и пол цены</span>
+        <button type="button" class="viz-fs" data-fs-src="rynok_trenazher.html?preset=ceiling" data-fs-title="Тренажёр: потолок и пол цены">⛶ На весь экран</button>
+      </div>
+      <iframe src="rynok_trenazher.html?preset=ceiling" height="790" loading="lazy" title="Тренажёр: потолок и пол цены на рынке гречи"></iframe>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Склад и очередь — это сигналы цены</h3>
+      <ul>
+        <li><b>Растут остатки на складе</b> — ваша цена выше равновесной. Решение — цена, акция или сокращение выпуска, а не надежда на сезон.</li>
+        <li><b>Очередь, предзаказы, «нет в наличии»</b> — цена ниже равновесной: вы отдаёте выручку перекупщикам.</li>
+        <li><b>Если цену менять нельзя</b> (договоры, прейскурант), рынок балансирует иначе: сроками ожидания, качеством сервиса, «нагрузкой» к товару.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ БЛОК 9: восемь ситуаций ══════════ -->
+<section class="sec" id="s9">
+  <div class="sec-head fade">
+    <div class="num-badge n9">9</div>
+    <h2 class="sec-title">Восемь ситуаций: что будет с ценой и объёмом</h2>
+    <p class="sec-desc">На занятии это был графический диктант на рынке гречи. Сначала ваш прогноз — картинка с ответами ниже, после тренажёра.</p>
+  </div>
+
+  <div class="stack">
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · задание</span>
+      <h3>Сначала подумайте сами</h3>
+      <p>Для каждой ситуации решите: что изменилось — спрос или предложение, в какую сторону, и что будет с равновесной ценой и равновесным объёмом. «?» — законный ответ. Таблица на занятии: № | изменение D | изменение S | P | Q.</p>
+    </div>
+
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · 8 ситуаций: предскажите цену и объём</span>
+        <button type="button" class="viz-fs" data-fs-src="rynok_trenazher.html?mode=quiz" data-fs-title="Тренажёр: 8 ситуаций">⛶ На весь экран</button>
+      </div>
+      <iframe src="rynok_trenazher.html?mode=quiz" height="760" loading="lazy" title="Тренажёр: восемь ситуаций на рынке гречи"></iframe>
+    </div>
+
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_03/09_vosem_situaciy.webp" width="1672" height="941" alt="Восемь мини-графиков рынка гречи со сдвигами спроса и предложения и итогами для цены и объёма; правило: сдвиги в разные стороны — знаем цену, в одну сторону — знаем объём" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Восемь ситуаций (промпт 09)</figcaption>
+    </figure>
+
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <tr><th>№</th><th>Событие на рынке гречи</th><th>D</th><th>S</th><th>P</th><th>Q</th></tr>
+        <tr><td>1</td><td>Учёные: в гречке много антиоксидантов</td><td>↑</td><td>—</td><td>↑</td><td>↑</td></tr>
+        <tr><td>2</td><td>Небывалый урожай риса (субститут подешевел)</td><td>↓</td><td>—</td><td>↓</td><td>↓</td></tr>
+        <tr><td>3</td><td>Небывалый урожай гречи</td><td>—</td><td>↑</td><td>↓</td><td>↑</td></tr>
+        <tr><td>4</td><td>Налог на производителей гречи</td><td>—</td><td>↓</td><td>↑</td><td>↓</td></tr>
+        <tr><td>5</td><td>Спрос ↓, предложение ↑ (кейс «чай-2013»)</td><td>↓</td><td>↑</td><td>↓</td><td>?</td></tr>
+        <tr><td>6</td><td>Спрос ↑, предложение ↓</td><td>↑</td><td>↓</td><td>↑</td><td>?</td></tr>
+        <tr><td>7</td><td>Спрос ↑ и предложение ↑</td><td>↑</td><td>↑</td><td>?</td><td>↑</td></tr>
+        <tr><td>8</td><td>Спрос ↓ и предложение ↓</td><td>↓</td><td>↓</td><td>?</td><td>↓</td></tr>
+      </table>
+    </div>
+
+    <div class="formula fade">Разные стороны → знаем цену · одна сторона → знаем объём</div>
+
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <h3>Ошибка «по плану»</h3>
+        <p>В ситуации 1 слушатели ответили: «цена вырастет, объём не изменится». Преподаватель «ждала этого момента»: по графику растут оба. Продавцы на рост цены отвечают поставками из запасов, новыми поставщиками, сверхурочными и второй сменой.</p>
+        <p style="margin-top:6px">Объём не меняется только при <b>неэластичном (вертикальном) предложении</b>: танкер привёз партию и больше не выйдет, государство ввело <b>квоту</b>. Тогда весь рост спроса уходит в цену. <b>Эластичность</b> — мера реакции одной переменной на изменение другой — тема следующего занятия.</p>
+      </div>
+      <div class="trap">
+        <span class="trap-tag">⚠️ Ловушка теста</span>
+        <h3>«На этом и ловят в тестах»</h3>
+        <p>Если спрос и предложение меняются одновременно и не сказано, насколько, один параметр <b>изменится неопределённо</b> — может вырасти, упасть или не измениться. Не выбирайте «не изменится», если в условии нет «на одинаковую величину».</p>
+      </div>
+    </div>
+
+    <div class="extra fade">
+      <span class="extra-tag">➕ Дополнение</span>
+      <h3>Кейс «чай-2013» — учебный</h3>
+      <p>2013 год на Шри-Ланке действительно дал рекордный урожай чая — около 340 млн кг. Но средняя аукционная цена в долларах тогда <b>выросла</b> (3,44 $ за кг против 3,05 $ годом ранее), а сокращение закупок Египтом в источниках не подтверждается. Поэтому используйте кейс как упражнение на сдвиги, а не как исторический факт.</p>
+      <p class="src">Источник: <a href="https://www.ft.lk/agriculture/record-tea-crop-of-340-m-kilos-in-2013/31-248348" target="_blank" rel="noopener">Daily FT, «Record tea crop of 340 m kilos in 2013»</a>; <a href="https://www.ft.lk/top-story/tea-industry-brews-record-2013/26-245712" target="_blank" rel="noopener">Daily FT, «Tea industry brews record 2013»</a>.</p>
+    </div>
+
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Мнение преподавателя (нормативная экономика)</span>
+      <h3>О налогах и инфляции</h3>
+      <p>Ситуация 3 (урожай — цена ниже, объём больше) — самая благоприятная: реальные доходы растут. Ситуация 4 (налог — цена выше, объём меньше) неблагоприятна для общества: «при росте цен мы реально становимся беднее… хотят таргетировать — ничего не получается». Это оценка, а не вывод модели.</p>
+    </div>
+
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Алгоритм на 10 секунд</h3>
+      <ol>
+        <li>Чьё поведение изменилось — покупателей (D) или производителей (S)?</li>
+        <li>Рост — вправо, падение — влево.</li>
+        <li>Один сдвиг — оба параметра известны. Два сдвига — правило «разные стороны → цена, одна сторона → объём».</li>
+        <li>Для бизнес-новости: «урожай + падение экспорта» — цена вниз точно, объём продаж — смотрите, что сильнее.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ЧЕК-ЛИСТ ══════════ -->
+<section class="sec" id="checklist">
+  <div class="sec-head fade">
+    <div class="num-badge n1">✓</div>
+    <h2 class="sec-title">Что выучить к аттестации</h2>
+    <p class="sec-desc">Отмечайте пункт, когда можете объяснить его своими словами без подсказки. Отметки сохраняются в браузере.</p>
+  </div>
+
+  <div class="card fade">
+    <div class="checklist-progress-bar"><div class="checklist-progress-fill" id="checklist-progress"></div></div>
+    <ul class="checklist-items">
+      <li><label><input type="checkbox" data-checklist-item="c1"> Альтернативная стоимость: мера того, что отдано; ценность лучшей из отвергнутых (упущенных) альтернатив</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c2"> Альтернативная стоимость объективна (ограниченность ресурсов) и субъективна (кто выбирает); рациональность</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c3"> Задачи: прямые затраты + неполученный доход; «всё равно» — знак равенства (7 ₽, 0, 140 ₽)</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c4"> Ценовая дискриминация: определение, рыночная власть, три рода</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c5"> Анализ и синтез; моделирование на допущениях; ножницы Маршалла</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c6"> Спрос — качественная характеристика, величина спроса — количественная; спрос — поток</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c7"> Закон спроса: обратная зависимость при прочих равных; убывающая предельная полезность</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c8"> Цена — движение по кривой; неценовой фактор — сдвиг (вправо рост, влево падение)</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c9"> Неценовые факторы спроса; нормальные и низшие (инфериорные) блага</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c10"> Субституты — прямая связь, комплементы — обратная</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c11"> Эффект замещения (относительные цены) и эффект дохода (реальный доход); Слуцкий и Хикс</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c12"> Эффекты для нормального, низшего товара и товара Гиффена</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c13"> Парадокс Гиффена: условия, механизм, отличие от ажиотажа</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c14"> Эффекты Веблена, сноба, присоединения к большинству</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c15"> Закон предложения: прямая зависимость; цена — сигнал; неценовые факторы предложения</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c16"> Равновесие, избыток, дефицит; метод сравнительной статики</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c17"> Невидимая рука — конкуренция; допущения классиков; потолок и пол цены</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c18"> Восемь ситуаций; при двух сдвигах один параметр неопределён</label></li>
+    </ul>
+    <p class="checklist-done" id="checklist-done" hidden>Третье занятие готово к аттестации.</p>
+  </div>
+</section>
+
+<!-- ══════════ КВИЗ ══════════ -->
+<section class="sec" id="quiz">
+  <div class="sec-head fade">
+    <div class="num-badge n2">?</div>
+    <h2 class="sec-title">Проверьте себя</h2>
+    <p class="sec-desc">Пятнадцать вопросов в формате теста. После ответа — правильный вариант и короткий разбор.</p>
+  </div>
+
+  <div class="quiz fade">
+    <div class="quiz-question" data-quiz="1" data-explain="Альтернативная стоимость — ценность наилучшей из отвергнутых (упущенных) альтернатив. Не сумма всех и не прямые денежные затраты.">
+      <p class="quiz-text">1. Альтернативная стоимость решения — это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q1" value="wrong"> сумма всех денежных затрат на решение</label>
+        <label><input type="radio" name="q1" value="right"> ценность наилучшей из отвергнутых альтернатив</label>
+        <label><input type="radio" name="q1" value="wrong"> сумма ценностей всех отвергнутых альтернатив</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="1">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="1" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="2" data-explain="1 000 + x = 580 + 4x → 420 = 3x → x = 140 ₽. Полная цена каждого варианта — билет плюс неполученный заработок.">
+      <p class="quiz-text">2. Самолёт: 1 день в пути и билет 1 000 ₽; поезд: 4 дня и 580 ₽. При каком дневном заработке путешественнику всё равно?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q2" value="wrong"> 105 ₽</label>
+        <label><input type="radio" name="q2" value="right"> 140 ₽</label>
+        <label><input type="radio" name="q2" value="wrong"> 420 ₽</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="2">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="2" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="3" data-explain="Цена зависит от категории покупателя (студенты) — третий род. Первый — каждому своя цена, второй — по объёму покупки.">
+      <p class="quiz-text">3. Музей продаёт студентам дневной формы билеты дешевле. Это ценовая дискриминация…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q3" value="wrong"> первого рода</label>
+        <label><input type="radio" name="q3" value="wrong"> второго рода</label>
+        <label><input type="radio" name="q3" value="right"> третьего рода</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="3">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="3" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="4" data-explain="Назначать разные цены может только тот, кто вообще может назначать цену, — фирма с рыночной властью. В совершенной конкуренции цену диктует рынок.">
+      <p class="quiz-text">4. Необходимое условие ценовой дискриминации —</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q4" value="right"> рыночная власть продавца</label>
+        <label><input type="radio" name="q4" value="wrong"> разное качество товара для разных групп</label>
+        <label><input type="radio" name="q4" value="wrong"> совершенная конкуренция на рынке</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="4">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="4" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="5" data-explain="Изменилась цена — движение по кривой: меняется величина спроса. Сам спрос меняют только неценовые факторы.">
+      <p class="quiz-text">5. Цена тренировки выросла, и клиент стал ходить реже. Что изменилось?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q5" value="wrong"> спрос сократился — кривая сдвинулась влево</label>
+        <label><input type="radio" name="q5" value="right"> величина спроса — движение по кривой</label>
+        <label><input type="radio" name="q5" value="wrong"> предложение тренировок</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="5">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="5" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="6" data-explain="Закон спроса — обратная зависимость между величиной спроса и ценой при прочих равных условиях. Без «прочих равных» формулировка неполна.">
+      <p class="quiz-text">6. Закон спроса отображает…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q6" value="wrong"> прямую зависимость между ценой и величиной спроса</label>
+        <label><input type="radio" name="q6" value="right"> обратную зависимость между величиной спроса и ценой при прочих равных условиях</label>
+        <label><input type="radio" name="q6" value="wrong"> зависимость спроса от доходов потребителей</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="6">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="6" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="7" data-explain="Низшее (инфериорное) благо: доход растёт — спрос падает. Нормальный товар — наоборот.">
+      <p class="quiz-text">7. Доходы выросли, и люди стали реже ездить на маршрутке. Для них маршрутка —</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q7" value="wrong"> нормальный товар</label>
+        <label><input type="radio" name="q7" value="right"> низшее (инфериорное) благо</label>
+        <label><input type="radio" name="q7" value="wrong"> товар Гиффена</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="7">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="7" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="8" data-explain="Принтер и картридж — комплементы: связь цены одного и спроса на другой обратная. Картриджи дорожают — спрос на принтеры падает, кривая влево.">
+      <p class="quiz-text">8. Картриджи подорожали. Спрос на принтеры этой модели…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q8" value="wrong"> вырастет: зависимость прямая</label>
+        <label><input type="radio" name="q8" value="right"> упадёт: у комплементов зависимость обратная</label>
+        <label><input type="radio" name="q8" value="wrong"> не изменится: цена принтера та же</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="8">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="8" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="9" data-explain="Эффект замещения — из-за изменения относительных цен; эффект дохода — из-за изменения реального дохода.">
+      <p class="quiz-text">9. Эффект замещения — это изменение потребления в результате изменения…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q9" value="right"> относительных цен</label>
+        <label><input type="radio" name="q9" value="wrong"> номинального дохода</label>
+        <label><input type="radio" name="q9" value="wrong"> вкусов и предпочтений</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="9">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="9" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="10" data-explain="У товара Гиффена эффект дохода направлен против эффекта замещения и сильнее его — поэтому кривая спроса восходящая.">
+      <p class="quiz-text">10. Для товара Гиффена верно:</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q10" value="wrong"> эффекты дохода и замещения однонаправлены</label>
+        <label><input type="radio" name="q10" value="wrong"> эффект замещения сильнее эффекта дохода</label>
+        <label><input type="radio" name="q10" value="right"> эффект дохода сильнее эффекта замещения</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="10">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="10" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="11" data-explain="Скупка «перед подорожанием» — ожидания, неценовой фактор: кривая спроса сдвигается вправо. Парадокс Гиффена требует бедности, большой доли в бюджете и отсутствия заменителей.">
+      <p class="quiz-text">11. Слух о подорожании — и гречку сметают с полок. Это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q11" value="wrong"> парадокс Гиффена</label>
+        <label><input type="radio" name="q11" value="right"> сдвиг спроса из-за ожиданий</label>
+        <label><input type="radio" name="q11" value="wrong"> эффект Веблена</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="11">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="11" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="12" data-explain="Покупают, потому что дорого, — демонстративное потребление, эффект Веблена («Теория праздного класса»).">
+      <p class="quiz-text">12. Спрос на сумку растёт оттого, что она очень дорогая. Это эффект…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q12" value="right"> Веблена</label>
+        <label><input type="radio" name="q12" value="wrong"> сноба</label>
+        <label><input type="radio" name="q12" value="wrong"> присоединения к большинству</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="12">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="12" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="13" data-explain="Налог — «субсидия наоборот»: предложение сокращается, кривая S влево. Цена растёт, объём падает.">
+      <p class="quiz-text">13. На производителей ввели налог. Равновесная цена и объём…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q13" value="wrong"> цена ↓, объём ↑</label>
+        <label><input type="radio" name="q13" value="right"> цена ↑, объём ↓</label>
+        <label><input type="radio" name="q13" value="wrong"> цена ↑, объём ↑</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="13">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="13" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="14" data-explain="Потолок ниже равновесия: по такой цене хотят купить больше, чем готовы продать, — дефицит.">
+      <p class="quiz-text">14. Государство установило потолок цены ниже равновесного уровня. На рынке возникнет…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q14" value="right"> дефицит</label>
+        <label><input type="radio" name="q14" value="wrong"> избыток</label>
+        <label><input type="radio" name="q14" value="wrong"> новое равновесие без последствий</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="14">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="14" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="15" data-explain="Спрос вниз и предложение вверх — оба тянут цену вниз, она точно падает. Объём спрос тянет вниз, а предложение вверх: итог зависит от силы сдвигов.">
+      <p class="quiz-text">15. Спрос сократился, а предложение выросло. Что можно сказать наверняка?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q15" value="wrong"> объём вырастет, цена неопределённа</label>
+        <label><input type="radio" name="q15" value="right"> цена упадёт, объём неопределён</label>
+        <label><input type="radio" name="q15" value="wrong"> цена упадёт, объём не изменится</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="15">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="15" hidden></p>
+    </div>
+  </div>
+
+  <p class="quiz-score-box fade" id="quiz-score" style="margin-top:18px">Отвечено: 0 / 15</p>
+</section>
+
+<!-- ══════════ ЗАКЛЮЧЕНИЕ ══════════ -->
+<section class="sec" id="final">
+  <div class="sec-head fade">
+    <div class="num-badge n3">★</div>
+    <h2 class="sec-title">Шпаргалка: главное из занятия</h2>
+  </div>
+
+  <figure class="img-card fade" data-lightbox style="margin-bottom:28px">
+    <img src="../png/zanyatie_03/10_final_shpargalka.webp" width="1672" height="941" alt="Дворец памяти — крытый рынок: развилка, три кассы, лестница спроса, парусник факторов, корзина яблок, мешок картофеля и золотая сумка, светофор над заводом, неваляшка, стена из мини-графиков" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+    <figcaption class="img-missing-caption">Шпаргалка к аттестации (промпт 10)</figcaption>
+  </figure>
+
+  <ol class="conclusion-list fade">
+    <li><strong>Бесплатных решений нет.</strong> Альтернативная стоимость — ценность лучшей из отвергнутых альтернатив; она объективна и субъективна одновременно.</li>
+    <li><strong>Ценовая дискриминация</strong> — один товар разным группам по разным ценам без разницы в качестве; нужна рыночная власть. 1-й род — каждому своя цена, 2-й — по объёму, 3-й — по категориям.</li>
+    <li><strong>Спрос ≠ величина спроса.</strong> Цена двигает по кривой, неценовые факторы сдвигают кривую: вправо — рост, влево — падение.</li>
+    <li><strong>Закон спроса — обратная зависимость при прочих равных;</strong> закон предложения — прямая. Основа спроса — убывающая полезность, основа предложения — ценовой сигнал.</li>
+    <li><strong>Нормальный и низший товар</strong> различаются реакцией на доход; субституты связаны прямо, комплементы — обратно.</li>
+    <li><strong>Реакция на цену = эффект замещения + эффект дохода.</strong> У товара Гиффена эффект дохода сильнее — кривая спроса восходящая. Ажиотаж — это ожидания, а не Гиффен.</li>
+    <li><strong>Равновесие — Qd = Qs.</strong> Выше — избыток, ниже — дефицит; возвращает конкуренция. Потолок ниже равновесия — дефицит, пол выше — избыток.</li>
+    <li><strong>Два сдвига сразу:</strong> в разные стороны — знаем цену, в одну — знаем объём; второй параметр неопределён.</li>
+  </ol>
+</section>
+
+</main>
+
+<div class="overlay" id="lightbox" aria-hidden="true">
+  <a class="overlay-download" id="lightbox-download" download aria-label="Скачать изображение">⬇ Скачать</a>
+  <button class="overlay-close" id="lightbox-close" aria-label="Закрыть">✕</button>
+  <img id="lightbox-img" alt="">
+</div>
+
+<div id="fs-overlay" aria-hidden="true">
+  <div id="fs-bar">
+    <span id="fs-title"></span>
+    <button type="button" id="fs-close" aria-label="Закрыть полноэкранный режим">✕</button>
+  </div>
+  <iframe id="fs-frame" title="Полноэкранная визуализация"></iframe>
+</div>
+
+<footer>
+  <p>Президентская программа · «Экономика для менеджеров» · преподаватель И. Г. Переломова · материалы с пометкой «Дополнение» добавлены к лекции</p>
+</footer>
+
+<script>
+/* Префикс имени файла при скачивании инфографики */
+const BRAND = "ekonomika-z3";
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (!reduceMotion && "IntersectionObserver" in window) {
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in");
+        reveal.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.06, rootMargin: "0px 0px -24px"});
+  document.querySelectorAll(".fade").forEach((element) => reveal.observe(element));
+} else {
+  document.querySelectorAll(".fade").forEach((element) => element.classList.add("in"));
+}
+
+/* Подсветка активной секции в навбаре */
+const navLinks = [...document.querySelectorAll(".nav-link")];
+const sections = [...document.querySelectorAll("main section[id]")];
+if ("IntersectionObserver" in window) {
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach((link) => {
+        link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`);
+      });
+    });
+  }, {rootMargin: "-35% 0px -55%", threshold: 0});
+  sections.forEach((section) => sectionObserver.observe(section));
+}
+
+/* Лайтбокс */
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const lightboxDownload = document.getElementById("lightbox-download");
+function brandedFilename(url) {
+  const name = url.split("/").pop().split("?")[0];
+  return `${BRAND}_${name}`;
+}
+document.querySelectorAll(".img-card[data-lightbox]").forEach((card) => {
+  card.addEventListener("click", () => {
+    if (card.classList.contains("img-missing")) return;
+    const img = card.querySelector("img");
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightboxDownload.href = img.src;
+    lightboxDownload.download = brandedFilename(img.src);
+    lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
+  });
+});
+function closeLightbox() {
+  if (lightbox.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  lightboxImg.src = "";
+}
+document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (event) => { if (event.target === lightbox) closeLightbox(); });
+
+/* Фуллскрин для iframe-карточек */
+const fsOverlay = document.getElementById("fs-overlay");
+const fsFrame = document.getElementById("fs-frame");
+const fsTitle = document.getElementById("fs-title");
+document.querySelectorAll(".viz-fs").forEach((button) => {
+  button.addEventListener("click", () => {
+    fsFrame.src = button.dataset.fsSrc;
+    fsTitle.textContent = button.dataset.fsTitle;
+    fsOverlay.classList.add("open");
+    fsOverlay.setAttribute("aria-hidden", "false");
+  });
+});
+function closeFs() {
+  if (fsOverlay.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  fsOverlay.classList.remove("open");
+  fsOverlay.setAttribute("aria-hidden", "true");
+  fsFrame.src = "";
+}
+document.getElementById("fs-close").addEventListener("click", closeFs);
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if (fsOverlay.classList.contains("open")) { closeFs(); } else { closeLightbox(); }
+});
+
+/* Копирование промптов */
+document.querySelectorAll("[data-copy]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const code = document.getElementById(button.dataset.copy);
+    if (!code) return;
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(code.innerText);
+      button.textContent = "Скопировано";
+    } catch {
+      button.textContent = "Выделите текст";
+    }
+    window.setTimeout(() => { button.textContent = original; }, 1600);
+  });
+});
+
+/* Чек-лист готовности */
+const CHECKLIST_KEY = "ekonomika-z3-checklist";
+const checklistInputs = [...document.querySelectorAll("[data-checklist-item]")];
+const checklistProgress = document.getElementById("checklist-progress");
+const checklistDone = document.getElementById("checklist-done");
+function loadChecklistState() {
+  try { return JSON.parse(localStorage.getItem(CHECKLIST_KEY) || "{}"); } catch { return {}; }
+}
+function saveChecklistState(state) {
+  try { localStorage.setItem(CHECKLIST_KEY, JSON.stringify(state)); } catch { /* приватный режим */ }
+}
+function renderChecklistProgress() {
+  const checked = checklistInputs.filter((input) => input.checked).length;
+  checklistProgress.style.width = `${Math.round((checked / checklistInputs.length) * 100)}%`;
+  checklistDone.hidden = checked !== checklistInputs.length;
+}
+const savedChecklist = loadChecklistState();
+checklistInputs.forEach((input) => {
+  const key = input.dataset.checklistItem;
+  input.checked = Boolean(savedChecklist[key]);
+  input.addEventListener("change", () => {
+    const state = loadChecklistState();
+    state[key] = input.checked;
+    saveChecklistState(state);
+    renderChecklistProgress();
+  });
+});
+renderChecklistProgress();
+
+/* Квиз */
+const QUIZ_TOTAL = document.querySelectorAll(".quiz-question").length;
+let quizAnswered = 0;
+let quizCorrect = 0;
+const quizScoreEl = document.getElementById("quiz-score");
+document.querySelectorAll(".quiz-check").forEach((button) => {
+  button.addEventListener("click", () => {
+    const index = button.dataset.quizCheck;
+    const question = document.querySelector(`.quiz-question[data-quiz="${index}"]`);
+    const selected = question.querySelector(`input[name="q${index}"]:checked`);
+    const feedback = document.querySelector(`[data-quiz-feedback="${index}"]`);
+    if (!selected) {
+      feedback.textContent = "Выберите вариант ответа.";
+      feedback.className = "quiz-feedback incorrect";
+      feedback.hidden = false;
+      return;
+    }
+    const alreadyAnswered = button.disabled;
+    const isCorrect = selected.value === "right";
+    feedback.textContent = isCorrect ? "Верно!" : "Не совсем — правильный вариант выделен выше.";
+    if (question.dataset.explain) {
+      const explain = document.createElement("span");
+      explain.className = "explain";
+      explain.textContent = question.dataset.explain;
+      feedback.appendChild(explain);
+    }
+    feedback.className = `quiz-feedback ${isCorrect ? "correct" : "incorrect"}`;
+    feedback.hidden = false;
+    question.querySelectorAll("input").forEach((input) => { input.disabled = true; });
+    question.querySelector('input[value="right"]').closest("label").classList.add("quiz-correct-answer");
+    button.disabled = true;
+    if (!alreadyAnswered) {
+      quizAnswered += 1;
+      if (isCorrect) quizCorrect += 1;
+      quizScoreEl.textContent = `Отвечено: ${quizAnswered} / ${QUIZ_TOTAL} · верно: ${quizCorrect}`;
+    }
+  });
+});
+</script>
+</body>
+</html>

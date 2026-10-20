@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: самолёт или поезд</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --cyan:#0ea5e9;
+  --red:#dc2626;
+  --green:#16a34a;
+  --amber:#f59e0b;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.78rem}
+.presets{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.presets .lbl{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-right:2px}
+.preset{padding:4px 9px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer}
+.preset:hover{border-color:#c7d2fe;color:var(--indigo)}
+.preset:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+.layout{display:grid;grid-template-columns:minmax(280px,1.2fr) minmax(250px,1fr);gap:12px;align-items:start}
+@media (max-width:720px){.layout{grid-template-columns:1fr}}
+.bars{border:1px solid var(--border);border-radius:12px;padding:10px 12px;background:#fcfcff}
+.bar-row + .bar-row{margin-top:12px}
+.bar-head{display:flex;justify-content:space-between;font-size:.8rem;font-weight:800;margin-bottom:4px}
+.bar{display:flex;height:30px;border-radius:8px;overflow:hidden;background:#f1f5f9}
+.bar span{display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;transition:width .2s}
+.seg-direct{background:var(--cyan)}
+.seg-lost{background:var(--amber)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.68rem;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px}
+.formula{margin-top:10px;font-family:ui-monospace,Menlo,monospace;font-size:.8rem;background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:8px 10px;line-height:1.6}
+.verdict{margin-top:8px;border-radius:10px;padding:8px 11px;font-size:.8rem;line-height:1.45;border:1px solid #c7d2fe;background:var(--indigo-lt);color:var(--indigo-dk)}
+.verdict b{display:block;margin-bottom:2px}
+.group{border:1px solid var(--border);border-radius:12px;padding:9px 11px}
+.group + .group{margin-top:8px}
+.group h2{font-size:.8rem;font-weight:800;margin-bottom:6px}
+.g-air{border-left:4px solid var(--indigo)}
+.g-rail{border-left:4px solid var(--green)}
+.g-me{border-left:4px solid var(--amber)}
+.ctrl{margin-bottom:6px}
+.ctrl .row{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.ctrl label{font-size:.75rem;font-weight:700;line-height:1.2}
+.ctrl label small{font-weight:500;color:var(--muted)}
+.ctrl input[type=range]{width:100%;height:16px;accent-color:var(--indigo);display:block}
+.ctrl input[type=number]{width:66px;flex-shrink:0;padding:2px 5px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;font-weight:800;text-align:right;color:var(--indigo-dk)}
+details.info{font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45}
+details.info summary{cursor:pointer;font-weight:700}
+details.info p + p{margin-top:4px}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>Самолёт или поезд: сколько на самом деле стоит поездка</h1>
+  <span class="sub">Цена поездки — это билет плюс заработок, который вы не получите в дороге. Двигайте ползунки или вписывайте числа.</span>
+</div>
+
+<div class="presets" role="group" aria-label="Готовые ситуации">
+  <span class="lbl">Ситуации</span>
+  <button type="button" class="preset" data-p="task">Задача с занятия</button>
+  <button type="button" class="preset" data-p="student">Студент на каникулах</button>
+  <button type="button" class="preset" data-p="ceo">Руководитель</button>
+</div>
+
+<div class="layout">
+  <div>
+    <div class="bars">
+      <div class="bar-row">
+        <div class="bar-head"><span>✈️ Самолёт</span><span id="t-air">—</span></div>
+        <div class="bar"><span class="seg-direct" id="b-air-d"></span><span class="seg-lost" id="b-air-l"></span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-head"><span>🚆 Поезд</span><span id="t-rail">—</span></div>
+        <div class="bar"><span class="seg-direct" id="b-rail-d"></span><span class="seg-lost" id="b-rail-l"></span></div>
+      </div>
+      <div class="legend"><span><i style="background:var(--cyan)"></i>прямые затраты — билет</span><span><i style="background:var(--amber)"></i>альтернативная стоимость времени — неполученный заработок</span></div>
+    </div>
+    <div class="formula" id="formula"></div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+
+  <div>
+    <div class="group g-air">
+      <h2>✈️ Самолёт</h2>
+      <div class="ctrl"><div class="row"><label for="pa">Билет, ₽</label><input type="number" id="pa-n" min="0" max="60000" step="100" aria-label="Билет на самолёт, число"></div><input type="range" id="pa" min="0" max="60000" step="100"></div>
+      <div class="ctrl"><div class="row"><label for="da">Рабочих дней в пути <small>(с дорогой до аэропорта)</small></label><input type="number" id="da-n" min="0" max="10" step="0.5" aria-label="Дни в пути самолётом, число"></div><input type="range" id="da" min="0" max="10" step="0.5"></div>
+    </div>
+    <div class="group g-rail">
+      <h2>🚆 Поезд</h2>
+      <div class="ctrl"><div class="row"><label for="pr">Билет, ₽</label><input type="number" id="pr-n" min="0" max="60000" step="100" aria-label="Билет на поезд, число"></div><input type="range" id="pr" min="0" max="60000" step="100"></div>
+      <div class="ctrl"><div class="row"><label for="dr">Рабочих дней в пути</label><input type="number" id="dr-n" min="0" max="10" step="0.5" aria-label="Дни в пути поездом, число"></div><input type="range" id="dr" min="0" max="10" step="0.5"></div>
+    </div>
+    <div class="group g-me">
+      <h2>👤 Путешественник</h2>
+      <div class="ctrl"><div class="row"><label for="w">Заработок за рабочий день, ₽ <small>(получает, только если работает)</small></label><input type="number" id="w-n" min="0" max="50000" step="10" aria-label="Заработок в день, число"></div><input type="range" id="w" min="0" max="50000" step="10"></div>
+    </div>
+    <details class="info"><summary>Как считать</summary>
+      <p>Полная цена варианта = прямые затраты (билет) + альтернативная стоимость времени (дни в пути × заработок за день). Выбирают вариант с меньшей полной ценой.</p>
+      <p>«Всё равно» — значит полные цены равны. Отсюда ставка безразличия: x = (билет на самолёт − билет на поезд) / (дни поездом − дни самолётом). Кто зарабатывает больше x, тому выгоднее лететь.</p>
+      <p>Если в пути выпадает выходной, когда человек всё равно не работает, этот день не стоит ничего: альтернативная стоимость свободного времени без оплачиваемой альтернативы — ноль.</p>
+    </details>
+  </div>
+</div>
+
+<script>
+const PRESETS = {
+  task:    {pa:1000,  da:1, pr:580,  dr:4, w:100},
+  student: {pa:12000, da:1, pr:4500, dr:3, w:0},
+  ceo:     {pa:15000, da:1, pr:6000, dr:3, w:25000}
+};
+const FIELDS = ["pa","da","pr","dr","w"];
+let st = {...PRESETS.task};
+
+function bind(id){
+  const range = document.getElementById(id), num = document.getElementById(id + "-n");
+  range.addEventListener("input", () => { st[id] = Number(range.value); render(); });
+  num.addEventListener("change", () => { st[id] = Math.max(Number(num.min), Math.min(Number(num.max), Number(num.value) || 0)); render(); });
+}
+FIELDS.forEach(bind);
+document.querySelectorAll(".preset").forEach((b) => b.addEventListener("click", () => { st = {...PRESETS[b.dataset.p]}; render(); }));
+
+const rub = (v) => Math.round(v).toLocaleString("ru-RU") + " ₽";
+const num = (v) => (Math.round(v * 10) / 10).toLocaleString("ru-RU");
+
+function setBar(prefix, direct, lost, max){
+  const d = document.getElementById(prefix + "-d"), l = document.getElementById(prefix + "-l");
+  d.style.width = (max ? direct / max * 100 : 0) + "%";
+  l.style.width = (max ? lost / max * 100 : 0) + "%";
+  d.textContent = direct / max > .14 ? rub(direct) : "";
+  l.textContent = lost / max > .14 ? rub(lost) : "";
+}
+
+function render(){
+  FIELDS.forEach((id) => { document.getElementById(id).value = st[id]; document.getElementById(id + "-n").value = st[id]; });
+  const airLost = st.da * st.w, railLost = st.dr * st.w;
+  const air = st.pa + airLost, rail = st.pr + railLost;
+  const max = Math.max(air, rail, 1);
+  setBar("b-air", st.pa, airLost, max);
+  setBar("b-rail", st.pr, railLost, max);
+  document.getElementById("t-air").textContent = rub(air);
+  document.getElementById("t-rail").textContent = rub(rail);
+
+  const dd = st.dr - st.da;
+  const x = dd !== 0 ? (st.pa - st.pr) / dd : null;
+  document.getElementById("formula").innerHTML =
+    `Самолёт: ${rub(st.pa)} + ${num(st.da)} × ${rub(st.w)} = <b>${rub(air)}</b><br>` +
+    `Поезд: ${rub(st.pr)} + ${num(st.dr)} × ${rub(st.w)} = <b>${rub(rail)}</b><br>` +
+    (x !== null ? `Безразлично при: ${st.pa} + ${num(st.da)}x = ${st.pr} + ${num(st.dr)}x → <b>x = ${rub(x)}</b> в день` : "Дни в пути одинаковые — решает только цена билета");
+
+  const v = document.getElementById("verdict");
+  let head, body;
+  if (Math.abs(air - rail) < 1){ head = "Вам всё равно"; body = "Полные цены равны: заработок ровно на уровне ставки безразличия."; }
+  else if (air < rail){ head = "Выгоднее лететь"; body = `Самолёт дешевле на ${rub(rail - air)}: дорогой билет окупается тем, что вы меньше времени теряете в дороге.`; }
+  else { head = "Выгоднее ехать поездом"; body = `Поезд дешевле на ${rub(air - rail)}: ваше время стоит недорого, и экономия на билете важнее.`; }
+  if (x !== null && x > 0) body += ` Ставка безразличия — ${rub(x)} в день: зарабатываете больше — летите, меньше — поезд.`;
+  v.innerHTML = `<b>${head}</b>${body}`;
+}
+render();
+</script>
+</body>
+</html>

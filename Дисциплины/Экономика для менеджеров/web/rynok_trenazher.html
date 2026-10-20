@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: рынок гречи — спрос, предложение, равновесие</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --cyan:#0ea5e9;
+  --red:#dc2626;
+  --green:#16a34a;
+  --amber:#f59e0b;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.78rem}
+.tabs{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.tab,.preset,.btn{padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer;font-family:inherit}
+.tab[aria-selected="true"]{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.preset:hover,.tab:hover{border-color:#c7d2fe}
+.tabs .lbl{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:0 2px 0 8px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+.layout{display:grid;grid-template-columns:minmax(300px,1.3fr) minmax(250px,1fr);gap:12px;align-items:start}
+@media (max-width:720px){.layout{grid-template-columns:1fr}}
+.chart-box{border:1px solid var(--border);border-radius:12px;padding:4px;background:#fcfcff}
+svg{width:100%;height:auto;display:block;max-height:52vh}
+.legend{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:.68rem;color:var(--muted);padding:0 6px 4px}
+.legend i{display:inline-block;width:16px;height:0;border-top:3px solid;vertical-align:middle;margin-right:4px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.kpi{border:1px solid var(--border);border-radius:10px;padding:5px 6px;background:#f8fafc;text-align:center}
+.kpi .k-l{font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.kpi .k-v{font-size:1.05rem;font-weight:900;line-height:1.2}
+.kpi .k-n{font-size:.64rem;color:var(--muted)}
+.verdict{margin-top:8px;border-radius:10px;padding:8px 11px;font-size:.78rem;line-height:1.45;border:1px solid #c7d2fe;background:var(--indigo-lt);color:var(--indigo-dk)}
+.verdict b{display:block;margin-bottom:2px}
+.verdict.bad{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+.verdict.ok{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
+.group{border:1px solid var(--border);border-radius:12px;padding:9px 11px}
+.group + .group{margin-top:8px}
+.group h2{font-size:.8rem;font-weight:800;margin-bottom:6px}
+.g-d{border-left:4px solid var(--indigo)}
+.g-s{border-left:4px solid var(--cyan)}
+.g-p{border-left:4px solid var(--red)}
+.ctrl{margin-bottom:5px}
+.ctrl .row{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.ctrl label{font-size:.73rem;font-weight:700;line-height:1.2}
+.ctrl label small{font-weight:500;color:var(--muted)}
+.ctrl input[type=range]{width:100%;height:16px;accent-color:var(--indigo);display:block}
+.ctrl input[type=number]{width:52px;flex-shrink:0;padding:2px 5px;border:1px solid var(--border);border-radius:6px;font-size:.8rem;font-weight:800;text-align:right;color:var(--indigo-dk)}
+.ctrl select{font-size:.75rem;padding:2px 4px;border:1px solid var(--border);border-radius:6px;font-family:inherit}
+.sum-line{font-size:.7rem;color:var(--muted);margin-top:2px}
+.sum-line b{color:var(--text)}
+details.info{font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45}
+details.info summary{cursor:pointer;font-weight:700}
+details.info p + p{margin-top:4px}
+.axis{stroke:#94a3b8;stroke-width:1.5}
+.grid{stroke:#eef2f7;stroke-width:1}
+.tick{font-size:10px;fill:var(--muted)}
+.ax-lbl{font-size:11px;font-weight:700;fill:var(--text)}
+.c-lbl{font-size:11px;font-weight:800}
+/* режим ситуаций */
+.case{border:1px solid var(--border);border-radius:12px;padding:10px 12px;border-left:4px solid var(--amber)}
+.case .num{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.case .txt{font-size:.88rem;font-weight:700;margin:4px 0 8px}
+.pick{display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
+.pick .pl{font-size:.75rem;font-weight:800;width:150px}
+.opt{min-width:44px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:.85rem;font-weight:900;cursor:pointer;font-family:inherit}
+.opt[aria-pressed="true"]{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.opt.right{background:var(--green);border-color:var(--green);color:#fff}
+.opt.wrong{background:var(--red);border-color:var(--red);color:#fff}
+.actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.btn.primary{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.btn:disabled{opacity:.45;cursor:default}
+.score{font-size:.75rem;color:var(--muted);margin-top:8px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>Рынок гречи: спрос, предложение и равновесие</h1>
+  <span class="sub" id="subline">Двигайте неценовые факторы — кривые сдвигаются. Серым — исходное положение рынка. Учебная модель в условных единицах.</span>
+</div>
+
+<div class="tabs" role="tablist" aria-label="Режим тренажёра">
+  <button type="button" class="tab" role="tab" data-mode="free" aria-selected="true">Ползунки</button>
+  <button type="button" class="tab" role="tab" data-mode="quiz" aria-selected="false">8 ситуаций: предскажите</button>
+  <span class="lbl" id="pl">Готовые</span>
+  <button type="button" class="preset" data-p="base">Исходный рынок</button>
+  <button type="button" class="preset" data-p="ceiling">Потолок цены</button>
+  <button type="button" class="preset" data-p="quota">Квота (вертикальное S)</button>
+</div>
+
+<div class="layout">
+  <div>
+    <div class="chart-box">
+      <svg viewBox="0 0 520 330" role="img" aria-label="График рынка: кривые спроса и предложения, равновесие">
+        <g id="grid"></g>
+        <line class="axis" x1="50" y1="290" x2="500" y2="290"/>
+        <line class="axis" x1="50" y1="290" x2="50" y2="14"/>
+        <text class="ax-lbl" x="500" y="318" text-anchor="end">Q — объём гречи</text>
+        <text class="ax-lbl" x="14" y="14">P</text>
+        <line id="d0" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="5 4"/>
+        <line id="s0" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="5 4"/>
+        <rect id="gap" fill="#dc2626" opacity=".15"/>
+        <line id="ctl" stroke="#dc2626" stroke-width="2"/>
+        <text id="ctl-t" class="c-lbl" fill="#dc2626"></text>
+        <line id="d" stroke="#6366f1" stroke-width="3"/>
+        <line id="s" stroke="#0ea5e9" stroke-width="3"/>
+        <line id="ph" stroke="#475569" stroke-width="1" stroke-dasharray="3 3"/>
+        <line id="qv" stroke="#475569" stroke-width="1" stroke-dasharray="3 3"/>
+        <circle id="e0" r="4" fill="#94a3b8"/>
+        <circle id="e1" r="6" fill="#dc2626"/>
+        <text id="t-d" class="c-lbl" fill="#4338ca">D</text>
+        <text id="t-s" class="c-lbl" fill="#0369a1">S</text>
+        <text id="t-e0" class="tick" style="font-weight:800">E</text>
+        <text id="t-e1" class="tick" fill="#dc2626" style="font-weight:900">E1</text>
+      </svg>
+      <div class="legend"><span><i style="border-color:#6366f1"></i>спрос D</span><span><i style="border-color:#0ea5e9"></i>предложение S</span><span><i style="border-color:#cbd5e1;border-top-style:dashed"></i>исходные кривые</span><span id="lg-gap" class="hidden">красная полоса — дефицит или избыток</span></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="k-l">Равновесная цена</div><div class="k-v" id="k-p">—</div><div class="k-n" id="k-p0">было —</div></div>
+      <div class="kpi"><div class="k-l">Равновесный объём</div><div class="k-v" id="k-q">—</div><div class="k-n" id="k-q0">было —</div></div>
+      <div class="kpi"><div class="k-l" id="k-x-l">Рынок</div><div class="k-v" id="k-x">—</div><div class="k-n" id="k-x-n">—</div></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+
+  <div>
+    <div id="free-panel">
+      <div class="group g-d">
+        <h2>Спрос: неценовые факторы</h2>
+        <div class="ctrl"><div class="row"><label for="inc">Доходы покупателей <small>(греча — нормальный товар)</small></label><input type="number" id="inc-n" min="-3" max="3" step="1" aria-label="Доходы, число"></div><input type="range" id="inc" min="-3" max="3" step="1"></div>
+        <div class="ctrl"><div class="row"><label for="sub">Цена риса <small>(субститут)</small></label><input type="number" id="sub-n" min="-3" max="3" step="1" aria-label="Цена субститута, число"></div><input type="range" id="sub" min="-3" max="3" step="1"></div>
+        <div class="ctrl"><div class="row"><label for="cmp">Цена сливочного масла <small>(комплемент)</small></label><input type="number" id="cmp-n" min="-3" max="3" step="1" aria-label="Цена комплемента, число"></div><input type="range" id="cmp" min="-3" max="3" step="1"></div>
+        <div class="ctrl"><div class="row"><label for="tst">Вкусы и мода <small>(«греча полезна»)</small></label><input type="number" id="tst-n" min="-3" max="3" step="1" aria-label="Вкусы, число"></div><input type="range" id="tst" min="-3" max="3" step="1"></div>
+        <div class="ctrl"><div class="row"><label for="exp">Ожидания покупателей <small>(«завтра подорожает»)</small></label><input type="number" id="exp-n" min="-3" max="3" step="1" aria-label="Ожидания, число"></div><input type="range" id="exp" min="-3" max="3" step="1"></div>
+        <p class="sum-line">Сдвиг спроса: <b id="sd-out">—</b></p>
+      </div>
+      <div class="group g-s">
+        <h2>Предложение: неценовые факторы</h2>
+        <div class="ctrl"><div class="row"><label for="res">Цены ресурсов <small>(топливо, удобрения)</small></label><input type="number" id="res-n" min="-3" max="3" step="1" aria-label="Цены ресурсов, число"></div><input type="range" id="res" min="-3" max="3" step="1"></div>
+        <div class="ctrl"><div class="row"><label for="tec">Технологии и урожай</label><input type="number" id="tec-n" min="-3" max="3" step="1" aria-label="Технологии, число"></div><input type="range" id="tec" min="-3" max="3" step="1"></div>
+        <div class="ctrl"><div class="row"><label for="tax">Налог (−) / субсидия (+)</label><input type="number" id="tax-n" min="-3" max="3" step="1" aria-label="Налог или субсидия, число"></div><input type="range" id="tax" min="-3" max="3" step="1"></div>
+        <div class="ctrl"><div class="row"><label for="es">Гибкость предложения <small>(0 — квота, вертикальная S)</small></label><input type="number" id="es-n" min="0" max="3" step="0.25" aria-label="Гибкость предложения, число"></div><input type="range" id="es" min="0" max="3" step="0.25"></div>
+        <p class="sum-line">Сдвиг предложения: <b id="ss-out">—</b></p>
+      </div>
+      <div class="group g-p">
+        <h2>Государство и цена</h2>
+        <div class="ctrl"><div class="row"><label for="ct">Ограничение цены</label><select id="ct" aria-label="Тип ограничения"><option value="none">нет</option><option value="ceil">потолок (не дороже)</option><option value="floor">пол (не дешевле)</option></select></div></div>
+        <div class="ctrl"><div class="row"><label for="pc">Уровень ограничения</label><input type="number" id="pc-n" min="10" max="100" step="1" aria-label="Уровень ограничения, число"></div><input type="range" id="pc" min="10" max="100" step="1"></div>
+      </div>
+      <details class="info"><summary>Как устроена модель</summary>
+        <p>Спрос: Qd = 60 + сдвиг − (P − 60); предложение: Qs = 60 + сдвиг + гибкость × (P − 60). Каждый шаг неценового фактора сдвигает кривую на 8 единиц: вправо — рост, влево — падение. Цена комплемента и цены ресурсов действуют в обратную сторону: дороже масло — меньше спрос на гречу; дороже топливо — меньше предложение.</p>
+        <p>Потолок ниже равновесной цены рождает дефицит: хотят купить больше, чем продают; продано столько, сколько предложено. Пол выше равновесия рождает избыток. Потолок выше равновесия и пол ниже — не действуют.</p>
+      </details>
+    </div>
+
+    <div id="quiz-panel" class="hidden">
+      <div class="case">
+        <div class="num" id="q-num">Ситуация 1 из 8</div>
+        <div class="txt" id="q-txt"></div>
+        <div class="pick" role="group" aria-label="Равновесная цена"><span class="pl">Равновесная цена</span>
+          <button type="button" class="opt" data-k="p" data-v="up">↑</button><button type="button" class="opt" data-k="p" data-v="down">↓</button><button type="button" class="opt" data-k="p" data-v="q">?</button></div>
+        <div class="pick" role="group" aria-label="Равновесный объём"><span class="pl">Равновесный объём</span>
+          <button type="button" class="opt" data-k="q" data-v="up">↑</button><button type="button" class="opt" data-k="q" data-v="down">↓</button><button type="button" class="opt" data-k="q" data-v="q">?</button></div>
+        <div class="actions">
+          <button type="button" class="btn primary" id="check" disabled>Проверить</button>
+          <button type="button" class="btn" id="next" disabled>Следующая →</button>
+        </div>
+        <p class="score" id="score"></p>
+      </div>
+      <details class="info"><summary>Подсказка, если не уверены</summary>
+        <p>1) Что изменилось — спрос (поведение покупателей) или предложение (поведение производителей)? 2) В какую сторону: рост — вправо, падение — влево. 3) Нарисуйте новый крест и сравните точки E и E1.</p>
+        <p>«?» — законный ответ: при двух одновременных сдвигах один параметр зависит от того, какой сдвиг сильнее.</p>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script>
+const STEP = 8;
+const BASE = {inc:0, sub:0, cmp:0, tst:0, exp:0, res:0, tec:0, tax:0, es:1, ct:"none", pc:45};
+const PRESETS = {
+  base: {...BASE},
+  ceiling: {...BASE, ct:"ceil", pc:45},
+  quota: {...BASE, es:0, tst:2}
+};
+const NUMS = ["inc","sub","cmp","tst","exp","res","tec","tax","es","pc"];
+let st = {...BASE};
+let mode = "free";
+
+const X0 = 50, Y0 = 290, QMAX = 140, PMAX = 110;
+const px = (q) => X0 + (q / QMAX) * 450;
+const py = (p) => Y0 - (p / PMAX) * 276;
+
+(function grid(){
+  let html = "";
+  for (let p = 0; p <= 100; p += 20){ html += `<line class="grid" x1="${X0}" y1="${py(p)}" x2="500" y2="${py(p)}"/><text class="tick" x="${X0 - 6}" y="${py(p) + 3}" text-anchor="end">${p}</text>`; }
+  for (let q = 0; q <= 140; q += 20){ html += `<text class="tick" x="${px(q)}" y="${Y0 + 13}" text-anchor="middle">${q}</text>`; }
+  document.getElementById("grid").innerHTML = html;
+})();
+
+function bind(id){
+  const range = document.getElementById(id), num = document.getElementById(id + "-n");
+  range.addEventListener("input", () => { st[id] = Number(range.value); render(); });
+  num.addEventListener("change", () => { st[id] = Math.max(Number(num.min), Math.min(Number(num.max), Number(num.value) || 0)); render(); });
+}
+NUMS.forEach(bind);
+document.getElementById("ct").addEventListener("change", (e) => { st.ct = e.target.value; render(); });
+document.querySelectorAll(".preset").forEach((b) => b.addEventListener("click", () => { st = {...PRESETS[b.dataset.p]}; setMode("free"); }));
+
+// линейная модель: Qd = 60 + sD − bD(P − 60); Qs = 60 + sS + eS(P − 60)
+const BD = 1;
+function model(sD, sS, eS){
+  const dp = (sD - sS) / (BD + eS);
+  const P = 60 + dp;
+  const Q = 60 + sD - BD * dp;
+  return {P, Q, qd: (p) => 60 + sD - BD * (p - 60), qs: (p) => 60 + sS + eS * (p - 60)};
+}
+function curve(id, fn, vertical){
+  const el = document.getElementById(id);
+  const p1 = 5, p2 = 105;
+  el.setAttribute("x1", px(fn(p1))); el.setAttribute("y1", py(p1));
+  el.setAttribute("x2", px(fn(p2))); el.setAttribute("y2", py(p2));
+}
+function dot(id, q, p){ const el = document.getElementById(id); el.setAttribute("cx", px(q)); el.setAttribute("cy", py(p)); }
+function label(id, x, y){ const el = document.getElementById(id); el.setAttribute("x", x); el.setAttribute("y", y); }
+const f0 = (v) => (Math.round(v * 10) / 10).toLocaleString("ru-RU");
+const arrow = (a, b) => Math.abs(a - b) < 0.05 ? "не изменилась" : (b > a ? "↑ выросла" : "↓ снизилась");
+const arrowQ = (a, b) => Math.abs(a - b) < 0.05 ? "не изменился" : (b > a ? "↑ вырос" : "↓ снизился");
+
+function draw(sD, sS, eS, ctrl){
+  const m0 = model(0, 0, 1), m = model(sD, sS, eS);
+  curve("d0", m0.qd); curve("s0", m0.qs);
+  curve("d", m.qd); curve("s", m.qs);
+  dot("e0", m0.Q, m0.P); dot("e1", m.Q, m.P);
+  label("t-e0", px(m0.Q) - 14, py(m0.P) - 6);
+  label("t-e1", px(m.Q) + 8, py(m.P) - 8);
+  const same = Math.abs(m.P - m0.P) < 0.05 && Math.abs(m.Q - m0.Q) < 0.05;
+  document.getElementById("t-e0").style.display = same ? "none" : "";
+  document.getElementById("e0").style.display = same ? "none" : "";
+  document.getElementById("t-e1").textContent = same ? "E" : "E1";
+  label("t-d", Math.min(px(m.qd(12)) + 6, 488), py(12) - 4);
+  label("t-s", Math.min(px(m.qs(100)) + 6, 488), py(100) + 4);
+  const ph = document.getElementById("ph"), qv = document.getElementById("qv");
+  ph.setAttribute("x1", X0); ph.setAttribute("y1", py(m.P)); ph.setAttribute("x2", px(m.Q)); ph.setAttribute("y2", py(m.P));
+  qv.setAttribute("x1", px(m.Q)); qv.setAttribute("y1", py(m.P)); qv.setAttribute("x2", px(m.Q)); qv.setAttribute("y2", Y0);
+
+  const gap = document.getElementById("gap"), ctl = document.getElementById("ctl"), ctlT = document.getElementById("ctl-t");
+  let info = null;
+  if (ctrl && ctrl.type !== "none"){
+    const pc = ctrl.level;
+    ctl.style.display = ""; ctlT.style.display = "";
+    ctl.setAttribute("x1", X0); ctl.setAttribute("x2", 500); ctl.setAttribute("y1", py(pc)); ctl.setAttribute("y2", py(pc));
+    ctlT.setAttribute("x", 496); ctlT.setAttribute("y", py(pc) - 5); ctlT.setAttribute("text-anchor", "end");
+    ctlT.textContent = ctrl.type === "ceil" ? "потолок цены" : "пол цены";
+    const binding = ctrl.type === "ceil" ? pc < m.P : pc > m.P;
+    if (binding){
+      const qd = Math.max(0, m.qd(pc)), qs = Math.max(0, m.qs(pc));
+      const a = Math.min(qd, qs), b = Math.max(qd, qs);
+      gap.style.display = ""; gap.setAttribute("x", px(a)); gap.setAttribute("width", px(b) - px(a));
+      gap.setAttribute("y", py(pc) - 7); gap.setAttribute("height", 14);
+      info = {binding:true, pc, qd, qs, kind: qd > qs ? "дефицит" : "избыток"};
+    } else { gap.style.display = "none"; info = {binding:false, pc}; }
+  } else { ctl.style.display = "none"; ctlT.style.display = "none"; gap.style.display = "none"; }
+  document.getElementById("lg-gap").classList.toggle("hidden", !(info && info.binding));
+  return {m0, m, info};
+}
+
+function render(){
+  NUMS.forEach((id) => { document.getElementById(id).value = st[id]; document.getElementById(id + "-n").value = st[id]; });
+  document.getElementById("ct").value = st.ct;
+  const sD = STEP * (st.inc + st.sub - st.cmp + st.tst + st.exp);
+  const sS = STEP * (-st.res + st.tec + st.tax);
+  const shiftTxt = (v) => v === 0 ? "нет" : (v > 0 ? `вправо на ${v} — рост` : `влево на ${-v} — падение`);
+  document.getElementById("sd-out").textContent = shiftTxt(sD);
+  document.getElementById("ss-out").textContent = shiftTxt(sS);
+  const {m0, m, info} = draw(sD, sS, st.es, {type: st.ct, level: st.pc});
+
+  document.getElementById("k-p").textContent = f0(m.P);
+  document.getElementById("k-p0").textContent = "было " + f0(m0.P);
+  document.getElementById("k-q").textContent = f0(m.Q);
+  document.getElementById("k-q0").textContent = "было " + f0(m0.Q);
+  const kx = document.getElementById("k-x"), kxn = document.getElementById("k-x-n"), kxl = document.getElementById("k-x-l");
+  const v = document.getElementById("verdict"); v.className = "verdict";
+  if (info && info.binding){
+    kxl.textContent = info.kind === "дефицит" ? "Дефицит" : "Избыток";
+    kx.textContent = f0(Math.abs(info.qd - info.qs)); kx.style.color = "var(--red)";
+    kxn.textContent = `спрос ${f0(info.qd)} · предложение ${f0(info.qs)}`;
+    v.className = "verdict bad";
+    v.innerHTML = info.kind === "дефицит"
+      ? `<b>Потолок ${f0(info.pc)} ниже равновесной цены ${f0(m.P)} — дефицит</b>Покупатели хотят ${f0(info.qd)}, а продают только ${f0(info.qs)}: продано меньше, чем в равновесии. Без ограничения конкуренция покупателей подняла бы цену и вернула рынок в точку E1. Это и есть «выключенный ценовой сигнал» из кейса с масками.`
+      : `<b>Пол ${f0(info.pc)} выше равновесной цены ${f0(m.P)} — избыток</b>Производители готовы продать ${f0(info.qs)}, а купят только ${f0(info.qd)}. Без ограничения конкуренция продавцов снизила бы цену — как с шерстяными носками после сезона.`;
+  } else {
+    kxl.textContent = "Рынок"; kx.textContent = "равновесие"; kx.style.color = "var(--green)";
+    kxn.textContent = info ? `ограничение ${f0(info.pc)} не действует` : "Qd = Qs";
+    const parts = [];
+    if (sD !== 0) parts.push(`спрос ${sD > 0 ? "вырос (кривая вправо)" : "упал (кривая влево)"}`);
+    if (sS !== 0) parts.push(`предложение ${sS > 0 ? "выросло (кривая вправо)" : "упало (кривая влево)"}`);
+    const head = parts.length ? parts.join(", ") : "рынок в исходном равновесии";
+    let body = `Цена ${arrow(m0.P, m.P)}, объём ${arrowQ(m0.Q, m.Q)}.`;
+    if (st.es === 0 && sD !== 0) body += " Предложение вертикальное (квота): объём не может измениться, весь сдвиг спроса уходит в цену.";
+    if (info && !info.binding) body += st.ct === "ceil" ? " Потолок выше равновесной цены — он ни на что не влияет." : " Пол ниже равновесной цены — он ни на что не влияет.";
+    v.innerHTML = `<b>${head[0].toUpperCase() + head.slice(1)}</b>${body}`;
+  }
+}
+
+/* ---------- режим «8 ситуаций» ---------- */
+const CASES = [
+  {t:"Учёные сообщили: в гречке много антиоксидантов, она защищает от болезней.", sD:2, sS:0, p:"up", q:"up",
+   why:"Изменились вкусы — растёт спрос, кривая D вправо. Цена ↑ и объём ↑: продавцы на рост цены отвечают поставками из запасов и от новых поставщиков. «Объём не изменится» — типичная ошибка: так бывает только при вертикальном предложении (квота)."},
+  {t:"Небывалый урожай риса — рис сильно подешевел. Для покупателей рис и гречка — заменители.", sD:-2, sS:0, p:"down", q:"down",
+   why:"Подешевел субститут — спрос на гречку падает, D влево. Цена ↓ и объём ↓. Предложение гречи не менялось."},
+  {t:"Небывалый урожай гречи.", sD:0, sS:2, p:"down", q:"up",
+   why:"Растёт предложение — S вправо. Цена ↓, объём ↑. Самая благоприятная для покупателей ситуация: реальные доходы растут."},
+  {t:"На производителей гречи ввели дополнительный налог.", sD:0, sS:-2, p:"up", q:"down",
+   why:"Налог — «субсидия наоборот»: предложение падает, S влево. Цена ↑, объём ↓."},
+  {t:"Рекордный урожай гречи, и одновременно мода на гречку прошла.", sD:-2, sS:2, p:"down", q:"q",
+   why:"D влево, S вправо: обе силы тянут цену вниз — цена ↓ точно. А объём: спрос тянет вниз, предложение вверх — итог зависит от того, какой сдвиг сильнее. Ответ «?» — на этом ловят в тестах. На графике сдвиги равные, поэтому объём не изменился."},
+  {t:"Слухи о дефиците подняли спрос, а засуха снизила урожай гречи.", sD:2, sS:-2, p:"up", q:"q",
+   why:"D вправо, S влево: цена ↑ точно, объём неопределённый — всё решает сила сдвигов."},
+  {t:"Доходы людей выросли (греча — нормальный товар), а фермеры купили новые комбайны.", sD:2, sS:2, p:"q", q:"up",
+   why:"Оба сдвига вправо: объём ↑ точно. Цену спрос тянет вверх, предложение вниз — цена неопределённа."},
+  {t:"Подешевели макароны (заменитель), а топливо для комбайнов подорожало.", sD:-2, sS:-2, p:"q", q:"down",
+   why:"Оба сдвига влево: объём ↓ точно. Цена неопределённа: спрос тянет вниз, предложение вверх."}
+];
+let qi = 0, pick = {p:null, q:null}, checked = false, score = 0, done = 0;
+
+function showCase(){
+  const c = CASES[qi];
+  document.getElementById("q-num").textContent = `Ситуация ${qi + 1} из ${CASES.length}`;
+  document.getElementById("q-txt").textContent = c.t;
+  pick = {p:null, q:null}; checked = false;
+  document.querySelectorAll(".opt").forEach((b) => { b.className = "opt"; b.setAttribute("aria-pressed", "false"); b.disabled = false; });
+  document.getElementById("check").disabled = true;
+  document.getElementById("next").disabled = true;
+  draw(0, 0, 1, null);
+  const m0 = model(0, 0, 1);
+  document.getElementById("k-p").textContent = "?"; document.getElementById("k-p0").textContent = "было " + f0(m0.P);
+  document.getElementById("k-q").textContent = "?"; document.getElementById("k-q0").textContent = "было " + f0(m0.Q);
+  document.getElementById("k-x-l").textContent = "Счёт"; const kx = document.getElementById("k-x"); kx.textContent = `${score} из ${done}`; kx.style.color = "var(--indigo-dk)";
+  document.getElementById("k-x-n").textContent = "верно / решено";
+  const v = document.getElementById("verdict"); v.className = "verdict";
+  v.innerHTML = "<b>Сначала подумайте сами</b>Выберите, что будет с равновесной ценой и объёмом, и нажмите «Проверить». График покажет сдвиг после ответа.";
+}
+document.querySelectorAll(".opt").forEach((b) => b.addEventListener("click", () => {
+  if (checked) return;
+  pick[b.dataset.k] = b.dataset.v;
+  document.querySelectorAll(`.opt[data-k="${b.dataset.k}"]`).forEach((o) => o.setAttribute("aria-pressed", o === b ? "true" : "false"));
+  document.getElementById("check").disabled = !(pick.p && pick.q);
+}));
+document.getElementById("check").addEventListener("click", () => {
+  const c = CASES[qi]; checked = true; done++;
+  document.getElementById("check").disabled = true;
+  const ok = pick.p === c.p && pick.q === c.q; if (ok) score++;
+  document.querySelectorAll(".opt").forEach((o) => {
+    o.disabled = true;
+    const right = c[o.dataset.k] === o.dataset.v;
+    if (right) o.classList.add("right"); else if (o.getAttribute("aria-pressed") === "true") o.classList.add("wrong");
+  });
+  const {m0, m} = draw(STEP * c.sD, STEP * c.sS, 1, null);
+  document.getElementById("k-p").textContent = f0(m.P);
+  document.getElementById("k-q").textContent = f0(m.Q);
+  const kx = document.getElementById("k-x"); kx.textContent = `${score} из ${done}`;
+  const v = document.getElementById("verdict"); v.className = ok ? "verdict ok" : "verdict bad";
+  v.innerHTML = `<b>${ok ? "Верно" : "Не совсем"}</b>${c.why}`;
+  document.getElementById("next").disabled = false;
+  document.getElementById("next").textContent = qi === CASES.length - 1 ? "Начать заново" : "Следующая →";
+});
+document.getElementById("next").addEventListener("click", () => {
+  if (qi === CASES.length - 1){ qi = 0; score = 0; done = 0; } else qi++;
+  showCase();
+});
+
+function setMode(m){
+  mode = m;
+  document.querySelectorAll(".tab").forEach((t) => t.setAttribute("aria-selected", t.dataset.mode === m ? "true" : "false"));
+  document.getElementById("free-panel").classList.toggle("hidden", m !== "free");
+  document.getElementById("quiz-panel").classList.toggle("hidden", m !== "quiz");
+  document.querySelectorAll(".preset,#pl").forEach((el) => el.classList.toggle("hidden", m !== "free"));
+  document.getElementById("subline").textContent = m === "free"
+    ? "Двигайте неценовые факторы — кривые сдвигаются. Серым — исходное положение рынка. Учебная модель в условных единицах."
+    : "Восемь ситуаций с занятия: сначала ваш прогноз, потом график и разбор.";
+  if (m === "free") render(); else showCase();
+}
+document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => setMode(t.dataset.mode)));
+
+const params = new URLSearchParams(location.search);
+if (params.get("preset") && PRESETS[params.get("preset")]) st = {...PRESETS[params.get("preset")]};
+setMode(params.get("mode") === "quiz" ? "quiz" : "free");
+</script>
+</body>
+</html>
