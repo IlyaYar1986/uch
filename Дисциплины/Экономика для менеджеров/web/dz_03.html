@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Домашнее задание к занятию 3: закономерности спроса и предложения</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --amber-lt:#fffbeb;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+  --nav-h:56px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(99,102,241,.14),transparent 32%),
+    radial-gradient(circle at 85% 6%,rgba(14,165,233,.13),transparent 34%),
+    linear-gradient(180deg,#f8fafc 0%,#eef2ff 30%,#f8fafc 100%);
+  color:var(--text);line-height:1.65;overflow-x:hidden;
+}
+a{color:var(--indigo-dk)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;z-index:900;
+  gap:2px;overflow-x:auto;scrollbar-width:none;
+}
+nav.top::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:.93rem;color:var(--indigo-dk);white-space:nowrap;margin:0 10px 0 4px;flex-shrink:0;text-decoration:none}
+.nav-sep{width:1px;height:18px;background:var(--border);margin:0 6px;flex-shrink:0}
+.nav-link{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0}
+.nav-link:hover{color:var(--indigo);background:var(--indigo-lt)}
+
+main{max-width:860px;margin:0 auto;padding:calc(var(--nav-h) + 40px) 16px 56px}
+h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;letter-spacing:-.5px;line-height:1.2;margin-bottom:10px}
+h1 em{font-style:normal;color:var(--indigo)}
+.lead{color:var(--muted);font-size:1rem;margin-bottom:22px}
+.note-callout{background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:14px;padding:14px 18px;margin-bottom:28px}
+.note-callout p{color:var(--indigo-dk);font-size:.92rem}
+.note-callout p + p{margin-top:6px}
+
+.part{margin-top:40px}
+.part h2{font-size:clamp(1.2rem,2.6vw,1.6rem);font-weight:800;margin-bottom:6px}
+.part .hint{color:var(--muted);font-size:.9rem;margin-bottom:16px}
+
+.q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+.q + .q{margin-top:14px}
+.q-text{font-weight:700;margin-bottom:12px}
+.q-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.q-opts label{display:flex;align-items:flex-start;gap:8px;font-size:.93rem;cursor:pointer}
+.q-opts input{accent-color:var(--indigo);margin-top:5px;flex-shrink:0}
+.q-opts label.right{color:var(--green);font-weight:700}
+.q-opts label.wrong{color:var(--red);text-decoration:line-through}
+.q-tf .q-opts{flex-direction:row;gap:18px}
+.q-check{padding:8px 16px;border-radius:9px;border:none;background:var(--indigo);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit}
+.q-check:hover{background:var(--indigo-dk)}
+.q-check:disabled{opacity:.5;cursor:default}
+.q-fb{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem}
+.q-fb.ok{background:var(--green-lt);color:var(--green)}
+.q-fb.bad{background:var(--red-lt);color:var(--red)}
+.q-fb .why{display:block;margin-top:6px;color:var(--text);font-weight:500}
+.q-fb .why b{font-weight:800}
+.q-fb .src{display:block;margin-top:6px;font-size:.84rem}
+
+.score{position:sticky;bottom:12px;margin:32px auto 0;max-width:420px;text-align:center;font-weight:800;color:var(--indigo-dk);background:rgba(255,255,255,.96);border:1px solid #c7d2fe;border-radius:12px;padding:10px 14px;box-shadow:0 4px 18px rgba(15,23,42,.08)}
+
+details.key{margin-top:40px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0 20px}
+details.key summary{cursor:pointer;padding:14px 0;font-weight:800;list-style:none}
+details.key summary::-webkit-details-marker{display:none}
+details.key[open] summary{border-bottom:1px dashed var(--border)}
+.key-body{padding:12px 0 18px;font-size:.93rem}
+.key-body h3{font-size:.95rem;margin:12px 0 4px}
+.key-body h3:first-child{margin-top:0}
+.key-body ol{padding-left:22px}
+
+footer{text-align:center;padding:32px 20px 48px;color:var(--muted);font-size:.85rem}
+@media (max-width:600px){.q{padding:16px}.q-tf .q-opts{flex-direction:column;gap:8px}}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Навигация по странице">
+  <a class="nav-link" href="../index.html">← Все уроки</a>
+  <span class="nav-sep"></span>
+  <a class="nav-logo" href="zanyatie_03.html">Занятие 3</a>
+  <span class="nav-sep"></span>
+  <a class="nav-link" href="#p1">I. Верно/неверно</a>
+  <a class="nav-link" href="#p2">II. Один ответ</a>
+  <a class="nav-link" href="#p3">III. Несколько ответов</a>
+  <a class="nav-link" href="#p4">Задачи</a>
+  <a class="nav-link" href="#key">Ответы списком</a>
+</nav>
+
+<main>
+  <h1>Домашнее задание: <em>закономерности спроса и предложения</em></h1>
+  <p class="lead">Тест и задачи к занятию 3 (19.10.2026), раздаточный лист И. Г. Переломовой. 20 заданий в четырёх частях.</p>
+
+  <div class="note-callout">
+    <p>Сначала ответьте сами, потом нажмите «Проверить». После проверки правильный ответ выделится зелёным, а ниже появится разбор и ссылка на раздел урока, где это объясняется.</p>
+    <p>Ответы и разборы составлены по материалу лекции и учебникам; ключа преподавателя у нас нет. Спорный момент один — в III.3, он разобран в пояснении.</p>
+  </div>
+
+  <div id="quiz"></div>
+
+  <details class="key" id="key">
+    <summary>📋 Все ответы списком — чтобы перенести в бланк</summary>
+    <div class="key-body" id="key-body"></div>
+  </details>
+
+  <p class="score" id="score" aria-live="polite">Проверено: 0 / 20 · верно: 0</p>
+</main>
+
+<footer>
+  <p>Президентская программа · «Экономика для менеджеров» · преподаватель И. Г. Переломова · <a href="zanyatie_03.html">урок 3</a></p>
+</footer>
+
+<script>
+/* Задания: type — tf (верно/неверно), one (один ответ), many (несколько ответов).
+   right — номера правильных вариантов с нуля. sec — раздел урока 3 с объяснением. */
+const LESSON = "zanyatie_03.html";
+const SECTIONS = {
+  s3: "3 · Спрос и закон спроса",
+  s4: "4 · Неценовые факторы спроса",
+  s7: "7 · Предложение",
+  s8: "8 · Рыночное равновесие",
+  s9: "9 · Восемь ситуаций"
+};
+const TF = ["Верно", "Неверно"];
+
+const PARTS = [
+  {
+    id: "p1", title: "I. Оцените суждения: верно или неверно",
+    hint: "Ловушки здесь — в одном слове: «прямая/обратная», «спрос/предложение».",
+    items: [
+      {type: "tf", text: "Предложение — желание и возможности продавцов поставлять данное благо на рынок по каждой данной цене.", options: TF, right: [0], sec: "s7",
+        why: "Это точное определение предложения. Оно, как и спрос, — качественная характеристика: желание <b>и</b> возможность, по каждой цене (вся кривая, а не одна точка)."},
+      {type: "tf", text: "Закон предложения — обратная зависимость между ценой и величиной предложения, при прочих равных условиях.", options: TF, right: [1], sec: "s7",
+        why: "Зависимость <b>прямая</b>: чем выше цена, тем больше продавцы готовы поставить. Обратная зависимость — у закона спроса. Подмена «прямой» на «обратную» — самая частая ловушка теста."},
+      {type: "tf", text: "Рыночное (суммарное) предложение — это общее (суммарное) предложение данного товара всеми индивидуальными продавцами на данном рынке за определённое время.", options: TF, right: [0], sec: "s7",
+        why: "Верно. Рыночное предложение — сумма индивидуальных предложений всех продавцов. Слова «за определённое время» важны: предложение, как и спрос, — поток, а не запас."},
+      {type: "tf", text: "К неценовым факторам предложения относятся вкусы и предпочтения потребителей.", options: TF, right: [1], sec: "s7",
+        why: "Вкусы и предпочтения — фактор <b>спроса</b>. Факторы предложения связаны с продавцом: цены ресурсов, технология, налоги и субсидии, число продавцов, ожидания производителей, цены других товаров, которые можно выпускать на тех же мощностях."},
+      {type: "tf", text: "Математически прямая зависимость между величиной предложения на данный товар и его ценой может быть представлена тремя способами: шкалой предложения (таблица), кривой предложения (график) и функцией предложения (формула).", options: TF, right: [0], sec: "s7",
+        why: "Верно: табличный, графический и аналитический способы. Так же задаётся и спрос: шкала спроса, кривая спроса, функция Qd = a − bP."}
+    ]
+  },
+  {
+    id: "p2", title: "II. Выберите единственный правильный ответ",
+    hint: "Перед ответом спросите себя: это фактор спроса или предложения? Кривая сдвигается или мы движемся по ней?",
+    items: [
+      {type: "one", text: "1. К неценовым факторам (детерминантам) предложения относятся:", options: ["уровень доходов потребителей", "вкусы и предпочтения потребителей", "технология", "число потребителей"], right: [2], sec: "s7",
+        why: "Технология меняет издержки продавца — это фактор предложения. Остальные три варианта относятся к покупателям, то есть к спросу."},
+      {type: "one", text: "2. Закон предложения отображает:", options: ["прямую зависимость между предложением и ценой", "прямую зависимость между величиной предложения и ценой", "обратную зависимость между предложением и ценой", "обратную зависимость между величиной предложения и ценой"], right: [1], sec: "s7",
+        why: "Цена меняет <b>величину</b> предложения (движение по кривой), а не само предложение (сдвиг кривой). Поэтому верна формулировка с «величиной», и зависимость прямая. Вариант 1 — ловушка: та же мысль, но без слова «величина»."},
+      {type: "one", text: "3. При данной величине спроса технический прогресс в производстве продукта X скорее всего повлечёт за собой:", options: ["увеличение равновесной цены и увеличение равновесного количества", "увеличение равновесной цены и уменьшение равновесного количества", "уменьшение равновесной цены и уменьшение равновесного количества", "уменьшение равновесной цены и увеличение равновесного количества"], right: [3], sec: "s9",
+        why: "Технический прогресс снижает издержки, предложение растёт, кривая S сдвигается вправо. Спрос не меняется, поэтому новая точка равновесия ниже и правее: <b>цена ↓, количество ↑</b>."},
+      {type: "one", text: "4. Цена на одежду вероятно возрастёт в результате:", options: ["роста предложения одежды", "повышения зарплаты на ткацких фабриках", "появления нового оборудования, снижающего стоимость производства", "снижения спроса на одежду"], right: [1], sec: "s9",
+        why: "Зарплата — цена ресурса. Издержки растут, предложение падает, S сдвигается влево, цена растёт. Варианты 1, 3 и 4 цену снижают."},
+      {type: "one", text: "5. В каком суждении термин «спрос» следует заменить термином «величина спроса»?", options: ["после повышения цен на железнодорожные билеты «Москва — Петербург» спрос на авиабилеты «Москва — Петербург» вырос", "ожидаемый рост цен на московском рынке жилья вызвал резкое увеличение спроса на квартиры в Москве", "после сообщений в прессе о птичьем гриппе спрос в Московском регионе на курицу упал до рекордно низкого уровня", "повышение тарифов на муниципальный транспорт в Москве привело к снижению спроса на услуги муниципального транспорта"], right: [3], sec: "s3",
+        why: "«Величина спроса» — когда меняется <b>цена самого товара</b>: подорожал проезд, и проезд покупают меньше. Это движение по кривой. В остальных случаях действует неценовой фактор, и слово «спрос» стоит правильно: цена товара-заменителя (1), ожидания (2), вкусы и информация (3)."}
+    ]
+  },
+  {
+    id: "p3", title: "III. Выберите все правильные ответы",
+    hint: "Правильных вариантов может быть несколько. Засчитывается только точное совпадение набора.",
+    items: [
+      {type: "many", text: "1. Увеличение спроса на спортивный инвентарь в регионе могло быть вызвано:", options: ["наступлением сезона отпусков", "увеличением затрат на создание спортивного инвентаря", "увеличением количества потребителей спортивного инвентаря", "увеличением количества производителей спортивного инвентаря", "увеличением налоговой нагрузки на производителей спортивного инвентаря"], right: [0, 2], sec: "s4",
+        why: "Спрос сдвигают факторы покупателя: сезон (вкусы и предпочтения) и число покупателей. Затраты, число производителей и налоги — факторы <b>предложения</b>: они меняют цену, но кривую спроса не сдвигают."},
+      {type: "many", text: "2. Равновесная цена на канцелярские товары вырастет, если при прочих равных условиях:", options: ["увеличится спрос на данный товар", "увеличится предложение данного товара", "сократится спрос на данный товар", "сократится предложение данного товара", "увеличится спрос на данный товар при одновременном сокращении предложения"], right: [0, 3, 4], sec: "s9",
+        why: "Цену поднимают D вправо (1) и S влево (4). Если оба сдвига идут сразу (5), они толкают цену в одну сторону — вверх, рост гарантирован; неопределённым остаётся только количество."},
+      {type: "many", text: "3. Рост спроса может быть вызван:", options: ["снижением дохода потребителей", "снижением предложения данного товара", "снижением цены товара-заменителя", "уменьшением цены дополняющего товара (комплемента)", "вхождением данного товара в моду"], right: [3, 4], sec: "s4",
+        why: "Комплементы связаны обратно: подешевели принтеры — спрос на картриджи вырос (4). Мода — вкусы и предпочтения (5). Заменитель подешевел — спрос на наш товар <b>падает</b> (3). Снижение предложения (2) меняет цену, но не спрос.<br>⚠️ Вариант 1 верен только для <b>низшего</b> блага: при падении доходов спрос на него растёт. В тесте без уточнения подразумевается нормальный товар, поэтому 1 не отмечаем. Если ключ преподавателя засчитает 1 — вот причина."},
+      {type: "many", text: "4. Сбор богатого урожая яблок приведёт к тому, что на рынке яблок при прочих равных условиях:", options: ["увеличатся спрос и предложение", "увеличится предложение яблок", "снизится равновесная цена яблок", "увеличится равновесная цена яблок", "увеличится объём продаж"], right: [1, 2, 4], sec: "s9",
+        why: "Урожай — фактор предложения: S сдвигается вправо. Цена падает, равновесное количество (объём продаж) растёт. Спрос не меняется: дешевле стало — покупают больше, но это рост <b>величины</b> спроса, а не спроса."},
+      {type: "many", text: "5. Резкое увеличение стоимости проезда по железной дороге приведёт к тому, что на рынке авиаперевозок произойдёт:", options: ["рост и равновесной цены, и равновесного объёма продаж", "рост равновесной цены и снижение равновесного объёма продаж", "снижение и равновесной цены, и равновесного объёма продаж", "снижение равновесной цены и рост равновесного объёма продаж", "сдвиг кривой спроса на авиаперевозки вправо"], right: [0, 4], sec: "s9",
+        why: "Поезд и самолёт — субституты, связь прямая. Поезд подорожал — спрос на авиабилеты растёт, D сдвигается вправо (5). Значит, и цена, и количество растут (1)."}
+    ]
+  },
+  {
+    id: "p4", title: "Задачи",
+    hint: "Подставьте цену в функцию или приравняйте Qd = Qs. Черновик — на бумаге, потом проверка.",
+    items: [
+      {type: "one", text: "Задача 1. Функция спроса Qd = 500 − 25P. Какое количество товара будет куплено по цене P = 10?", options: ["200", "250", "300", "350"], right: [1], sec: "s3",
+        why: "Qd = 500 − 25 · 10 = 500 − 250 = <b>250</b>."},
+      {type: "one", text: "Задача 2. Функция предложения Qs = 50P − 250. Какое количество товара будет продано по цене P = 20?", options: ["500", "700", "750", "800"], right: [2], sec: "s7",
+        why: "Qs = 50 · 20 − 250 = 1 000 − 250 = <b>750</b>. В задаче сказано «продано», но спроса не дано — считаем величину предложения."},
+      {type: "one", text: "Задача 3. Спрос и предложение на муку: Qd = 2 500 − 100P, Qs = −1 000 + 250P (тонн в день, P — цена килограмма в рублях). Найдите равновесную цену и объём продаж.", options: ["Pe = 10, Qe = 1 500", "Pe = 10, Qe = 500", "Pe = 100, Qe = 500", "Pe = 100, Qe = 1 500"], right: [0], sec: "s8",
+        why: "Равновесие: Qd = Qs → 2 500 − 100P = −1 000 + 250P → 3 500 = 350P → <b>P = 10</b>. Подставляем: Qd = 2 500 − 1 000 = <b>1 500</b>; проверка Qs = −1 000 + 2 500 = 1 500."},
+      {type: "one", text: "Задача 4. Спрос Qd = −3P + 95, предложение Qs = 2P − 20. Рынок был в равновесии. Власти, поддерживая производителей, велели с 1 апреля продавать товар на 1 дороже, чем накануне. Каков избыток предложения?", options: ["2", "3", "4", "5"], right: [3], sec: "s8",
+        why: "1) Равновесие: −3P + 95 = 2P − 20 → 115 = 5P → P = 23, Q = 26.<br>2) Новая цена — 24 (это «пол цены» выше равновесия): Qd = −72 + 95 = 23, Qs = 48 − 20 = 28.<br>3) Избыток = Qs − Qd = 28 − 23 = <b>5</b>. Короткий путь: цена выросла на 1, спрос упал на 3, предложение выросло на 2 — итого 5."},
+      {type: "one", text: "Задача 5. Спрос Qd = 2 800 − 6P, предложение Qs = −800 + 3P. Найдите избыточное предложение при цене P = 420.", options: ["100", "140", "180", "200"], right: [2], sec: "s8",
+        why: "Qd = 2 800 − 6 · 420 = 2 800 − 2 520 = 280. Qs = −800 + 3 · 420 = −800 + 1 260 = 460. Избыток = 460 − 280 = <b>180</b>. Для контроля: равновесная цена 400 (3 600 = 9P), значит 420 — выше равновесия, и избыток должен быть."}
+    ]
+  }
+];
+
+const quiz = document.getElementById("quiz");
+const scoreEl = document.getElementById("score");
+const total = PARTS.reduce((sum, part) => sum + part.items.length, 0);
+let checked = 0;
+let correct = 0;
+
+PARTS.forEach((part) => {
+  const box = document.createElement("section");
+  box.className = "part";
+  box.id = part.id;
+  box.innerHTML = `<h2>${part.title}</h2><p class="hint">${part.hint}</p>`;
+  part.items.forEach((item, qIndex) => {
+    const name = `${part.id}q${qIndex}`;
+    const inputType = item.type === "many" ? "checkbox" : "radio";
+    const q = document.createElement("div");
+    q.className = `q${item.type === "tf" ? " q-tf" : ""}`;
+    const opts = item.options.map((option, oIndex) => {
+      const prefix = item.type === "tf" ? "" : `${oIndex + 1}) `;
+      return `<label><input type="${inputType}" name="${name}" value="${oIndex}"> ${prefix}${option}</label>`;
+    }).join("");
+    const text = item.type === "tf" ? `${qIndex + 1}. ${item.text}` : item.text;
+    q.innerHTML = `<p class="q-text">${text}</p><div class="q-opts">${opts}</div>` +
+      `<button type="button" class="q-check">Проверить</button><p class="q-fb" hidden></p>`;
+    const button = q.querySelector(".q-check");
+    const feedback = q.querySelector(".q-fb");
+    button.addEventListener("click", () => {
+      const inputs = [...q.querySelectorAll("input")];
+      const chosen = inputs.filter((input) => input.checked).map((input) => Number(input.value));
+      if (!chosen.length) {
+        feedback.className = "q-fb bad";
+        feedback.textContent = "Сначала выберите ответ.";
+        feedback.hidden = false;
+        return;
+      }
+      const isRight = chosen.length === item.right.length && chosen.every((value) => item.right.includes(value));
+      inputs.forEach((input) => {
+        const value = Number(input.value);
+        input.disabled = true;
+        if (item.right.includes(value)) input.closest("label").classList.add("right");
+        else if (input.checked) input.closest("label").classList.add("wrong");
+      });
+      feedback.className = `q-fb ${isRight ? "ok" : "bad"}`;
+      feedback.innerHTML = (isRight ? "Верно!" : "Не совсем — правильный ответ выделен зелёным.") +
+        `<span class="why">${item.why}</span>` +
+        `<a class="src" href="${LESSON}#${item.sec}">→ В уроке: раздел ${SECTIONS[item.sec]}</a>`;
+      feedback.hidden = false;
+      button.disabled = true;
+      checked += 1;
+      if (isRight) correct += 1;
+      scoreEl.textContent = `Проверено: ${checked} / ${total} · верно: ${correct}`;
+    });
+    box.appendChild(q);
+  });
+  quiz.appendChild(box);
+});
+
+/* Ответы списком для бланка */
+document.getElementById("key-body").innerHTML = PARTS.map((part) => {
+  const lines = part.items.map((item) => {
+    const answer = item.type === "tf"
+      ? item.options[item.right[0]].toLowerCase()
+      : item.right.map((index) => `${index + 1}) ${item.options[index]}`).join("; ");
+    return `<li>${answer}</li>`;
+  }).join("");
+  return `<h3>${part.title}</h3><ol>${lines}</ol>`;
+}).join("");
+</script>
+</body>
+</html>
