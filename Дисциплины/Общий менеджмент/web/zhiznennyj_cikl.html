@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: жизненный цикл организации по Адизесу</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --acc:#0e7490;
+  --acc-dk:#155e75;
+  --acc-lt:#ecfeff;
+  --red:#dc2626;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.back{display:inline-block;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:6px}
+.back:hover{color:var(--acc)}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.8rem}
+.layout{display:grid;grid-template-columns:minmax(260px,1fr) minmax(280px,1.1fr);gap:14px;align-items:start}
+@media (max-width:760px){.layout{grid-template-columns:1fr}}
+.chart-box{border:1px solid var(--border);border-radius:12px;padding:6px;background:#fcfeff}
+svg{width:100%;height:auto;display:block;max-height:46vh}
+.result{border:1px solid #a5f3fc;border-left:5px solid var(--acc);background:var(--acc-lt);border-radius:12px;padding:10px 14px;margin-top:10px;font-size:.88rem;min-height:70px}
+.result b{color:var(--acc-dk)}
+.list{display:flex;flex-direction:column;gap:4px;max-height:58vh;overflow-y:auto;padding-right:4px}
+.list label{display:flex;gap:8px;align-items:flex-start;font-size:.84rem;border:1px solid var(--border);border-radius:9px;padding:6px 9px;cursor:pointer}
+.list label:hover{border-color:var(--acc)}
+.list input{accent-color:var(--acc);margin-top:3px;flex-shrink:0}
+.row{display:flex;gap:10px;align-items:center;margin-top:8px}
+.btn{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;font-weight:700;font-size:.78rem;cursor:pointer;font-family:inherit;color:var(--muted)}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html" target="_top">← Все уроки</a>
+<div class="top">
+  <h1>На какой стадии ваша организация?</h1>
+  <span class="sub">Жизненный цикл по И. Адизесу · отметьте признаки, которые узнаёте</span>
+</div>
+
+<div class="layout">
+  <div>
+    <div class="chart-box">
+      <svg viewBox="0 0 400 220" role="img" aria-label="Кривая жизненного цикла с отметкой стадии">
+        <path d="M20 190 C 70 185, 100 150, 140 95 S 190 35, 215 38 S 280 60, 310 105 S 360 175, 385 195" fill="none" stroke="#0e7490" stroke-width="4" stroke-linecap="round"/>
+        <g id="dots"></g>
+        <text x="200" y="214" font-size="10" fill="#64748b" text-anchor="middle">рост ← расцвет → старение</text>
+      </svg>
+    </div>
+    <div class="result" id="result" aria-live="polite"></div>
+  </div>
+  <div>
+    <div class="list" id="list"></div>
+    <div class="row"><button type="button" class="btn" id="reset">Снять все отметки</button><span class="sub" id="count"></span></div>
+  </div>
+</div>
+
+<script>
+/* Стадии: координаты точки на кривой и совет; признаки по два на стадию */
+const STAGES = [
+  {name: "Выхаживание", x: 30, y: 189, tip: "Главное — превратить идею в первые продажи. Проверьте, готовы ли платить реальные клиенты."},
+  {name: "Младенчество", x: 75, y: 177, tip: "Нужны деньги и минимальные правила. Основатель не должен держать всё в голове один."},
+  {name: "Давай-давай", x: 120, y: 120, tip: "Растёте, но берётесь за всё подряд. Пора выбрать фокус и начать делегировать."},
+  {name: "Юность", x: 160, y: 72, tip: "Переход от «основатель решает всё» к системе. Конфликт старых и новых — нормальная проблема этой стадии."},
+  {name: "Расцвет", x: 212, y: 38, tip: "Баланс гибкости и управляемости. Задача — не застыть: поддерживать предпринимательский дух и эксперименты."},
+  {name: "Стабильность", x: 262, y: 52, tip: "Первые признаки старения. Специально выделяйте ресурсы на новые продукты и рынки."},
+  {name: "Аристократизм", x: 300, y: 92, tip: "Форма важнее содержания, идеи берутся у конкурентов. Нужны изменения сверху и возврат к клиенту."},
+  {name: "Ранняя бюрократизация", x: 335, y: 145, tip: "Поиск виноватых, клиент забыт. Без глубоких изменений — путь к бюрократизации и смерти."},
+  {name: "Бюрократизация", x: 368, y: 185, tip: "Организация живёт за счёт внешней поддержки. Выход — реорганизация, смена команды или продажа бизнеса."}
+];
+const SIGNS = [
+  [0, "Есть идея и энтузиасты, но продаж пока нет"],
+  [0, "Много разговоров о будущем, мало конкретных действий"],
+  [1, "Первые продажи пошли, всё держится на основателе"],
+  [1, "Регламентов нет, денег впритык, работаем в авральном режиме"],
+  [2, "Продажи быстро растут, берёмся за любые заказы"],
+  [2, "Основатель решает всё сам, у новых людей нет чётких ролей"],
+  [3, "Появились наёмные управленцы, «старые» и «новые» конфликтуют"],
+  [3, "Вводим регламенты, делегирование даётся с трудом"],
+  [4, "Есть стратегия и система, и при этом продолжаем расти"],
+  [4, "Новые идеи быстро доходят до запуска, а контроль не мешает"],
+  [5, "Рост замедлился, рисковать никто не хочет"],
+  [5, "Новых идей всё меньше, чаще звучит «так было всегда»"],
+  [6, "Денег достаточно, но новинки копируем у конкурентов"],
+  [6, "Важнее форма: дорогие офисы, ритуалы, статус"],
+  [7, "Больше ищем виноватых, чем решения; растут интриги"],
+  [7, "Клиент отошёл на второй план, важнее внутренние отчёты"],
+  [8, "Правила ради правил, никто ни за что не отвечает"],
+  [8, "Живём за счёт внешней поддержки: госзаказа или материнской компании"]
+];
+
+const listEl = document.getElementById("list");
+const dotsEl = document.getElementById("dots");
+const resultEl = document.getElementById("result");
+const countEl = document.getElementById("count");
+
+SIGNS.forEach(([stage, text], index) => {
+  const label = document.createElement("label");
+  label.innerHTML = `<input type="checkbox" data-stage="${stage}" data-index="${index}"> <span>${text}</span>`;
+  listEl.appendChild(label);
+});
+
+/* Признаки показываем вперемешку, чтобы порядок не подсказывал стадию */
+[...listEl.children].sort(() => Math.random() - 0.5).forEach((node) => listEl.appendChild(node));
+
+function render() {
+  const scores = STAGES.map(() => 0);
+  const boxes = [...listEl.querySelectorAll("input")];
+  boxes.filter((box) => box.checked).forEach((box) => { scores[Number(box.dataset.stage)] += 1; });
+  const total = scores.reduce((sum, value) => sum + value, 0);
+  countEl.textContent = `Отмечено: ${total}`;
+  const max = Math.max(...scores);
+  /* При равенстве берём самую позднюю из лидирующих стадий: признаки старения важнее не пропустить */
+  const leaders = scores.map((value, i) => (value === max ? i : -1)).filter((i) => i >= 0);
+  const stage = total ? leaders[leaders.length - 1] : -1;
+  dotsEl.innerHTML = STAGES.map((item, i) => {
+    const active = i === stage;
+    return `<circle cx="${item.x}" cy="${item.y}" r="${active ? 9 : 5}" fill="${active ? "#0e7490" : "#cbd5e1"}" stroke="#fff" stroke-width="2"/>` +
+      `<text x="${item.x}" y="${item.y - 13}" font-size="${active ? 11 : 8.5}" font-weight="${active ? 800 : 600}" fill="${active ? "#155e75" : "#94a3b8"}" text-anchor="middle">${i + 1}</text>`;
+  }).join("");
+  if (!total) {
+    resultEl.innerHTML = "Отметьте справа признаки, которые узнаёте в своей организации. Стадия появится на кривой.";
+    return;
+  }
+  const spread = leaders.length > 1 ? ` Признаки нескольких стадий набрали поровну (${leaders.map((i) => STAGES[i].name).join(", ")}) — организация, вероятно, на переходе.` : "";
+  resultEl.innerHTML = `<b>Стадия ${stage + 1}: ${STAGES[stage].name}.</b> ${STAGES[stage].tip}${spread}`;
+}
+
+listEl.addEventListener("change", render);
+document.getElementById("reset").addEventListener("click", () => {
+  listEl.querySelectorAll("input").forEach((box) => { box.checked = false; });
+  render();
+});
+render();
+</script>
+</body>
+</html>

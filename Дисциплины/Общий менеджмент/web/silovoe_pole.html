@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: силовое поле изменений</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --acc:#0e7490;
+  --acc-dk:#155e75;
+  --acc-lt:#ecfeff;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.back{display:inline-block;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:6px}
+.back:hover{color:var(--acc)}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.8rem}
+.goal{display:flex;gap:8px;align-items:center;margin-bottom:10px;font-size:.84rem;font-weight:700;color:var(--muted)}
+.goal input{flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font:inherit;font-weight:600;color:var(--text)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.cols{grid-template-columns:1fr}}
+.col{border:1px solid var(--border);border-radius:12px;padding:10px}
+.col.pro{border-top:4px solid var(--green)}
+.col.con{border-top:4px solid var(--red)}
+.col h2{font-size:.88rem;font-weight:800;margin-bottom:6px;display:flex;justify-content:space-between}
+.force{display:grid;grid-template-columns:1fr 92px 22px 22px;gap:6px;align-items:center;margin-bottom:5px}
+.force input[type=text]{padding:5px 8px;border:1px solid var(--border);border-radius:7px;font:inherit;font-size:.8rem;min-width:0}
+.force input[type=range]{width:100%}
+.pro input[type=range]{accent-color:var(--green)}
+.con input[type=range]{accent-color:var(--red)}
+.force b{font-size:.82rem;text-align:right}
+.del{border:none;background:none;color:var(--muted);cursor:pointer;font-size:.95rem}
+.del:hover{color:var(--red)}
+.add{margin-top:4px;padding:4px 10px;border-radius:7px;border:1px dashed var(--border);background:#fff;font:inherit;font-size:.76rem;font-weight:700;color:var(--muted);cursor:pointer}
+.add:hover{border-color:var(--acc);color:var(--acc)}
+.bar{display:flex;height:22px;border-radius:11px;overflow:hidden;margin:12px 0 6px;background:var(--border)}
+.bar .p{background:var(--green)}
+.bar .c{background:var(--red)}
+.result{border:1px solid #a5f3fc;border-left:5px solid var(--acc);background:var(--acc-lt);border-radius:12px;padding:9px 14px;font-size:.86rem}
+.result b{color:var(--acc-dk)}
+.hin{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-top:8px;font-size:.8rem}
+.hin label{display:flex;gap:4px;align-items:center;font-weight:700;color:var(--muted)}
+.hin select{font:inherit;padding:3px 6px;border-radius:6px;border:1px solid var(--border)}
+.hin-out{font-weight:700;color:var(--acc-dk)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html" target="_top">← Все уроки</a>
+<div class="top">
+  <h1>Силовое поле изменений (К. Левин)</h1>
+  <span class="sub">Впишите свои силы «за» и «против», оцените каждую от 1 до 10</span>
+</div>
+
+<div class="goal"><label for="goal">Изменение:</label><input id="goal" type="text" value="Внедрить CRM в отделе продаж"></div>
+
+<div class="cols">
+  <div class="col pro"><h2><span>Силы «за» →</span><span id="sum-pro">0</span></h2><div id="list-pro"></div><button type="button" class="add" data-side="pro">+ добавить силу</button></div>
+  <div class="col con"><h2><span>← Силы «против»</span><span id="sum-con">0</span></h2><div id="list-con"></div><button type="button" class="add" data-side="con">+ добавить силу</button></div>
+</div>
+
+<div class="bar" aria-hidden="true"><div class="p" id="bar-pro"></div><div class="c" id="bar-con"></div></div>
+<div class="result" id="result" aria-live="polite"></div>
+
+<div class="hin">
+  <span>Матрица Хайнингса:</span>
+  <label>потребность <select id="need"><option value="big">большая</option><option value="small">небольшая</option></select></label>
+  <label>реакция людей <select id="agree"><option value="yes">согласие</option><option value="no">сопротивление</option></select></label>
+  <span class="hin-out" id="hin-out"></span>
+</div>
+
+<script>
+/* Пример из презентации: внедрение CRM; пользователь меняет тексты и баллы */
+const START = {
+  pro: [["Поддержка топ-менеджмента", 8], ["Клиенты теряются между менеджерами", 7], ["Конкуренты уже работают в CRM", 5]],
+  con: [["Менеджерам некогда учиться", 6], ["Прошлая система «не взлетела»", 7], ["Боязнь прозрачности продаж", 5]]
+};
+const HININGS = {
+  "big-yes": "наивысшие шансы добиться успеха",
+  "small-yes": "небольшие шансы добиться успеха",
+  "big-no": "средние шансы добиться успеха",
+  "small-no": "минимальные шансы добиться успеха"
+};
+
+function addForce(side, text = "", value = 5) {
+  const row = document.createElement("div");
+  row.className = "force";
+  row.innerHTML = `<input type="text" placeholder="Опишите силу" aria-label="Сила">` +
+    `<input type="range" min="1" max="10" step="1" aria-label="Сила, баллы"><b></b>` +
+    `<button type="button" class="del" aria-label="Удалить силу">✕</button>`;
+  row.querySelector("input[type=text]").value = text;
+  const range = row.querySelector("input[type=range]");
+  range.value = value;
+  range.addEventListener("input", render);
+  row.querySelector(".del").addEventListener("click", () => { row.remove(); render(); });
+  document.getElementById(`list-${side}`).appendChild(row);
+}
+
+function total(side) {
+  return [...document.querySelectorAll(`#list-${side} input[type=range]`)].reduce((sum, input) => sum + Number(input.value), 0);
+}
+
+function render() {
+  document.querySelectorAll(".force").forEach((row) => {
+    row.querySelector("b").textContent = row.querySelector("input[type=range]").value;
+  });
+  const pro = total("pro");
+  const con = total("con");
+  document.getElementById("sum-pro").textContent = pro;
+  document.getElementById("sum-con").textContent = con;
+  const all = pro + con || 1;
+  document.getElementById("bar-pro").style.width = `${(pro / all) * 100}%`;
+  document.getElementById("bar-con").style.width = `${(con / all) * 100}%`;
+  const diff = pro - con;
+  let text;
+  if (diff > 0) text = `<b>Перевес «за» на ${diff}.</b> Изменение, скорее всего, приживётся. Не ослабляйте поддержку и не давите на противников слишком сильно — иначе сопротивление вырастет.`;
+  else if (diff < 0) text = `<b>Перевес «против» на ${-diff}.</b> Изменение, скорее всего, не приживётся. Добавьте сил «за» (поддержка руководства, быстрые победы, обучение) или ослабьте самые сильные силы «против».`;
+  else text = "<b>Равновесие.</b> Исход неясен. Начните с самой сильной силы «против»: снять её дешевле, чем наращивать силы «за».";
+  document.getElementById("result").innerHTML = text;
+  const key = `${document.getElementById("need").value}-${document.getElementById("agree").value}`;
+  document.getElementById("hin-out").textContent = `→ ${HININGS[key]}`;
+}
+
+START.pro.forEach(([text, value]) => addForce("pro", text, value));
+START.con.forEach(([text, value]) => addForce("con", text, value));
+document.querySelectorAll(".add").forEach((button) => {
+  button.addEventListener("click", () => { addForce(button.dataset.side); render(); });
+});
+document.getElementById("need").addEventListener("change", render);
+document.getElementById("agree").addEventListener("change", render);
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: стратегии поведения в конфликте</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --acc:#0e7490;
+  --acc-dk:#155e75;
+  --acc-lt:#ecfeff;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --gold:#b45309;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.45;padding:12px 16px}
+.back{display:inline-block;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:6px}
+.back:hover{color:var(--acc)}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:10px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.8rem}
+.layout{display:grid;grid-template-columns:minmax(260px,1fr) minmax(260px,1fr);gap:14px;align-items:start}
+@media (max-width:720px){.layout{grid-template-columns:1fr}}
+.chart-box{border:1px solid var(--border);border-radius:12px;padding:6px;background:#fcfeff}
+svg{width:100%;height:auto;display:block;max-height:50vh}
+.ctrl{margin-top:8px}
+.ctrl label{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;color:var(--muted)}
+.ctrl input{width:100%;accent-color:var(--acc)}
+.result{border:1px solid #a5f3fc;border-left:5px solid var(--acc);background:var(--acc-lt);border-radius:12px;padding:10px 14px;margin-top:10px;font-size:.88rem}
+.result b{color:var(--acc-dk)}
+.panel h2{font-size:.92rem;font-weight:800;margin-bottom:6px}
+.case{border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:.92rem;margin-bottom:10px;min-height:64px}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:10px}
+.opt{padding:8px;border-radius:10px;border:1px solid var(--border);background:#fff;font-size:.84rem;font-weight:700;cursor:pointer;font-family:inherit;color:var(--text);text-align:left}
+.opt:hover{border-color:var(--acc);color:var(--acc)}
+.opt:disabled{cursor:default;opacity:.55}
+.opt.right{background:var(--green-lt);border-color:var(--green);color:var(--green);opacity:1}
+.opt.wrong{background:var(--red-lt);border-color:var(--red);color:var(--red);opacity:1}
+.fb{border-radius:10px;padding:9px 12px;font-size:.85rem;margin-bottom:8px}
+.fb.ok{background:var(--green-lt);color:#14532d}
+.fb.bad{background:var(--red-lt);color:#7f1d1d}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{padding:7px 14px;border-radius:9px;border:none;background:var(--acc);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--acc-dk)}
+.score{font-weight:800;color:var(--acc-dk);font-size:.85rem}
+.tip{font-size:.8rem;color:var(--muted);margin-top:8px}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html" target="_top">← Все уроки</a>
+<div class="top">
+  <h1>Стратегии поведения в конфликте</h1>
+  <span class="sub">Сетка Томаса — Килманна: свои интересы × интересы другой стороны</span>
+</div>
+
+<div class="layout">
+  <div>
+    <div class="chart-box">
+      <svg viewBox="0 0 340 300" role="img" aria-label="Сетка стратегий конфликта с подвижной точкой">
+        <rect x="50" y="10" width="280" height="240" fill="#f8fafc" stroke="#cbd5e1"/>
+        <line x1="190" y1="10" x2="190" y2="250" stroke="#e2e8f0" stroke-dasharray="4 4"/>
+        <line x1="50" y1="130" x2="330" y2="130" stroke="#e2e8f0" stroke-dasharray="4 4"/>
+        <g font-size="12" font-weight="700" fill="#334155" text-anchor="middle">
+          <text x="95" y="40" id="z-compete">🦈 Соперничество</text>
+          <text x="285" y="40" id="z-collab">🦉 Сотрудничество</text>
+          <text x="190" y="128" id="z-compromise">🦊 Компромисс</text>
+          <text x="95" y="236" id="z-avoid">🐢 Избегание</text>
+          <text x="282" y="236" id="z-accom">🧸 Приспособление</text>
+        </g>
+        <text x="190" y="272" font-size="11" fill="#64748b" text-anchor="middle">Интересы другой стороны →</text>
+        <text x="16" y="130" font-size="11" fill="#64748b" text-anchor="middle" transform="rotate(-90 16 130)">Свои интересы →</text>
+        <circle id="pt" cx="190" cy="130" r="9" fill="#0e7490" stroke="#fff" stroke-width="3"/>
+      </svg>
+    </div>
+    <div class="ctrl">
+      <label for="own"><span>Насколько отстаиваю свои интересы</span><span id="own-v">5</span></label>
+      <input type="range" id="own" min="0" max="10" step="1" value="5">
+    </div>
+    <div class="ctrl">
+      <label for="other"><span>Насколько учитываю интересы другой стороны</span><span id="other-v">5</span></label>
+      <input type="range" id="other" min="0" max="10" step="1" value="5">
+    </div>
+    <div class="result" id="result" aria-live="polite"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Какую стратегию выбрать?</h2>
+    <div class="case" id="case" aria-live="polite"></div>
+    <div class="opts" id="opts"></div>
+    <div class="fb" id="fb" hidden></div>
+    <div class="row">
+      <button type="button" class="btn" id="next" hidden>Дальше →</button>
+      <span class="score" id="score"></span>
+    </div>
+    <p class="tip">Совет руководителю из лекции: в любом конфликте сначала активное слушание — выслушать стороны, потом выбирать стратегию.</p>
+  </div>
+</div>
+
+<script>
+/* Пять стратегий: где они на сетке и что о них сказать */
+const STRATEGIES = {
+  compete: {name: "Соперничество (акула)", short: "Соперничество", text: "Свои интересы максимально, чужие — нет. Уместно, когда есть сила и полномочия, а решение нужно быстро."},
+  avoid: {name: "Избегание (черепаха)", short: "Избегание", text: "Вопрос неважен или сейчас нет ресурсов — переждать и вернуться позже."},
+  accom: {name: "Приспособление, уступка (медвежонок)", short: "Приспособление", text: "Интересы другого важнее своих: дорожим отношениями. На экзамене — «уступка»."},
+  compromise: {name: "Компромисс (лиса)", short: "Компромисс", text: "Взаимные уступки: что-то получаем, что-то теряем."},
+  collab: {name: "Сотрудничество (сова)", short: "Сотрудничество", text: "Ищем решение, выгодное обоим. Самая продуктивная стратегия, но нужны время и доверие."}
+};
+
+function zoneOf(own, other) {
+  if (own >= 7 && other <= 3) return "compete";
+  if (own <= 3 && other >= 7) return "accom";
+  if (own >= 7 && other >= 7) return "collab";
+  if (own <= 3 && other <= 3) return "avoid";
+  if (own >= 4 && own <= 6 && other >= 4 && other <= 6) return "compromise";
+  /* Промежуточные точки относим к ближайшему углу или центру */
+  const centers = {compete: [9, 1], accom: [1, 9], collab: [9, 9], avoid: [1, 1], compromise: [5, 5]};
+  let best = "compromise";
+  let bestDist = Infinity;
+  Object.entries(centers).forEach(([key, [o, t]]) => {
+    const dist = (own - o) ** 2 + (other - t) ** 2;
+    if (dist < bestDist) { bestDist = dist; best = key; }
+  });
+  return best;
+}
+
+const ownEl = document.getElementById("own");
+const otherEl = document.getElementById("other");
+const pt = document.getElementById("pt");
+const resultEl = document.getElementById("result");
+const zoneLabels = {compete: "z-compete", avoid: "z-avoid", accom: "z-accom", compromise: "z-compromise", collab: "z-collab"};
+
+function renderGrid() {
+  const own = Number(ownEl.value);
+  const other = Number(otherEl.value);
+  document.getElementById("own-v").textContent = own;
+  document.getElementById("other-v").textContent = other;
+  pt.setAttribute("cx", 50 + other * 28);
+  pt.setAttribute("cy", 250 - own * 24);
+  const zone = zoneOf(own, other);
+  Object.entries(zoneLabels).forEach(([key, id]) => {
+    const label = document.getElementById(id);
+    label.setAttribute("fill", key === zone ? "#0e7490" : "#94a3b8");
+    label.setAttribute("font-size", key === zone ? "14" : "12");
+  });
+  resultEl.innerHTML = `<b>${STRATEGIES[zone].name}.</b> ${STRATEGIES[zone].text}`;
+}
+ownEl.addEventListener("input", renderGrid);
+otherEl.addEventListener("input", renderGrid);
+renderGrid();
+
+/* Ситуации */
+const CASES = [
+  {text: "На складе пожар. Нужно немедленно вывести людей, а начальник смены спорит о порядке эвакуации.", ans: "compete",
+    why: "Аварийная ситуация: решение нужно сразу, у руководителя есть полномочия. Это «акула», и это оправдано."},
+  {text: "Коллега на совещании настаивает на другом шрифте в презентации. Вам всё равно, а через час дедлайн по отчёту.", ans: "avoid",
+    why: "Предмет спора неважен, ресурсы нужны на другое — «черепаха»: не вступать в конфликт."},
+  {text: "Ключевой клиент просит перенести встречу на неудобное вам время. Для вас перенос не критичен, а отношения с клиентом очень важны.", ans: "accom",
+    why: "Интересы другой стороны важнее своих, отношения дороже — приспособление (уступка)."},
+  {text: "Два отдела делят премиальный фонд. Времени мало, обоим нужно больше, чем есть; оба готовы немного уступить.", ans: "compromise",
+    why: "Ресурс ограничен, время поджимает — «лиса»: взаимные уступки, каждый получает часть."},
+  {text: "Вы и давний партнёр вместе разрабатываете новый продукт на несколько лет вперёд. Хотите решение, выгодное обоим.", ans: "collab",
+    why: "Долгие отношения, есть время найти решение, которое полностью устроит обоих, — «сова»."},
+  {text: "Подчинённый требует перевести его в другой отдел, иначе уволится. Он ценный специалист, но перевод ломает план проекта. Есть неделя на решение.", ans: "collab",
+    why: "Оба интереса важны, время есть — сотрудничество: выслушать, понять причину и найти вариант, который сохранит и человека, и проект."}
+];
+let step = 0;
+let correct = 0;
+const caseEl = document.getElementById("case");
+const optsEl = document.getElementById("opts");
+const fbEl = document.getElementById("fb");
+const nextEl = document.getElementById("next");
+const scoreEl = document.getElementById("score");
+
+function renderCase() {
+  const item = CASES[step];
+  caseEl.innerHTML = `<span class="sub">Ситуация ${step + 1} из ${CASES.length}</span><br>${item.text}`;
+  optsEl.innerHTML = "";
+  Object.entries(STRATEGIES).forEach(([key, strategy]) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "opt";
+    button.dataset.key = key;
+    button.textContent = strategy.short;
+    button.addEventListener("click", () => answer(key));
+    optsEl.appendChild(button);
+  });
+  fbEl.hidden = true;
+  nextEl.hidden = true;
+}
+
+function answer(key) {
+  const item = CASES[step];
+  const isRight = key === item.ans;
+  if (isRight) correct += 1;
+  optsEl.querySelectorAll(".opt").forEach((button) => {
+    button.disabled = true;
+    if (button.dataset.key === item.ans) button.classList.add("right");
+    else if (button.dataset.key === key) button.classList.add("wrong");
+  });
+  fbEl.className = `fb ${isRight ? "ok" : "bad"}`;
+  fbEl.textContent = (isRight ? "Верно! " : `Лучше подходит: ${STRATEGIES[item.ans].short.toLowerCase()}. `) + item.why;
+  fbEl.hidden = false;
+  scoreEl.textContent = `Верно: ${correct} из ${step + 1}`;
+  nextEl.hidden = false;
+  nextEl.textContent = step + 1 < CASES.length ? "Дальше →" : "Пройти заново ↻";
+}
+
+nextEl.addEventListener("click", () => {
+  if (step + 1 < CASES.length) {
+    step += 1;
+  } else {
+    step = 0;
+    correct = 0;
+    scoreEl.textContent = "";
+  }
+  renderCase();
+});
+
+renderCase();
+</script>
+</body>
+</html>
