@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Домашнее задание: рыночные структуры</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --amber-lt:#fffbeb;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+  --nav-h:56px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(99,102,241,.14),transparent 32%),
+    radial-gradient(circle at 85% 6%,rgba(14,165,233,.13),transparent 34%),
+    linear-gradient(180deg,#f8fafc 0%,#eef2ff 30%,#f8fafc 100%);
+  color:var(--text);line-height:1.65;overflow-x:hidden;
+}
+a{color:var(--indigo-dk)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;z-index:900;
+  gap:2px;overflow-x:auto;scrollbar-width:none;
+}
+nav.top::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:.93rem;color:var(--indigo-dk);white-space:nowrap;margin:0 10px 0 4px;flex-shrink:0;text-decoration:none}
+.nav-sep{width:1px;height:18px;background:var(--border);margin:0 6px;flex-shrink:0}
+.nav-link{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0}
+.nav-link:hover{color:var(--indigo);background:var(--indigo-lt)}
+
+main{max-width:860px;margin:0 auto;padding:calc(var(--nav-h) + 40px) 16px 56px}
+h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;letter-spacing:-.5px;line-height:1.2;margin-bottom:10px}
+h1 em{font-style:normal;color:var(--indigo)}
+.lead{color:var(--muted);font-size:1rem;margin-bottom:22px}
+.note-callout{background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:14px;padding:14px 18px;margin-bottom:28px}
+.note-callout p{color:var(--indigo-dk);font-size:.92rem}
+.note-callout p + p{margin-top:6px}
+
+.part{margin-top:40px}
+.part h2{font-size:clamp(1.2rem,2.6vw,1.6rem);font-weight:800;margin-bottom:6px}
+.part .hint{color:var(--muted);font-size:.9rem;margin-bottom:16px}
+
+.q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+.q + .q{margin-top:14px}
+.q-text{font-weight:700;margin-bottom:12px}
+.q-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.q-opts label{display:flex;align-items:flex-start;gap:8px;font-size:.93rem;cursor:pointer}
+.q-opts input{accent-color:var(--indigo);margin-top:5px;flex-shrink:0}
+.q-opts label.right{color:var(--green);font-weight:700}
+.q-opts label.wrong{color:var(--red);text-decoration:line-through}
+.q-tf .q-opts{flex-direction:row;gap:18px}
+.q-check{padding:8px 16px;border-radius:9px;border:none;background:var(--indigo);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit}
+.q-check:hover{background:var(--indigo-dk)}
+.q-check:disabled{opacity:.5;cursor:default}
+.q-fb{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem}
+.q-fb.ok{background:var(--green-lt);color:var(--green)}
+.q-fb.bad{background:var(--red-lt);color:var(--red)}
+.q-fb .why{display:block;margin-top:6px;color:var(--text);font-weight:500}
+.q-fb .why b{font-weight:800}
+.q-fb .src{display:block;margin-top:6px;font-size:.84rem}
+
+.score{position:sticky;bottom:12px;margin:32px auto 0;max-width:420px;text-align:center;font-weight:800;color:var(--indigo-dk);background:rgba(255,255,255,.96);border:1px solid #c7d2fe;border-radius:12px;padding:10px 14px;box-shadow:0 4px 18px rgba(15,23,42,.08)}
+
+details.key{margin-top:40px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0 20px}
+details.key summary{cursor:pointer;padding:14px 0;font-weight:800;list-style:none}
+details.key summary::-webkit-details-marker{display:none}
+details.key[open] summary{border-bottom:1px dashed var(--border)}
+.key-body{padding:12px 0 18px;font-size:.93rem}
+.key-body h3{font-size:.95rem;margin:12px 0 4px}
+.key-body h3:first-child{margin-top:0}
+.key-body ol{padding-left:22px}
+
+.tbl-wrap{overflow-x:auto;margin-bottom:8px}
+.tbl{border-collapse:collapse;font-size:.84rem;min-width:620px}
+.tbl th,.tbl td{border:1px solid var(--border);padding:6px 8px;text-align:left;vertical-align:top}
+.tbl thead th{background:var(--indigo-lt);color:var(--indigo-dk)}
+.tbl tbody th{background:#f8fafc;white-space:nowrap}
+.key-body p{margin-bottom:6px}
+details.key + #quiz{margin-top:0}
+#theory{margin:0 0 8px}
+footer{text-align:center;padding:32px 20px 48px;color:var(--muted);font-size:.85rem}
+@media (max-width:600px){.q{padding:16px}.q-tf .q-opts{flex-direction:column;gap:8px}}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Навигация по странице">
+  <a class="nav-link" href="../index.html">← Все уроки</a>
+  <span class="nav-sep"></span>
+  <span class="nav-logo">Рыночные структуры</span>
+  <span class="nav-sep"></span>
+  <a class="nav-link" href="#p1">I. Верно/неверно</a>
+  <a class="nav-link" href="#p2">II. Один ответ</a>
+  <a class="nav-link" href="#p3">III. Несколько ответов</a>
+  <a class="nav-link" href="#p4">Задачи</a>
+  <a class="nav-link" href="#key">Ответы списком</a>
+</nav>
+
+<main>
+  <h1>Домашнее задание: <em>рыночные структуры</em></h1>
+  <p class="lead">«Рыночный механизм и экономическое поведение фирм в условиях различных рыночных структур» — тест и задачи, раздаточный лист И. Г. Переломовой. 20 заданий в четырёх частях.</p>
+
+  <div class="note-callout">
+    <p>Сначала ответьте сами, потом нажмите «Проверить». После проверки правильный ответ выделится зелёным, а ниже появится разбор.</p>
+    <p>Урока по рыночным структурам на сайте пока нет, поэтому ниже есть короткая шпаргалка, а разборы написаны подробнее. Ответы составлены по учебникам; ключа преподавателя у нас нет. Спорные места — III.4 и III.5, они разобраны в пояснениях.</p>
+  </div>
+
+  <details class="key" id="theory">
+    <summary>🧭 Шпаргалка: четыре рыночные структуры и правило MR = MC</summary>
+    <div class="key-body">
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th></th><th>Совершенная конкуренция</th><th>Монополистическая конкуренция</th><th>Олигополия</th><th>Монополия</th></tr></thead>
+          <tbody>
+            <tr><th>Число фирм</th><td>очень много, доля каждой ничтожна</td><td>много</td><td>несколько крупных</td><td>одна</td></tr>
+            <tr><th>Продукт</th><td>однородный</td><td>дифференцированный</td><td>однородный или дифференцированный</td><td>уникальный, без близких заменителей</td></tr>
+            <tr><th>Власть над ценой</th><td>нет — фирма «ценополучатель»</td><td>небольшая</td><td>значительная, фирмы взаимозависимы</td><td>большая — фирма «ценоискатель»</td></tr>
+            <tr><th>Барьеры входа</th><td>нет</td><td>низкие</td><td>высокие</td><td>непреодолимые</td></tr>
+            <tr><th>Примеры</th><td>зерно, биржевые товары</td><td>одежда, обувь, косметика, кафе</td><td>сотовая связь, авиастроение, металлургия</td><td>естественные монополии: сети, ж/д инфраструктура</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Как фирма выбирает объём</h3>
+      <p>Прибыль максимальна там, где <b>предельный доход равен предельным издержкам: MR = MC</b>. У совершенного конкурента цена от его выпуска не зависит, поэтому MR = P и правило превращается в <b>P = MC</b>. Монополист сначала находит объём из MR = MC, а цену берёт <b>по кривой спроса</b> при этом объёме.</p>
+      <h3>Барьеры входа</h3>
+      <p>Экономия на масштабе, патенты и лицензии, контроль над ресурсами, дифференциация продукции и лояльность к брендам, большие стартовые затраты, запреты государства.</p>
+    </div>
+  </details>
+
+  <div id="quiz"></div>
+
+  <details class="key" id="key">
+    <summary>📋 Все ответы списком — чтобы перенести в бланк</summary>
+    <div class="key-body" id="key-body"></div>
+  </details>
+
+  <p class="score" id="score" aria-live="polite">Проверено: 0 / 20 · верно: 0</p>
+</main>
+
+<footer>
+  <p>Президентская программа · «Экономика для менеджеров» · преподаватель И. Г. Переломова</p>
+</footer>
+
+<script>
+/* Задания: type — tf (верно/неверно), one (один ответ), many (несколько ответов).
+   right — номера правильных вариантов с нуля. sec — раздел урока с объяснением, если он есть. */
+const SECTIONS = {
+  "zanyatie_03.html#s2": "урок 3, раздел 2 · Ценовая дискриминация"
+};
+const TF = ["Верно", "Неверно"];
+
+const PARTS = [
+  {
+    id: "p1", title: "I. Оцените суждения: верно или неверно",
+    hint: "Сверяйтесь со строками шпаргалки: число фирм, продукт, власть над ценой, барьеры.",
+    items: [
+      {type: "tf", text: "Особенностью монополистической конкуренции является продажа однородной продукции.", options: TF, right: [1],
+        why: "Главная черта монополистической конкуренции — <b>дифференцированный</b> продукт: у каждой фирмы свой вариант товара (бренд, дизайн, место, сервис). Однородный продукт — у совершенной конкуренции."},
+      {type: "tf", text: "На рынке совершенной конкуренции каждая фирма может самостоятельно устанавливать цену на свою продукцию.", options: TF, right: [1],
+        why: "Фирма — <b>ценополучатель</b>: её доля ничтожна, товар однородный, и цену диктует рынок. Попробует поднять цену — покупатели уйдут к соседу."},
+      {type: "tf", text: "Примером олигополии могут являться рынки одежды, обуви, косметики.", options: TF, right: [1],
+        why: "Это классические примеры <b>монополистической конкуренции</b>: много производителей, каждый со своим брендом, войти на рынок несложно. Олигополия — это несколько крупных фирм и высокие барьеры: сотовая связь, авиастроение."},
+      {type: "tf", text: "Ценовая дискриминация — это продажа одного и того же товара разным потребителям либо группам потребителей по разным ценам, при этом различия цен не обусловлены различиями издержек производства.", options: TF, right: [0], sec: "zanyatie_03.html#s2",
+        why: "Верно, это точное определение. Ключевое — «не обусловлены различиями издержек»: если доставка в дальний район дороже, разная цена — не дискриминация."},
+      {type: "tf", text: "Монополия — это рыночная структура, в которой одна фирма является поставщиком на рынок товара, не имеющего близких заменителей.", options: TF, right: [0],
+        why: "Верно. Обе части важны: одна фирма <b>и</b> нет близких заменителей. Если заменитель есть, власть «единственного продавца» сильно ограничена."}
+    ]
+  },
+  {
+    id: "p2", title: "II. Выберите единственный правильный ответ",
+    hint: "",
+    items: [
+      {type: "one", text: "1. Состояние рынка, при котором удовлетворение спроса более эффективно при отсутствии конкуренции, — это:", options: ["естественная монополия", "совершенная конкуренция", "монополистическая конкуренция", "искусственная монополия"], right: [0],
+        why: "<b>Естественная монополия</b> возникает, когда одной фирме обслуживать весь рынок дешевле, чем нескольким: водопровод, электросети, железнодорожные пути. Две параллельные трубы в один дом — лишние затраты. Поэтому такие рынки не «демонополизируют», а регулируют тарифы."},
+      {type: "one", text: "2. При каком типе рыночной структуры отсутствуют входные барьеры?", options: ["при олигополии", "при монополистической конкуренции", "при совершенной конкуренции", "при монополии"], right: [2],
+        why: "Свободный вход и выход — одно из условий совершенной конкуренции. При монополистической конкуренции барьеры <b>низкие</b>, но есть: нужно раскрутить свой бренд."},
+      {type: "one", text: "3. Если в отрасли действуют несколько фирм, контролирующих рынок, то такая структура рынка называется:", options: ["монополия", "совершенная конкуренция", "монополистическая конкуренция", "олигополия"], right: [3],
+        why: "Олигополия — «власть немногих»: несколько крупных фирм делят рынок и следят за решениями друг друга."},
+      {type: "one", text: "4. Как называется совокупность ограничений, препятствующих фирме производить определённый вид продукции?", options: ["моральные барьеры", "барьеры вступления в Европейский союз", "политические барьеры", "рыночные барьеры"], right: [3],
+        why: "Это <b>рыночные барьеры</b> (барьеры входа в отрасль): экономия на масштабе, патенты и лицензии, контроль над ресурсами, запреты государства."},
+      {type: "one", text: "5. При каком типе рыночной структуры барьеры на вхождение в отрасль непреодолимы?", options: ["при совершенной конкуренции", "при олигополии", "при монополистической конкуренции", "при монополии"], right: [3],
+        why: "Монополия и держится на том, что войти невозможно: исключительное право, патент, контроль над ресурсом или естественная монополия. При олигополии барьеры высокие, но преодолимые."}
+    ]
+  },
+  {
+    id: "p3", title: "III. Выберите все правильные ответы",
+    hint: "Правильных вариантов может быть несколько. Засчитывается только точное совпадение набора.",
+    items: [
+      {type: "many", text: "1. Выберите верные суждения о видах конкуренции.", options: ["Монопсонией называют такой вид монополии, при котором монополистом является не продавец, а покупатель.", "С точки зрения интересов общества и государства монополия имеет только недостатки.", "Олигополией называют рыночную структуру, при которой рынок поделён между несколькими крупными фирмами.", "Ситуацию на рынке, при которой большое количество мелких фирм производят схожую продукцию и имеют возможность контролировать цены на неё, называют совершенной конкуренцией.", "Барьером для фирм, препятствующим их выходу на рынок, может стать неспособность обеспечить продвижение своего продукта."], right: [0, 2, 4],
+        why: "1 — верно: монопсония — единственный покупатель (например, единственный завод-работодатель в моногороде). 3 — верно. 5 — верно: реклама и продвижение стоят денег, и это тоже барьер входа.<br>2 — неверно: у монополии есть плюсы, особенно у естественной: экономия на масштабе, деньги на исследования. 4 — неверно из-за слов «имеют возможность контролировать цены»: при совершенной конкуренции этой возможности нет. Похоже скорее на монополистическую конкуренцию."},
+      {type: "many", text: "2. Выберите верные суждения о видах конкуренции.", options: ["Ситуация на рынке, когда множество фирм производят однотипную продукцию и не имеют возможности контролировать цены на неё, называется совершенной конкуренцией.", "Монополист самостоятельно устанавливает цены на производимую продукцию с учётом рыночного спроса.", "Олигополией называют рыночную структуру, при которой рынок поделён между несколькими крупными фирмами.", "В условиях олигополии отсутствуют барьеры входа на рынок новых участников.", "Монополистическая конкуренция — это такой вид монополии, когда монополистом является не продавец, а покупатель."], right: [0, 1, 2],
+        why: "1 — верно, это и есть совершенная конкуренция (сравните с вопросом III.1, вариант 4). 2 — верно: монополист выбирает цену сам, но не любую — его ограничивает кривая спроса. 3 — верно.<br>4 — неверно: у олигополии барьеры высокие. 5 — неверно: так определяется <b>монопсония</b>, а не монополистическая конкуренция."},
+      {type: "many", text: "3. Рынок совершенной конкуренции характеризуется тем, что на нём:", options: ["значительное число фирм, оперирующих в отрасли, выпускают однородные товары", "имеется незначительная доля отдельного производителя в общем объёме рыночного предложения", "действует одна фирма", "существует олигополистическая взаимозависимость в отрасли", "отсутствуют барьеры на вхождение в отрасль"], right: [0, 1, 4],
+        why: "Признаки совершенной конкуренции: много фирм, однородный товар, ничтожная доля каждой, свободный вход и выход, полная информация. Одна фирма — монополия, взаимозависимость — олигополия."},
+      {type: "many", text: "4. Что из приведённого ниже списка можно отнести к рыночным барьерам на вхождение фирмы в отрасль?", options: ["наличие на данном рынке ценовой дискриминации", "патенты и лицензии", "дифференциация продукции", "экономия, обусловленная ростом масштабов производства", "директивный запрет заниматься некоторыми видами деятельности"], right: [1, 2, 3, 4],
+        why: "2 — патенты и лицензии закрывают вход юридически. 3 — дифференциация: покупатели привязаны к брендам, новичку их не переманить. 4 — экономия на масштабе: крупная фирма производит дешевле, и новичок с малым объёмом проигрывает в издержках. 5 — запрет государства закрывает вход полностью.<br>1 — ценовая дискриминация — следствие рыночной власти, а не барьер.<br>⚠️ Иногда вариант 5 относят к <b>административным</b>, а не рыночным барьерам. Но в вопросе «рыночные барьеры» — общее название барьеров входа (сравните с II.4), поэтому мы его отмечаем."},
+      {type: "many", text: "5. Выберите верные суждения о видах конкуренции.", options: ["Монополия устанавливает цену на свою продукцию.", "Монополия — это рыночная структура, в которой одна фирма является поставщиком на рынок товара, не имеющего близких заменителей.", "Компания «Газпром» действует на рынке совершенной конкуренции.", "Фирма, действующая на рынке монополистической конкуренции, часто осуществляет ценовую дискриминацию.", "На рынке олигополии могут действовать фирмы, производящие только однородную продукцию."], right: [0, 1], sec: "zanyatie_03.html#s2",
+        why: "1 и 2 — верно, это определение монополии и её главная черта. 3 — неверно: «Газпром» — естественная монополия в трубопроводном транспорте газа. 5 — неверно из-за слова «только»: продукт у олигополии бывает однородным (нефть, металл) и дифференцированным (автомобили, смартфоны).<br>⚠️ Вариант 4 спорный. Для ценовой дискриминации нужна рыночная власть, и в учебниках её связывают прежде всего с монополией. У фирмы на рынке монополистической конкуренции власть над ценой небольшая, поэтому «часто» — это неверно. Если ключ засчитает 4, причина в скидках и акциях: на таких рынках они встречаются."}
+    ]
+  },
+  {
+    id: "p4", title: "Задачи",
+    hint: "Главное правило: прибыль максимальна при MR = MC. У совершенного конкурента MR = P.",
+    items: [
+      {type: "one", text: "Задача 1. Фирма на рынке совершенной конкуренции, предельные затраты MC = 100 + 2Q, цена продукции 300. Найдите объём выпуска, при котором прибыль максимальна.", options: ["100", "200", "300", "400"], right: [0],
+        why: "У совершенного конкурента MR = P, поэтому условие P = MC: 300 = 100 + 2Q → 2Q = 200 → <b>Q = 100</b>."},
+      {type: "one", text: "Задача 2. Монополист: MR = 120 − Q, MC = 20 + 3Q (Q — тыс. ед.). Найдите объём выпуска, при котором прибыль максимальна.", options: ["120", "20", "3", "25"], right: [3],
+        why: "MR = MC: 120 − Q = 20 + 3Q → 100 = 4Q → <b>Q = 25</b> тыс. ед."},
+      {type: "one", text: "Задача 3. Монополист: MR = 90 − 4Q, предельные издержки постоянны: MC = 30. Найдите объём выпуска, при котором прибыль максимальна.", options: ["10", "15", "20", "25"], right: [1],
+        why: "MR = MC: 90 − 4Q = 30 → 4Q = 60 → <b>Q = 15</b>."},
+      {type: "one", text: "Задача 4. Монополия, спрос P = 140 − 5Q, оптимальный выпуск Q = 20. Найдите цену монополиста.", options: ["140", "135", "40", "5"], right: [2],
+        why: "Цену монополист берёт с кривой спроса при своём объёме: P = 140 − 5 · 20 = 140 − 100 = <b>40</b>. Ловушка — 135: это ошибочная подстановка Q = 1."},
+      {type: "one", text: "Задача 5. Отраслевой спрос на рынке совершенной конкуренции Qd = 9 000 − 60P. Равновесная цена P = 90, у всех фирм одинаковый выпуск q = 36. Сколько фирм в отрасли?", options: ["100", "60", "90", "9 000"], right: [0],
+        why: "Объём рынка при P = 90: Qd = 9 000 − 60 · 90 = 9 000 − 5 400 = 3 600. Фирм: 3 600 / 36 = <b>100</b>."}
+    ]
+  }
+];
+
+const quiz = document.getElementById("quiz");
+const scoreEl = document.getElementById("score");
+const total = PARTS.reduce((sum, part) => sum + part.items.length, 0);
+let checked = 0;
+let correct = 0;
+
+PARTS.forEach((part) => {
+  const box = document.createElement("section");
+  box.className = "part";
+  box.id = part.id;
+  box.innerHTML = `<h2>${part.title}</h2>` + (part.hint ? `<p class="hint">${part.hint}</p>` : "");
+  part.items.forEach((item, qIndex) => {
+    const name = `${part.id}q${qIndex}`;
+    const inputType = item.type === "many" ? "checkbox" : "radio";
+    const q = document.createElement("div");
+    q.className = `q${item.type === "tf" ? " q-tf" : ""}`;
+    const opts = item.options.map((option, oIndex) => {
+      const prefix = item.type === "tf" ? "" : `${oIndex + 1}) `;
+      return `<label><input type="${inputType}" name="${name}" value="${oIndex}"> ${prefix}${option}</label>`;
+    }).join("");
+    const text = item.type === "tf" ? `${qIndex + 1}. ${item.text}` : item.text;
+    q.innerHTML = `<p class="q-text">${text}</p><div class="q-opts">${opts}</div>` +
+      `<button type="button" class="q-check">Проверить</button><p class="q-fb" hidden></p>`;
+    const button = q.querySelector(".q-check");
+    const feedback = q.querySelector(".q-fb");
+    button.addEventListener("click", () => {
+      const inputs = [...q.querySelectorAll("input")];
+      const chosen = inputs.filter((input) => input.checked).map((input) => Number(input.value));
+      if (!chosen.length) {
+        feedback.className = "q-fb bad";
+        feedback.textContent = "Сначала выберите ответ.";
+        feedback.hidden = false;
+        return;
+      }
+      const isRight = chosen.length === item.right.length && chosen.every((value) => item.right.includes(value));
+      inputs.forEach((input) => {
+        const value = Number(input.value);
+        input.disabled = true;
+        if (item.right.includes(value)) input.closest("label").classList.add("right");
+        else if (input.checked) input.closest("label").classList.add("wrong");
+      });
+      feedback.className = `q-fb ${isRight ? "ok" : "bad"}`;
+      feedback.innerHTML = (isRight ? "Верно!" : "Не совсем — правильный ответ выделен зелёным.") +
+        `<span class="why">${item.why}</span>` +
+        (item.sec ? `<a class="src" href="${item.sec}">→ Подробнее: ${SECTIONS[item.sec]}</a>` : "");
+      feedback.hidden = false;
+      button.disabled = true;
+      checked += 1;
+      if (isRight) correct += 1;
+      scoreEl.textContent = `Проверено: ${checked} / ${total} · верно: ${correct}`;
+    });
+    box.appendChild(q);
+  });
+  quiz.appendChild(box);
+});
+
+/* Ответы списком для бланка */
+document.getElementById("key-body").innerHTML = PARTS.map((part) => {
+  const lines = part.items.map((item) => {
+    const answer = item.type === "tf"
+      ? item.options[item.right[0]].toLowerCase()
+      : item.right.map((index) => `${index + 1}) ${item.options[index]}`).join("; ");
+    return `<li>${answer}</li>`;
+  }).join("");
+  return `<h3>${part.title}</h3><ol>${lines}</ol>`;
+}).join("");
+</script>
+</body>
+</html>
