@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: эластичность и выручка</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.back{display:inline-block;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:6px}
+.back:hover{color:var(--indigo)}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.8rem}
+.presets{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.preset{padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;font:inherit;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer}
+.preset:hover{border-color:#c7d2fe;color:var(--indigo)}
+.layout{display:grid;grid-template-columns:minmax(280px,1.2fr) minmax(250px,1fr);gap:14px;align-items:start}
+@media (max-width:700px){.layout{grid-template-columns:1fr}}
+.chart-box{border:1px solid var(--border);border-radius:12px;padding:4px;background:#fcfcff}
+svg{width:100%;height:auto;display:block;max-height:50vh}
+.ctrl{margin-bottom:10px}
+.ctrl label{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;color:var(--muted)}
+.ctrl input{width:100%;accent-color:var(--indigo)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.kpi{border:1px solid var(--border);border-radius:10px;padding:6px;background:#f8fafc;text-align:center}
+.kpi .k-l{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.kpi .k-v{font-size:1.1rem;font-weight:900}
+.up{color:var(--green)}
+.down{color:var(--red)}
+.result{border:1px solid #c7d2fe;border-left:5px solid var(--indigo);background:var(--indigo-lt);border-radius:12px;padding:9px 13px;font-size:.85rem}
+.result b{color:var(--indigo-dk)}
+.calc{font-size:.78rem;color:var(--muted);margin-top:6px}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html" target="_top">← Все уроки</a>
+<div class="top">
+  <h1>Эластичность и выручка</h1>
+  <span class="sub">Меняйте эластичность и цену — смотрите, что станет с выручкой TR = P × Q</span>
+</div>
+<div class="presets">
+  <button type="button" class="preset" data-e="0.05" data-p="200">Лекция: цена ×3, спрос неэластичен</button>
+  <button type="button" class="preset" data-e="3" data-p="10">Лекция: +10 % цены, −30 % объёма</button>
+  <button type="button" class="preset" data-e="1" data-p="5">Единичная эластичность</button>
+  <button type="button" class="preset" data-e="2" data-p="-15">Снижение цены в кризис (эластичный спрос)</button>
+</div>
+
+<div class="layout">
+  <div class="chart-box">
+    <svg viewBox="0 0 360 260" role="img" aria-label="Прямоугольники выручки до и после изменения цены">
+      <line x1="40" y1="230" x2="350" y2="230" stroke="#94a3b8"/>
+      <line x1="40" y1="230" x2="40" y2="10" stroke="#94a3b8"/>
+      <text x="345" y="248" font-size="11" fill="#64748b" text-anchor="end">Q, объём</text>
+      <text x="44" y="16" font-size="11" fill="#64748b">P, цена</text>
+      <rect id="r0" fill="rgba(99,102,241,.18)" stroke="#6366f1" stroke-width="1.5"/>
+      <rect id="r1" fill="none" stroke-width="2.5" stroke-dasharray="6 4"/>
+      <circle id="d0" r="5" fill="#6366f1"/>
+      <circle id="d1" r="5"/>
+      <text id="l0" font-size="11" fill="#4338ca" font-weight="700">было</text>
+      <text id="l1" font-size="11" font-weight="700">стало</text>
+    </svg>
+  </div>
+  <div>
+    <div class="ctrl">
+      <label for="e"><span>Эластичность |Ed|</span><span id="e-v"></span></label>
+      <input type="range" id="e" min="0" max="4" step="0.05" value="3">
+    </div>
+    <div class="ctrl">
+      <label for="p"><span>Изменение цены, %</span><span id="p-v"></span></label>
+      <input type="range" id="p" min="-50" max="200" step="1" value="10">
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="k-l">Цена</div><div class="k-v" id="k-p"></div></div>
+      <div class="kpi"><div class="k-l">Объём</div><div class="k-v" id="k-q"></div></div>
+      <div class="kpi"><div class="k-l">Выручка</div><div class="k-v" id="k-tr"></div></div>
+    </div>
+    <div class="result" id="result" aria-live="polite"></div>
+    <p class="calc" id="calc"></p>
+  </div>
+</div>
+
+<script>
+/* Упрощение лекции: %ΔQ = −|Ed| × %ΔP, объём не меньше нуля */
+const eEl = document.getElementById("e");
+const pEl = document.getElementById("p");
+
+function fmt(value) {
+  const rounded = Math.round(value * 10) / 10;
+  return `${rounded > 0 ? "+" : ""}${String(rounded).replace(".", ",")} %`;
+}
+
+function render() {
+  const e = Number(eEl.value);
+  const dp = Number(pEl.value);
+  const dq = Math.max(-100, -e * dp);
+  const p1 = 1 + dp / 100;
+  const q1 = Math.max(0, 1 + dq / 100);
+  const tr = p1 * q1;
+  const dtr = (tr - 1) * 100;
+  document.getElementById("e-v").textContent = String(e).replace(".", ",");
+  document.getElementById("p-v").textContent = fmt(dp);
+  const set = (id, value, colored) => {
+    const el = document.getElementById(id);
+    el.textContent = fmt(value);
+    el.className = `k-v ${colored ? (value > 0.05 ? "up" : value < -0.05 ? "down" : "") : ""}`;
+  };
+  set("k-p", dp, false);
+  set("k-q", dq, false);
+  set("k-tr", dtr, true);
+
+  /* Масштаб: исходная точка P=1, Q=1 рисуется в центре поля */
+  const sx = 140, sy = 70;
+  const x0 = 40 + sx, y0 = 230 - sy;
+  const x1 = 40 + sx * q1, y1 = 230 - sy * p1;
+  const r0 = document.getElementById("r0");
+  r0.setAttribute("x", 40); r0.setAttribute("y", y0); r0.setAttribute("width", sx); r0.setAttribute("height", sy);
+  const color = dtr > 0.05 ? "#16a34a" : dtr < -0.05 ? "#dc2626" : "#64748b";
+  const r1 = document.getElementById("r1");
+  r1.setAttribute("x", 40); r1.setAttribute("y", Math.max(4, y1)); r1.setAttribute("width", Math.max(0, sx * q1)); r1.setAttribute("height", Math.min(226, sy * p1)); r1.setAttribute("stroke", color);
+  const d0 = document.getElementById("d0"); d0.setAttribute("cx", x0); d0.setAttribute("cy", y0);
+  const d1 = document.getElementById("d1"); d1.setAttribute("cx", x1); d1.setAttribute("cy", Math.max(4, y1)); d1.setAttribute("fill", color);
+  const l0 = document.getElementById("l0"); l0.setAttribute("x", 46); l0.setAttribute("y", 224);
+  const l1 = document.getElementById("l1"); l1.setAttribute("x", x1 + 8); l1.setAttribute("y", Math.max(14, y1 - 6)); l1.setAttribute("fill", color);
+
+  const type = e === 0 ? "абсолютно неэластичный" : e < 1 ? "неэластичный" : e === 1 ? "единичный" : "эластичный";
+  let verdict;
+  if (Math.abs(dtr) < 0.5) verdict = "выручка почти не изменилась";
+  else verdict = dtr > 0 ? "выручка выросла" : "выручка упала";
+  document.getElementById("result").innerHTML = `Спрос <b>${type}</b> (|Ed| = ${String(e).replace(".", ",")}). Цена ${dp >= 0 ? "выросла" : "снизилась"} — <b>${verdict}</b>.`;
+  document.getElementById("calc").textContent = `Расчёт индексами: ${p1.toFixed(2).replace(".", ",")} × ${q1.toFixed(2).replace(".", ",")} = ${tr.toFixed(3).replace(".", ",")} → ${fmt(dtr)}. Модель линейная: %ΔQ = −|Ed| × %ΔP. При единичной эластичности и больших изменениях цены она даёт небольшую погрешность: точное «выручка не меняется» верно для малых изменений.`;
+}
+
+eEl.addEventListener("input", render);
+pEl.addEventListener("input", render);
+document.querySelectorAll(".preset").forEach((button) => {
+  button.addEventListener("click", () => {
+    eEl.value = button.dataset.e;
+    pEl.value = button.dataset.p;
+    render();
+  });
+});
+render();
+</script>
+</body>
+</html>

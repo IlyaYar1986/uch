@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: магазин джинсов и правило MR = MC</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --amber:#d97706;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.back{display:inline-block;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:6px}
+.back:hover{color:var(--indigo)}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:6px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.8rem}
+.chart-box{border:1px solid var(--border);border-radius:12px;padding:4px;background:#fcfcff}
+svg{width:100%;height:auto;display:block;max-height:40vh}
+.shifts{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin:8px 0}
+.shift{border:1px solid var(--border);border-radius:7px;padding:4px 0;text-align:center;font:inherit;font-size:.66rem;font-weight:800;cursor:pointer;background:#fff}
+.shift .h{display:block;color:var(--muted);font-weight:700}
+.shift.pro{background:var(--indigo-lt);border-color:#c7d2fe;color:var(--indigo-dk)}
+.shift.stu{background:#fffbeb;border-color:#fcd34d;color:#92400e}
+.row{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:.78rem;color:var(--muted);margin-bottom:6px}
+.row label{display:flex;gap:6px;align-items:center;font-weight:700}
+.row input[type=range]{accent-color:var(--indigo);width:120px}
+.btn{padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;font:inherit;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer}
+.btn:hover{border-color:#c7d2fe;color:var(--indigo)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0}
+.kpi{border:1px solid var(--border);border-radius:10px;padding:5px;background:#f8fafc;text-align:center}
+.kpi .k-l{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.kpi .k-v{font-size:1.05rem;font-weight:900}
+.result{border:1px solid #c7d2fe;border-left:5px solid var(--indigo);background:var(--indigo-lt);border-radius:12px;padding:8px 12px;font-size:.84rem}
+.result b{color:var(--indigo-dk)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html" target="_top">← Все уроки</a>
+<div class="top">
+  <h1>Магазин джинсов: кого ставить на смену</h1>
+  <span class="sub">Нажимайте на часы, чтобы менять продавца: опытный (выше выручка) или студент (дешевле)</span>
+</div>
+<div class="chart-box">
+  <svg viewBox="0 0 600 220" role="img" aria-label="Предельный доход и предельные издержки по часам работы магазина">
+    <g id="bars"></g>
+    <line x1="40" y1="190" x2="590" y2="190" stroke="#94a3b8"/>
+    <text x="44" y="14" font-size="11" fill="#64748b">MR (столбики) и MC (линии), ₽ за час</text>
+    <g font-size="10" fill="#64748b"><line x1="380" y1="10" x2="400" y2="10" stroke="#4338ca" stroke-width="3"/><text x="404" y="14">MC опытного</text><line x1="480" y1="10" x2="500" y2="10" stroke="#d97706" stroke-width="3"/><text x="504" y="14">MC студента</text></g>
+  </svg>
+</div>
+<div class="shifts" id="shifts"></div>
+<div class="row">
+  <label for="wp">Ставка опытного <input type="range" id="wp" min="150" max="400" step="10" value="200"><span id="wp-v"></span></label>
+  <label for="ws">Ставка студента <input type="range" id="ws" min="80" max="200" step="10" value="130"><span id="ws-v"></span></label>
+  <button type="button" class="btn" id="all-pro">Все смены — опытные</button>
+  <button type="button" class="btn" id="best">Показать оптимум</button>
+</div>
+<div class="kpis">
+  <div class="kpi"><div class="k-l">Выручка за день</div><div class="k-v" id="k-r"></div></div>
+  <div class="kpi"><div class="k-l">Зарплата за день</div><div class="k-v" id="k-c"></div></div>
+  <div class="kpi"><div class="k-l">Маржа (выручка − зарплата)</div><div class="k-v" id="k-m"></div></div>
+</div>
+<div class="result" id="result" aria-live="polite"></div>
+
+<script>
+/* Почасовая валовая маржа с продаж при опытном продавце (условные данные по профилю дня из лекции).
+   Студент продаёт хуже: в спокойные часы почти так же, в пиковые — заметно меньше. */
+const HOURS = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+const MR_PRO = [60, 110, 230, 300, 260, 120, 90, 160, 380, 460, 420, 180];
+const STUDENT_SHARE = (mr) => (mr < 200 ? 0.95 : 0.6);
+let staff = HOURS.map(() => "pro");
+
+const wpEl = document.getElementById("wp");
+const wsEl = document.getElementById("ws");
+
+function mrOf(i) {
+  return staff[i] === "pro" ? MR_PRO[i] : Math.round(MR_PRO[i] * STUDENT_SHARE(MR_PRO[i]));
+}
+function mcOf(i) {
+  return staff[i] === "pro" ? Number(wpEl.value) : Number(wsEl.value);
+}
+
+function render() {
+  document.getElementById("wp-v").textContent = `${wpEl.value} ₽`;
+  document.getElementById("ws-v").textContent = `${wsEl.value} ₽`;
+  const max = Math.max(...MR_PRO, Number(wpEl.value)) * 1.1;
+  const w = 550 / HOURS.length;
+  const y = (v) => 190 - (v / max) * 165;
+  let svg = "";
+  HOURS.forEach((h, i) => {
+    const mr = mrOf(i);
+    const mc = mcOf(i);
+    const color = mr >= mc ? "#16a34a" : "#dc2626";
+    svg += `<rect x="${40 + i * w + 6}" y="${y(mr)}" width="${w - 12}" height="${190 - y(mr)}" fill="${color}" opacity=".75"/>`;
+    svg += `<line x1="${40 + i * w + 2}" x2="${40 + (i + 1) * w - 2}" y1="${y(mc)}" y2="${y(mc)}" stroke="${staff[i] === "pro" ? "#4338ca" : "#d97706"}" stroke-width="3"/>`;
+    svg += `<text x="${40 + i * w + w / 2}" y="205" font-size="10" fill="#64748b" text-anchor="middle">${h}</text>`;
+  });
+  svg += `<text x="590" y="214" font-size="10" fill="#64748b" text-anchor="end">час</text>`;
+  document.getElementById("bars").innerHTML = svg;
+
+  document.getElementById("shifts").innerHTML = HOURS.map((h, i) =>
+    `<button type="button" class="shift ${staff[i] === "pro" ? "pro" : "stu"}" data-i="${i}"><span class="h">${h}:00</span>${staff[i] === "pro" ? "опытн." : "студент"}</button>`
+  ).join("");
+  document.querySelectorAll(".shift").forEach((button) => {
+    button.addEventListener("click", () => {
+      const i = Number(button.dataset.i);
+      staff[i] = staff[i] === "pro" ? "stu" : "pro";
+      render();
+    });
+  });
+
+  const revenue = HOURS.reduce((s, _, i) => s + mrOf(i), 0);
+  const cost = HOURS.reduce((s, _, i) => s + mcOf(i), 0);
+  const margin = revenue - cost;
+  const best = bestMargin();
+  document.getElementById("k-r").textContent = `${revenue} ₽`;
+  document.getElementById("k-c").textContent = `${cost} ₽`;
+  const mEl = document.getElementById("k-m");
+  mEl.textContent = `${margin} ₽`;
+  mEl.style.color = margin >= best ? "#16a34a" : "#0f172a";
+  const losing = HOURS.filter((_, i) => mrOf(i) < mcOf(i)).length;
+  document.getElementById("result").innerHTML = margin >= best
+    ? `<b>Оптимум найден: ${margin} ₽.</b> В каждом часе выбран продавец, при котором дополнительная выручка минус дополнительные затраты больше. Это и есть логика MR = MC: дешёвые смены там, где выручка мала, опытные — в пик. Красные часы остались? В краткосрочном периоде магазин в них не закрывают — как на лекции, их «отыгрывают» вечером.`
+    : `Сейчас маржа <b>${margin} ₽</b>, а можно получить <b>${best} ₽</b>. Красных часов (MR &lt; MC): ${losing}. Подсказка: сравните в каждом часе MR − MC для опытного и для студента.`;
+}
+
+function bestMargin() {
+  return HOURS.reduce((s, _, i) => {
+    const pro = MR_PRO[i] - Number(wpEl.value);
+    const stu = Math.round(MR_PRO[i] * STUDENT_SHARE(MR_PRO[i])) - Number(wsEl.value);
+    return s + Math.max(pro, stu);
+  }, 0);
+}
+
+wpEl.addEventListener("input", render);
+wsEl.addEventListener("input", render);
+document.getElementById("all-pro").addEventListener("click", () => { staff = HOURS.map(() => "pro"); render(); });
+document.getElementById("best").addEventListener("click", () => {
+  staff = HOURS.map((_, i) => {
+    const pro = MR_PRO[i] - Number(wpEl.value);
+    const stu = Math.round(MR_PRO[i] * STUDENT_SHARE(MR_PRO[i])) - Number(wsEl.value);
+    return stu > pro ? "stu" : "pro";
+  });
+  render();
+});
+render();
+</script>
+</body>
+</html>

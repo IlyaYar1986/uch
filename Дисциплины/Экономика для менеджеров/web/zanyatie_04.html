@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Экономика для менеджеров — занятие 4: эластичность и экономика фирмы</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --cyan:#0ea5e9;
+  --cyan-lt:#e0f2fe;
+  --amber:#f59e0b;
+  --amber-lt:#fffbeb;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+  --nav-h:56px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(99,102,241,.14),transparent 32%),
+    radial-gradient(circle at 85% 6%,rgba(14,165,233,.13),transparent 34%),
+    linear-gradient(180deg,#f8fafc 0%,#eef2ff 30%,#f8fafc 100%);
+  color:var(--text);
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;z-index:900;
+  gap:2px;overflow-x:auto;scrollbar-width:none;
+}
+nav.top::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:.93rem;color:var(--indigo-dk);white-space:nowrap;margin:0 10px 0 4px;flex-shrink:0}
+.nav-sep{width:1px;height:18px;background:var(--border);margin:0 6px;flex-shrink:0}
+.nav-link{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;transition:color .2s,background .2s;flex-shrink:0}
+.nav-link:hover,.nav-link.active{color:var(--indigo);background:var(--indigo-lt)}
+.nav-link:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* HERO */
+#hero{
+  min-height:100vh;padding:calc(var(--nav-h) + 56px) 24px 64px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
+.hero-badge{padding:5px 14px;background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:100px;font-size:.78rem;font-weight:700;color:var(--indigo-dk)}
+.hero-title{font-size:clamp(2rem,5.5vw,3.6rem);font-weight:900;line-height:1.12;letter-spacing:-1.5px;margin-bottom:16px;max-width:900px}
+.hero-title em{color:var(--indigo);font-style:normal}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:660px;margin-bottom:36px}
+.hero-img{max-width:900px;width:100%;margin-bottom:40px}
+.hero-nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:820px}
+.hero-nav a{padding:8px 16px;border-radius:10px;background:var(--card);border:1px solid var(--border);font-size:.82rem;font-weight:600;color:var(--text);text-decoration:none;box-shadow:0 2px 8px rgba(15,23,42,.05);transition:transform .15s,box-shadow .15s}
+.hero-nav a:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,.15)}
+
+/* SECTIONS */
+.sec{max-width:1180px;margin:0 auto;padding:72px 24px}
+.sec-head{margin-bottom:36px}
+.num-badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:13px;font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:14px}
+.n1{background:linear-gradient(135deg,#6366f1,#818cf8)}
+.n2{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
+.n3{background:linear-gradient(135deg,#8b5cf6,#a78bfa)}
+.n4{background:linear-gradient(135deg,#16a34a,#4ade80)}
+.n5{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+.n6{background:linear-gradient(135deg,#ec4899,#f472b6)}
+.n7{background:linear-gradient(135deg,#dc2626,#f87171)}
+.n8{background:linear-gradient(135deg,#0891b2,#22d3ee)}
+.n9{background:linear-gradient(135deg,#4338ca,#6366f1)}
+.sec-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.sec-desc{font-size:1rem;color:var(--muted);max-width:760px;line-height:1.75}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+
+/* CARD GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.grid .c-name{font-weight:800;margin-bottom:8px;font-size:.96rem}
+.grid p:not(.c-name){color:var(--muted);font-size:.88rem;line-height:1.6}
+
+/* CALLOUTS */
+.note-callout{background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:14px;padding:16px 20px;margin-bottom:24px}
+.note-callout p{color:var(--indigo-dk);font-size:.92rem;line-height:1.7}
+.warn-callout{background:var(--amber-lt);border:1px solid #fcd34d;border-radius:16px;padding:20px 24px;margin-top:20px}
+.warn-callout p{color:#78350f;line-height:1.7;font-size:.93rem}
+
+/* IMAGE CARD + PLACEHOLDER */
+.img-card{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.12);cursor:zoom-in}
+.img-card img{display:block;width:100%;height:auto}
+.img-card .img-missing-caption{display:none}
+.img-card.img-missing{border:2px dashed var(--border);background:var(--indigo-lt);min-height:220px;display:flex;align-items:center;justify-content:center;box-shadow:none;cursor:default}
+.img-card.img-missing img{display:none}
+.img-card.img-missing .img-missing-caption{display:block;color:var(--muted);font-size:.85rem;text-align:center;padding:24px;max-width:340px}
+
+/* VIZ CARD (iframe) */
+.viz{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.viz-bar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#f8fafc;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#febb2c}.dg{background:#27c840}
+.viz-lbl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);flex:1}
+.viz-fs{display:flex;align-items:center;gap:5px;padding:4px 10px;background:transparent;border:1px solid var(--border);border-radius:6px;font-size:.71rem;font-weight:600;color:var(--muted);cursor:pointer;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+.viz-fs:hover{background:var(--indigo-lt);color:var(--indigo);border-color:#c7d2fe}
+.viz iframe{width:100%;border:none;display:block}
+
+/* PROMPT BOX */
+.prompt-box{background:#0f172a;border-radius:14px;overflow:hidden;margin-bottom:18px}
+.prompt-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#1e293b;color:#e2e8f0;font-size:.82rem;font-weight:700}
+.copy-btn{padding:5px 12px;border-radius:8px;border:1px solid #475569;background:transparent;color:#e2e8f0;font-size:.76rem;font-weight:700;cursor:pointer;transition:background .2s}
+.copy-btn:hover{background:#334155}
+.prompt-box pre{margin:0;padding:18px 16px;color:#e2e8f0;font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+
+/* LIGHTBOX */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.92);z-index:2000;display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:auto}
+.overlay img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.overlay-close{position:absolute;top:18px;right:22px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.overlay-close:hover{background:rgba(255,255,255,.22)}
+.overlay-download{position:absolute;top:18px;right:72px;height:40px;padding:0 16px;border-radius:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;z-index:2}
+.overlay-download:hover{background:rgba(255,255,255,.22)}
+
+/* FULLSCREEN IFRAME OVERLAY */
+#fs-overlay{position:fixed;inset:0;background:rgba(2,6,23,.94);z-index:2100;display:none;flex-direction:column}
+#fs-overlay.open{display:flex}
+#fs-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(255,255,255,.08)}
+#fs-title{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.65);flex:1}
+#fs-close{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.8);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#fs-close:hover{background:rgba(255,255,255,.2)}
+#fs-frame{flex:1;border:none;background:#fff}
+
+/* CHECKLIST */
+.checklist-progress-bar{height:10px;border-radius:100px;background:var(--indigo-lt);overflow:hidden;margin-bottom:20px}
+.checklist-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--indigo),var(--cyan));border-radius:100px;transition:width .3s ease}
+.checklist-items{list-style:none;display:flex;flex-direction:column;gap:12px}
+.checklist-items label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.95rem}
+.checklist-items input{width:18px;height:18px;accent-color:var(--indigo);cursor:pointer;flex-shrink:0}
+.checklist-done{margin-top:18px;padding:12px 16px;background:var(--green-lt);color:var(--green);border-radius:10px;font-weight:700}
+
+/* QUIZ */
+.quiz{display:flex;flex-direction:column;gap:18px}
+.quiz-question{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.quiz-text{font-weight:700;margin-bottom:12px}
+.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.quiz-options label{display:flex;align-items:center;gap:8px;font-size:.92rem;cursor:pointer}
+.quiz-options label.quiz-correct-answer{color:var(--green);font-weight:700}
+.quiz-options input{accent-color:var(--indigo)}
+.quiz-check{padding:8px 16px;border-radius:9px;border:none;background:var(--indigo);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer}
+.quiz-check:hover{background:var(--indigo-dk)}
+.quiz-feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem}
+.quiz-feedback.correct{background:var(--green-lt);color:var(--green)}
+.quiz-feedback.incorrect{background:var(--red-lt);color:var(--red)}
+.quiz-score-box{text-align:center;font-weight:800;color:var(--indigo-dk)}
+
+/* CONCLUSION */
+.conclusion-list{list-style:none;counter-reset:concl;display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.conclusion-list li{counter-increment:concl;padding-left:38px;position:relative;font-size:1rem}
+.conclusion-list li::before{content:counter(concl);position:absolute;left:0;top:-2px;width:26px;height:26px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+.svc-link{color:var(--indigo);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+
+/* SCROLL REVEAL */
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.fade.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.fade{opacity:1;transform:none;transition:none}}
+@media (max-width:900px){.sec{padding:56px 18px}}
+
+
+/* ДОПОЛНИТЕЛЬНЫЕ БЛОКИ УЧЕБНОЙ СТРАНИЦЫ */
+.legend-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:-14px 0 30px;max-width:900px}
+.legend-row span{font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:var(--card);color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.card h3{font-size:1.02rem;font-weight:800;margin-bottom:8px}
+.card p,.card li{font-size:.94rem;line-height:1.7}
+.card ul,.card ol{padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.lecture-tag,.extra-tag,.practice-tag,.trap-tag,.opinion-tag{display:inline-block;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:100px;margin-bottom:8px}
+.lecture-tag{background:var(--indigo-lt);color:var(--indigo-dk)}
+.extra-tag{background:var(--cyan-lt);color:#0369a1}
+.practice-tag{background:var(--green-lt);color:var(--green)}
+.trap-tag{background:var(--red-lt);color:var(--red)}
+.opinion-tag{background:var(--amber-lt);color:#92400e}
+.extra{background:linear-gradient(180deg,#f0f9ff,#fff);border:1px solid #bae6fd;border-left:5px solid var(--cyan);border-radius:16px;padding:18px 22px}
+.practice{background:linear-gradient(180deg,var(--green-lt),#fff);border:1px solid #bbf7d0;border-left:5px solid var(--green);border-radius:16px;padding:18px 22px}
+.trap{background:var(--red-lt);border:1px solid #fecaca;border-left:5px solid var(--red);border-radius:16px;padding:16px 22px}
+.opinion{background:var(--amber-lt);border:1px solid #fcd34d;border-left:5px solid var(--amber);border-radius:16px;padding:18px 22px}
+.extra h3,.practice h3,.trap h3,.opinion h3{font-size:1rem;font-weight:800;margin-bottom:6px}
+.extra p,.extra li,.practice p,.practice li,.trap p,.trap li,.opinion p,.opinion li{font-size:.93rem;line-height:1.7}
+.extra ul,.practice ul,.practice ol,.trap ul,.opinion ul{padding-left:20px;display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.src{font-size:.8rem;color:var(--muted);margin-top:8px}
+.src a{color:#0369a1}
+.def{background:var(--card);border:1px solid #c7d2fe;border-left:5px solid var(--indigo);border-radius:14px;padding:14px 20px;font-size:1rem;line-height:1.7}
+.def b{color:var(--indigo-dk)}
+.formula{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:clamp(1.2rem,2.6vw,1.7rem);font-weight:800;text-align:center;padding:16px;background:var(--indigo-lt);border-radius:14px;color:var(--indigo-dk);letter-spacing:.5px}
+details.ref{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0 18px}
+details.ref + details.ref{margin-top:8px}
+details.ref summary{cursor:pointer;padding:12px 0;font-weight:800;font-size:.93rem;list-style:none;display:flex;gap:8px;align-items:center}
+details.ref summary::before{content:"🧭"}
+details.ref summary::-webkit-details-marker{display:none}
+details.ref[open] summary{border-bottom:1px dashed var(--border)}
+details.ref .ref-body{padding:10px 0 14px;font-size:.92rem;line-height:1.7;color:#334155}
+details.ref .ref-body p + p{margin-top:6px}
+table.cmp{width:100%;border-collapse:collapse;background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--border);font-size:.92rem}
+table.cmp th{background:var(--indigo-lt);color:var(--indigo-dk);text-align:left;padding:10px 14px;font-size:.84rem}
+table.cmp td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top;line-height:1.6}
+table.cmp td:first-child{font-weight:700}
+.table-wrap{overflow-x:auto}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.flow .step{flex:1 1 140px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;position:relative}
+.flow .step b{display:block;color:var(--indigo-dk);font-size:.92rem}
+.flow .step span{font-size:.84rem;color:var(--muted)}
+.flow .step .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.78rem;font-weight:800;align-items:center;justify-content:center;margin-bottom:6px}
+.quiz-feedback .explain{display:block;margin-top:6px;color:var(--text);font-weight:500}
+
+footer{text-align:center;padding:32px 20px 48px;color:var(--muted);font-size:.85rem}
+/* podcast */
+.podcast{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;max-width:760px;width:100%;margin:0 auto 28px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 10px rgba(15,23,42,.06);text-align:left}
+.podcast-head{flex:1 1 220px}
+.podcast-title{font-weight:800;font-size:1rem;color:var(--indigo-dk)}
+.podcast-meta{font-size:.82rem;color:var(--muted)}
+.podcast audio{flex:1 1 280px;height:40px}
+.podcast-dl{padding:9px 16px;border-radius:10px;background:var(--indigo);color:#fff;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap}
+.podcast-dl:hover{filter:brightness(1.1)}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Навигация по странице">
+  <a class="nav-link" href="../index.html">← Все уроки</a>
+  <span class="nav-sep"></span>
+  <span class="nav-logo">Экономика · занятие 4</span>
+  <span class="nav-sep"></span>
+  <a class="nav-link" href="#s1">Эластичность</a>
+  <a class="nav-link" href="#s2">По цене</a>
+  <a class="nav-link" href="#s3">Выручка</a>
+  <a class="nav-link" href="#s4">Факторы</a>
+  <a class="nav-link" href="#s5">Доход и перекрёстная</a>
+  <a class="nav-link" href="#s6">Собственность</a>
+  <a class="nav-link" href="#s7">Фирма</a>
+  <a class="nav-link" href="#s8">Продукт</a>
+  <a class="nav-link" href="#s9">Издержки</a>
+  <a class="nav-link" href="#s10">MR = MC</a>
+  <a class="nav-link" href="#checklist">Чек-лист</a>
+  <a class="nav-link" href="#quiz">Квиз</a>
+</nav>
+
+<header id="hero">
+  <div class="hero-badges">
+    <span class="hero-badge">Занятие 4 · 21.10.2026</span>
+    <span class="hero-badge">Эластичность · экономика фирмы</span>
+    <span class="hero-badge">Подготовка к федеральному тестированию</span>
+  </div>
+  <h1 class="hero-title">Насколько покупатель <em>отзывается</em> на цену — и где у фирмы прибыль</h1>
+  <p class="hero-sub">После этой страницы вы посчитаете коэффициент эластичности и изменение выручки, поймёте, когда поднимать цену выгодно, а когда — разорительно, отличите субституты от комплементов по знаку. И увидите, почему прибыль максимальна там, где MR = MC, — на примере магазина и кофейни.</p>
+  <!-- podcast:start -->
+  <div class="podcast" aria-label="Подкаст по уроку">
+    <div class="podcast-head">
+      <div class="podcast-title">🎧 Подкаст по уроку</div>
+      <div class="podcast-meta">Беседа по опорному конспекту · 18 мин · MP3, 9 МБ</div>
+    </div>
+    <audio controls preload="none" src="../audio/zanyatie_04.mp3"></audio>
+    <a class="podcast-dl" href="../audio/zanyatie_04.mp3" download>⬇ Скачать</a>
+  </div>
+  <!-- podcast:end -->
+  <div class="legend-row" aria-label="Обозначения на странице">
+    <span>📘 Из лекции</span>
+    <span>➕ Дополнение: не из лекции, с источником</span>
+    <span>🧭 Справка: кто это и в чём суть</span>
+    <span>🛠 На практике</span>
+    <span>⚠️ Ловушка теста</span>
+    <span>💬 Мнение преподавателя</span>
+  </div>
+  <figure class="img-card hero-img" data-lightbox>
+    <img src="../png/zanyatie_04/00_karta_zanyatiya.webp" width="1672" height="941" alt="Карта занятия: город с тремя районами — рынок, завод, касса; десять остановок с вопросами" loading="eager" fetchpriority="high" onerror="this.closest('.img-card').classList.add('img-missing')">
+    <figcaption class="img-missing-caption">Карта занятия: 10 разделов и их вопросы (промпт 00)</figcaption>
+  </figure>
+  <nav class="hero-nav" aria-label="Разделы страницы">
+    <a href="#s1">1 · Эластичность</a>
+    <a href="#s2">2 · Эластичность по цене</a>
+    <a href="#s3">3 · Эластичность и выручка</a>
+    <a href="#s4">4 · Факторы эластичности</a>
+    <a href="#s5">5 · По доходу и перекрёстная</a>
+    <a href="#s6">6 · Собственность и Остром</a>
+    <a href="#s7">7 · Фирма и периоды</a>
+    <a href="#s8">8 · Общий, средний, предельный продукт</a>
+    <a href="#s9">9 · Издержки</a>
+    <a href="#s10">10 · MR = MC</a>
+    <a href="#quiz">Проверить себя</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ══════════ 1 ══════════ -->
+<section class="sec" id="s1">
+  <div class="sec-head fade">
+    <div class="num-badge n1">1</div>
+    <h2 class="sec-title">Эластичность: понятие и коэффициент</h2>
+    <p class="sec-desc">На прошлом занятии мы узнали, куда двигается спрос при росте цены. Теперь — насколько сильно. Эта задача, по словам преподавателя, есть в федеральном тестировании всегда.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_04/01_elastichnost.webp" width="1672" height="941" alt="Пружина: тянем за X — смотрим, насколько растянется Y; линейки в процентах на обоих концах" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Эластичность как пружина (промпт 01)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="def"><b>Эластичность</b> — качественная характеристика: <b>мера реакции одной переменной в ответ на изменение другой</b>. Понятие заимствовано из физики; применяется к рынку и к производству.</div>
+      <div class="def"><b>Коэффициент эластичности</b> — количественная характеристика: <b>E = %ΔY / %ΔX</b>, где X — независимая переменная, Y — зависимая. Проценты сокращаются — коэффициент <b>безразмерный</b>.</div>
+    </div>
+    <div class="def fade"><b>Эластичность спроса по цене:</b> Ed = %ΔQd / %ΔP — процентное изменение величины спроса (штуки, килограммы, кубометры) к процентному изменению цены.</div>
+    <details class="ref fade"><summary>Откуда слово</summary><div class="ref-body">
+      <p>Термин ввёл в экономику Альфред Маршалл в «Принципах экономической науки» (1890) по аналогии с упругостью материалов: насколько тело растягивается под нагрузкой. В физике упругость измеряют в абсолютных величинах, а экономисты — в процентах, чтобы сравнивать хлеб в рублях за батон и нефть в долларах за баррель.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ══════════ 2 ══════════ -->
+<section class="sec" id="s2">
+  <div class="sec-head fade">
+    <div class="num-badge n2">2</div>
+    <h2 class="sec-title">Эластичность спроса по цене: четыре графика</h2>
+    <p class="sec-desc">Чем круче линия спроса, тем меньше покупатели реагируют на цену. Преподаватель нарисовала четыре варианта — их и спрашивают на тесте.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_04/02_elastichnost_po_cene.webp" width="1672" height="941" alt="Четыре графика: крутая линия и рулон туалетной бумаги, пологая линия и бижутерия, вертикаль и инсулин, горизонталь и жвачка за 40 рублей" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Четыре вида эластичности (промпт 02)</figcaption>
+    </figure>
+    <div class="def fade"><b>Коэффициент эластичности спроса по цене всегда отрицателен — по закону спроса</b> (связь обратная). В аналитических целях его берут <b>по модулю</b>.</div>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Спрос</th><th>|Ed|</th><th>Линия</th><th>Пример с лекции</th></tr></thead>
+        <tbody>
+          <tr><td>Абсолютно неэластичный</td><td>0</td><td>вертикальная</td><td>инсулин, жизненно важные лекарства</td></tr>
+          <tr><td>Неэластичный</td><td>0 &lt; |Ed| &lt; 1</td><td>крутая</td><td>товары первой необходимости: туалетная бумага. Цена +200 %, объём −10 % → |Ed| = 0,05</td></tr>
+          <tr><td>Единичный (унитарный)</td><td>1</td><td>—</td><td>в основном аналитический случай</td></tr>
+          <tr><td>Эластичный</td><td>|Ed| &gt; 1</td><td>пологая</td><td>бижутерия, модные марки: цена +10 %, объём −30 % → |Ed| = 3</td></tr>
+          <tr><td>Абсолютно эластичный</td><td>∞</td><td>горизонтальная</td><td>«жвачка за 40 ₽ и ни копейки больше» (пример американского профессора)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>«В три раза» — это +200 %</h3>
+      <ul>
+        <li>Цена выросла в 3 раза: было 100, стало 300, прирост 200 → <b>+200 %</b>, а не +300 %.</li>
+        <li>Знак минус у Ed — не «спрос упал», а характер связи. На тесте ответ часто дают по модулю.</li>
+        <li>Неэластичный — <b>строгое</b> неравенство 0 &lt; |Ed| &lt; 1 (поправка слушателя на лекции): 0 и 1 — отдельные случаи.</li>
+      </ul>
+    </div>
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Мнение преподавателя</span>
+      <h3>Эластичность начинается с личного спроса</h3>
+      <p>Занятия ребёнка перед конкурсом в профильную школу подорожали на 10 % — «куда деваться, буду платить»: неэластично, хотя это не первая необходимость. А от новой вещи или поездки откажусь — это эластичная часть бюджета. Пример американского профессора с жвачкой преподаватель считает неудачным.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 3 ══════════ -->
+<section class="sec" id="s3">
+  <div class="sec-head fade">
+    <div class="num-badge n3">3</div>
+    <h2 class="sec-title">Эластичность и выручка</h2>
+    <p class="sec-desc">Зачем вообще знать эластичность? Чтобы понять, что будет с выручкой, если вы поменяете цену.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_04/03_elastichnost_vyruchka.webp" width="1672" height="941" alt="Два графика: на крутой кривой спроса прямоугольник выручки после роста цены становится выше и больше, на пологой — уже и меньше" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Выручка как площадь прямоугольника (промпт 03)</figcaption>
+    </figure>
+    <div class="def fade"><b>Выручка (total revenue)</b> TR = P × Q — то, что продавец считает в конце дня. На графике — площадь прямоугольника под точкой на кривой спроса.</div>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Спрос</th><th>Цена ↑</th><th>Цена ↓</th></tr></thead>
+        <tbody>
+          <tr><td>Неэластичный (|Ed| &lt; 1)</td><td>выручка <b>растёт</b></td><td>выручка падает</td></tr>
+          <tr><td>Единичный (|Ed| = 1)</td><td>не меняется</td><td>не меняется</td></tr>
+          <tr><td>Эластичный (|Ed| &gt; 1)</td><td>выручка <b>падает</b></td><td>выручка растёт</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · задача «как в тестах»</span>
+      <h3>Сначала решите сами</h3>
+      <p>Цена выросла на 10 %, объём продаж сократился на 30 %. Как изменилась выручка (в процентах)?</p>
+      <details class="ref" style="margin-top:10px"><summary>Ответ и разбор</summary><div class="ref-body">
+        <p>Считаем индексами: новая цена — 1,1 от старой, новый объём — 0,7 от старого. TR₁ = 1,1 × 0,7 = 0,77 от прежней выручки. Изменение: (0,77 − 1) / 1 × 100 % = <b>−23 %</b>. Спрос эластичен (|Ed| = 3), поэтому рост цены выручку уменьшил.</p>
+        <p>Частая ошибка — вычесть проценты: «+10 − 30 = −20 %». Так нельзя: изменения перемножаются, а не складываются.</p>
+      </div></details>
+    </div>
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · эластичность и выручка</span>
+        <button type="button" class="viz-fs" data-fs-src="elastichnost_vyruchka.html" data-fs-title="Тренажёр: эластичность и выручка">⛶ На весь экран</button>
+      </div>
+      <iframe src="elastichnost_vyruchka.html" height="470" loading="lazy" title="Тренажёр: как изменение цены меняет выручку при разной эластичности"></iframe>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Кейс раздаточного листа · Gloria Jeans, 2009</span>
+      <p>В кризис выручка упала. Компания сократила издержки и <b>снизила цены — выручка выросла</b>: спрос на её одежду эластичен. Но, предупреждает кейс, занижать цену слишком сильно нельзя. Покупатель переведёт бренд «в сток», в низший сегмент, и это ударит по всем будущим продажам. Gloria Jeans — средний и низкий сегмент; вылететь в низкий компания не хотела.</p>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Как руководителю пользоваться эластичностью</h3>
+      <ul>
+        <li><b>Перед повышением цены</b> проверьте, есть ли у клиента заменитель и какую долю бюджета он на вас тратит. Нет заменителя, доля мала — повышение, скорее всего, увеличит выручку.</li>
+        <li><b>Проверяйте на части рынка:</b> поднимите цену в одном регионе или канале и сравните продажи. Это и есть оценка эластичности на практике.</li>
+        <li><b>Эластичность у разных клиентов разная.</b> Поэтому существуют тарифы, программы лояльности и цены для разных сегментов — ценовая дискриминация из занятия 3.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 4 ══════════ -->
+<section class="sec" id="s4">
+  <div class="sec-head fade">
+    <div class="num-badge n1">4</div>
+    <h2 class="sec-title">Факторы ценовой эластичности спроса</h2>
+    <p class="sec-desc">Что делает спрос гибким — и почему со временем он становится гибче.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_04/04_faktory_elastichnosti.webp" width="1672" height="941" alt="Пульт с шестью рычагами: заменители, доля в бюджете, доход, качество, запасы, время; внедорожник на заправке превращается в малолитражку и автобус" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Шесть факторов и фактор времени (промпт 04)</figcaption>
+    </figure>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Фактор</th><th>Как влияет</th></tr></thead>
+        <tbody>
+          <tr><td>Наличие заменителей</td><td>много заменителей — легко перейти на другой товар — спрос эластичнее</td></tr>
+          <tr><td>Удельный вес в бюджете</td><td>хлеб (малая доля) — менее эластичен, iPhone (большая доля) — более</td></tr>
+          <tr><td>Размер дохода</td><td>меняет структуру потребления: есть деньги — переходим на другой товар</td></tr>
+          <tr><td>Качество товара</td><td>влияет на готовность отказаться</td></tr>
+          <tr><td>Размер запаса</td><td>есть запас — можно переждать подорожание</td></tr>
+          <tr><td>Ожидания, фактор времени</td><td>в краткосрочном периоде спрос менее эластичен, в долгосрочном — более</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Кейс раздаточного листа</span>
+      <h3>Спрос на бензин и автомобили</h3>
+      <p>Нефтяные шоки 1970-х: страны ОПЕК подняли цены (СССР и США в договорённости не участвовали). В краткосрочном периоде и спрос, и предложение неэластичны: человек с машиной на 40 литров на 100 км всё равно ездит на работу. Высокие цены держались до 1982 года. Потом спрос адаптировался: пересели с джипов на малолитражки, автопроизводители начали делать экономичные модели — и цены пошли вниз. <b>Long run эластичнее, чем short run.</b></p>
+    </div>
+    <div class="extra fade">
+      <span class="extra-tag">➕ Дополнение</span>
+      <h3>Цифры к кейсу</h3>
+      <p>По оценкам, собранным в учебнике Р. Пиндайка и Д. Рубинфельда «Микроэкономика», эластичность спроса на бензин по цене около −0,2 в первый год и около −0,8 через 10 лет. Со спросом на сами автомобили обратная картина: в первый год около −1,2 (покупку можно отложить), через 10 лет около −0,4, потому что старые машины всё равно приходится менять.</p>
+      <p class="src">Источник: R. Pindyck, D. Rubinfeld, «Microeconomics», гл. 2 (табл. «Спрос на бензин и автомобили»).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 5 ══════════ -->
+<section class="sec" id="s5">
+  <div class="sec-head fade">
+    <div class="num-badge n2">5</div>
+    <h2 class="sec-title">Эластичность по доходу и перекрёстная</h2>
+    <p class="sec-desc">У этих коэффициентов, в отличие от ценовой эластичности, главное — знак.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_04/05_dohod_perekrestnaya.webp" width="1672" height="941" alt="Лифт дохода: корзина нормального товара растёт, низшего — уменьшается; два магазина пончиков — субституты; принтер с картриджем и машина с канистрой — комплементы" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Знак коэффициента решает (промпт 05)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Эластичность по доходу</span>
+        <p><b>E &gt; 0 — нормальный товар:</b> доход растёт — покупают больше (свежая рыба, качественная одежда и обувь).</p>
+        <p style="margin-top:6px"><b>E &lt; 0 — низшее (инфериорное) благо:</b> доход растёт — покупают меньше.</p>
+        <p class="src">➕ В учебниках добавляют: E &gt; 1 — товары роскоши (доля в расходах растёт с доходом), 0 &lt; E &lt; 1 — товары первой необходимости.</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Перекрёстная эластичность</span>
+        <p>Как цена товара X влияет на объём спроса на товар Y.</p>
+        <p style="margin-top:6px"><b>E &gt; 0 — субституты (заменители):</b> пончики подорожали в «Пятёрочке» — студенты пошли в «Магнит».</p>
+        <p style="margin-top:6px"><b>E &lt; 0 — комплементы (дополнения):</b> подорожал картридж — падает спрос на принтер; машина и бензин, сим-карта и телефон.</p>
+      </div>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Знаки не перепутайте</h3>
+      <ul>
+        <li>На лекции преподаватель сначала сказала наоборот, потом исправилась: <b>субституты — плюс, комплементы — минус</b>.</li>
+        <li>Проверка за секунду: у субститутов цена одного и спрос на другой движутся <b>в одну сторону</b>.</li>
+        <li>Не путайте с занятием 3: там шла речь о <b>сдвиге</b> спроса, здесь — о <b>величине коэффициента</b>. Логика та же.</li>
+      </ul>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Кейс раздаточного листа · эластичность спроса на алкоголь</span>
+      <ul>
+        <li><b>По цене</b> самое эластичное — пиво; вино — около единицы; водка эластичнее вина, потому что у неё есть дешёвый заменитель — самогон (у него в таблице прочерк: рыночной цены нет).</li>
+        <li><b>По доходу</b> у водки, пива и вина коэффициент положительный — нормальные товары. У самогона — отрицательный: доходы падают — пьют больше самогона.</li>
+        <li><b>Перекрёстная по цене водки</b> (по данным таблицы): самогон и пиво — субституты, вино — комплемент.</li>
+        <li>Поэтому государство изучает эластичность, когда регулирует рынок: слишком дорогая легальная водка толкает людей к самогону.</li>
+      </ul>
+    </div>
+    <div class="extra fade">
+      <span class="extra-tag">➕ Дополнение · ⚠️ уточнение</span>
+      <h3>Минимальная цена на водку</h3>
+      <p>На лекции прозвучало «около 280 ₽ за пол-литра». Актуально: <b>299 ₽</b> в 2024 году, <b>349 ₽</b> с 1 января 2025 года, <b>409 ₽ с 1 января 2026 года</b> (приказ Минфина России). Это <b>пол цены</b>: ниже продавать нельзя. Он ограничивает рынок, только если стоит <b>выше</b> равновесной цены (занятие 3). Преподаватель верно отличила его от <b>акциза</b>: акциз — налог, он сдвигает предложение влево.</p>
+      <p class="src">Источник: приказы Минфина России об установлении минимальных цен на алкогольную продукцию крепостью свыше 28 % (№ 191н от 12.12.2024 и последующий на 2026 год).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 6 ══════════ -->
+<section class="sec" id="s6">
+  <div class="sec-head fade">
+    <div class="num-badge n3">6</div>
+    <h2 class="sec-title">Отступление: собственность и Элинор Остром</h2>
+    <p class="sec-desc">Преподаватель отвлеклась от эластичности, чтобы показать: модель можно описать и словами — за такую модель дали Нобелевскую премию.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_04/06_sobstvennost_ostrom.webp" width="1672" height="941" alt="Две саванны: с запретом охоты слонов мало, с лицензиями деревни слонов много; альпийский луг с доской общих правил; медаль Нобелевской премии Остром, 2009" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Частная и общая собственность (промпт 06)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <p><b>Собственность — институт</b>, «правила игры». Триада <b>владение, пользование, распоряжение</b> — со времён римского права. Рыночные отношения эффективны при частной собственности.</p>
+        <p style="margin-top:6px"><b>Кейс со слонами:</b> одна страна железно запретила охоту — популяция сократилась, «слоны ничьи». Другая разрешила охоту по лицензиям, которые продают соседние деревни, — деревни стали бороться с браконьерством, популяция сохранилась.</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции</span>
+        <p><b>Элинор Остром</b>: «это правда, но не вся». Есть ниша, где эффективнее <b>общая (общинная) собственность</b>, если сообщество само договорилось о правилах. Доказательства — описательные, на материале исследований по всему миру.</p>
+        <p style="margin-top:6px">💬 Пример преподавателя: цоколь её дома поделили на доли под кладовки с хламом. Общей собственностью его можно было бы сдавать в центре города.</p>
+      </div>
+    </div>
+    <details class="ref fade"><summary>Элинор Остром</summary><div class="ref-body">
+      <p>Элинор Остром (1933–2012) — американский политолог, <b>первая женщина — лауреат Нобелевской премии по экономике</b> (2009, вместе с Оливером Уильямсоном, «за анализ управления экономикой, в особенности общими ресурсами»). Книга «Управляя общим» вышла в 1990 году. Её примеры: альпийские пастбища деревни Тёрбель в Швейцарии, общинные леса японских деревень, оросительные системы Валенсии, рыболовство в Аланье (Турция). Восемь условий успеха общины: чёткие границы ресурса и круга пользователей, правила под местные условия, участие пользователей в их изменении, наблюдение, постепенные санкции, дешёвое разрешение споров, признание властью, многоуровневая организация.</p>
+      <p>Кейс со слонами — классический пример <b>прав собственности</b>, а не из книги Остром: в Кении охоту запретили в 1977 году, а программа CAMPFIRE в Зимбабве отдала доходы от лицензий местным общинам.</p>
+    </div></details>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>«Общее» внутри компании</h3>
+      <p>Общая переговорная, общий автопарк, общий бюджет на рекламу — всё это «общие ресурсы». Без владельца и правил их растаскивают, как цокольный этаж. Работают два решения из этого раздела: назначить хозяина (частная собственность) или договориться о правилах и контроле внутри команды (по Остром).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 7 ══════════ -->
+<section class="sec" id="s7">
+  <div class="sec-head fade">
+    <div class="num-badge n1">7</div>
+    <h2 class="sec-title">Экономика фирмы: прибыль, производство, периоды</h2>
+    <p class="sec-desc">Вторая половина занятия. Тему преподаватель рассказывала по учебнику и видеолекциям И. А. Кима.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_04/07_firma_periody.webp" width="1672" height="941" alt="Весы прибыли TR минус TC; три шестерни производство, издержки, продажи; машина-рецепт K и L — 700 чашек кофе; три часов: мгновенный, краткосрочный, долгосрочный" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Прибыль, три процесса, периоды (промпт 07)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="def"><b>Фирма</b> в неоклассической теории — институт, стремящийся к <b>максимизации прибыли</b>: <b>π = TR − TC</b>. Для этого она управляет тремя процессами: <b>производство → издержки → продажи</b>.</div>
+      <div class="def"><b>Производственная функция</b> — зависимость объёма выпуска от количества используемых ресурсов: <b>Q = f(K, L)</b>. Денег в ней нет: капитал — в машино-часах, труд — в человеко-часах.</div>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции</span>
+      <h3>Кофейня напротив университета</h3>
+      <p>Работает с 9 до 21, три сотрудника: труд 3 × 12 = 36 человеко-часов, капитал 12 машино-часов, выпуск 700 чашек в день — это <b>мощность</b>. TP (total product) — произведённое, Q — проданное; в простых моделях это одно и то же.</p>
+      <p style="margin-top:6px"><b>Рыночная власть фирмы — только в пределах кривой спроса на её продукт</b>, даже у монополии: от продукции монополистов уходили, вплоть до покупки генераторов.</p>
+    </div>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Период</th><th>Что можно изменить</th><th>Пример</th></tr></thead>
+        <tbody>
+          <tr><td>Мгновенный</td><td>ничего</td><td>гостиница просит кофе-брейк на 30 человек — кофейне нужна неделя: докупить кофе, договориться о десертах, найти людей</td></tr>
+          <tr><td>Краткосрочный (short run)</td><td>только переменный фактор — <b>труд</b>; капитал постоянен</td><td>госзаказ на джинсы: сверхурочные, вторая смена, аутсорс; при трёх сменах — потолок</td></tr>
+          <tr><td>Долгосрочный (long run)</td><td><b>все факторы</b></td><td>новое помещение, станки, люди</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Периоды — не календарь</h3>
+      <ul>
+        <li><b>Деление на периоды условно и зависит от технологии</b>, а не от бухучёта. Кофейне мгновенный период — неделя, авиазаводу на три лишних самолёта — около двух лет.</li>
+        <li>В краткосрочном периоде есть постоянный фактор (капитал); в долгосрочном все факторы переменные.</li>
+        <li><b>Краткосрочный период — основной период деятельности фирмы</b>; дальше все модели — для него.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 8 ══════════ -->
+<section class="sec" id="s8">
+  <div class="sec-head fade">
+    <div class="num-badge n2">8</div>
+    <h2 class="sec-title">Общий, средний и предельный продукт</h2>
+    <p class="sec-desc">Нанимаем швей в цех с постоянным числом машин. Каждый следующий человек приносит разный прирост — и это главная мысль маржинального анализа.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_04/08_produkt_tp_ap_mp.webp" width="1672" height="941" alt="Швейный цех: кривая общего продукта с участками А (быстрый рост), Б (медленный), В (падение пунктиром); ниже кривые среднего и предельного продукта" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">TP, AP, MP и три участка (промпт 08)</figcaption>
+    </figure>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Величина</th><th>Что показывает</th></tr></thead>
+        <tbody>
+          <tr><td>Общий продукт TP (total)</td><td>весь выпуск</td></tr>
+          <tr><td>Средний продукт AP (average)</td><td>выпуск на одного работника — <b>производительность труда</b>: AP = TP / L</td></tr>
+          <tr><td>Предельный продукт MP (marginal)</td><td>прирост выпуска от ещё одного работника: MP = ΔTP / ΔL</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Три участка кривой TP</span>
+        <ul>
+          <li><b>А</b> — ускоренный рост: люди делят операции (джинсы — около 40 операций), работает <b>разделение труда и специализация</b>.</li>
+          <li><b>Б</b> — рост медленнее: машины заполняются.</li>
+          <li><b>В</b> — выпуск падает: лишний человек мешает. <b>В коммерческой организации участка В быть не должно</b>; пример — скрытая безработица в СССР.</li>
+        </ul>
+      </div>
+      <div class="extra">
+        <span class="extra-tag">➕ Дополнение</span>
+        <h3>Закон убывающей предельной производительности</h3>
+        <p>То, что происходит на участках Б и В, в учебниках называется законом: <b>при неизменном количестве одного ресурса каждая следующая единица другого ресурса даёт всё меньший прирост выпуска</b>. На лекции закон не назван, но описан. На тесте его формулируют именно так.</p>
+      </div>
+    </div>
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · швейный цех</span>
+        <button type="button" class="viz-fs" data-fs-src="proizvodstvo_trenazher.html" data-fs-title="Тренажёр: швейный цех — TP, AP, MP">⛶ На весь экран</button>
+      </div>
+      <iframe src="proizvodstvo_trenazher.html" height="470" loading="lazy" title="Тренажёр: общий, средний и предельный продукт в швейном цехе"></iframe>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции</span>
+      <h3>«Настоящий экономист мыслит предельными величинами»</h3>
+      <p>Это один из десяти принципов экономикс Мэнкью. Анализ ведут в трёх типах величин: <b>общих</b> (масштаб), <b>средних</b> (на единицу) и <b>предельных</b> (на дополнительную единицу). Разделение труда описал <b>Адам Смит</b> в «Исследовании о природе и причинах богатства народов» (1776): оно работает на уровне цеха, страны и мирового хозяйства.</p>
+    </div>
+    <div class="extra fade">
+      <span class="extra-tag">➕ Дополнение · из лекции</span>
+      <h3>Разделение труда в мире: отчёт ОЭСР</h3>
+      <p>Преподаватель привела отчёт ОЭСР (38 развитых стран, Россия не входит). Тенденции — закупать у одного «надёжного» поставщика и возвращать производство к себе. Модель ОЭСР: если страны перейдут к «локальному» режиму, мировой ВВП потеряет больше 5 %, мировая торговля — больше 18 %, а устойчивость к шокам при этом не вырастет. Рекомендации: сохранять торговлю, управлять рисками, развивать цифровые инструменты и международную кооперацию.</p>
+      <p class="src">Источник: OECD, «Supply Chain Resilience Review» и модель METRO (сценарий «localised regime»).</p>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>«Возьмите моего племянника»</h3>
+      <p>Провокация преподавателя: фирма уже на участке В, мощности забиты, а вас просят взять ещё одного человека. Экономически правильный ответ — «нет». Совет: объясняйте отказ ограничениями технологии (нет станка, нет смены), а не отношением к человеку. Перед наймом спрашивайте не «нужен ли нам ещё человек», а «какой прирост выпуска он даст при нынешнем оборудовании».</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 9 ══════════ -->
+<section class="sec" id="s9">
+  <div class="sec-head fade">
+    <div class="num-badge n3">9</div>
+    <h2 class="sec-title">Издержки фирмы</h2>
+    <p class="sec-desc">Издержки — зеркало производительности: чем эффективнее технология, тем дешевле единица продукции.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_04/09_izderzhki.webp" width="1672" height="941" alt="Кофейня как здание: фундамент и стены — постоянные издержки, конвейер — переменные; зеркало между аркой производительности и корытом средних издержек" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Постоянные и переменные издержки (промпт 09)</figcaption>
+    </figure>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Издержки</th><th>Что это</th><th>Примеры с лекции</th></tr></thead>
+        <tbody>
+          <tr><td>Постоянные (FC)</td><td>не зависят от объёма выпуска</td><td>аренда, амортизация, административный персонал, лицензии</td></tr>
+          <tr><td>Переменные (VC)</td><td>растут с выпуском</td><td>зарплата производственного персонала (около 60 % переменных затрат), сырьё</td></tr>
+          <tr><td>Общие (TC)</td><td>TC = FC + VC</td><td>—</td></tr>
+          <tr><td>Средние (AC, AVC)</td><td>издержки на единицу продукции</td><td>кривая-«корыто»: сначала падают, потом растут</td></tr>
+          <tr><td>Предельные (MC)</td><td>прирост издержек от дополнительной единицы: MC = ΔTC / ΔQ</td><td>час работы продавца — 200 ₽</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции</span>
+      <h3>Почему «корыто»</h3>
+      <p>Средние переменные издержки зеркальны среднему продукту. Пока работает разделение труда, производительность растёт, и каждая единица обходится дешевле. Когда начинается убывающая отдача, единица дорожает. <b>Технологическая эффективность предопределяет экономическую.</b></p>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Постоянные издержки в кризис</h3>
+      <p>При падении продаж переменные издержки сокращаются сами вместе с выпуском, а постоянные остаются: аренду платить так же. Поэтому в кризис компании пересматривают именно постоянную часть — субаренда, аутсорсинг административных функций, аренда оборудования вместо покупки. Так поступила и Gloria Jeans в 2009 году: сократив издержки, она смогла снизить цены.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 10 ══════════ -->
+<section class="sec" id="s10">
+  <div class="sec-head fade">
+    <div class="num-badge n1">10</div>
+    <h2 class="sec-title">Маржинальный анализ: MR = MC</h2>
+    <p class="sec-desc">«Условие-заклинание» любой фирмы. Сначала — задача: вы управляете магазином джинсов, и вам нужно расставить смены.</p>
+  </div>
+  <div class="stack">
+    <div class="card fade">
+      <span class="lecture-tag">📘 Сначала попробуйте сами</span>
+      <h3>Магазин джинсов в ТЦ, будний день, 10:00–22:00</h3>
+      <p>Час работы опытного продавца стоит 200 ₽, студента — 130 ₽. Выручка по часам неравномерна. Расставьте смены так, чтобы прибыль за день была максимальной. Картинка с ответом — после тренажёра.</p>
+    </div>
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · смены магазина по правилу MR = MC</span>
+        <button type="button" class="viz-fs" data-fs-src="marzhinalnyj_magazin.html" data-fs-title="Тренажёр: магазин джинсов и MR = MC">⛶ На весь экран</button>
+      </div>
+      <iframe src="marzhinalnyj_magazin.html" height="550" loading="lazy" title="Тренажёр: предельный доход и предельные издержки по часам работы магазина"></iframe>
+    </div>
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_04/10_mr_mc.webp" width="1672" height="941" alt="Магазин джинсов: столбики почасовой предельной выручки и линия предельных издержек 200 рублей, доска смен — студенты в слабые часы, опытные продавцы в пиковые; холм прибыли между точками безубыточности" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">MR = MC на примере магазина (промпт 10)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="def"><b>MR</b> — предельный доход: выручка от дополнительной единицы (часа, штуки). <b>MC</b> — предельные издержки: затраты на неё. <b>Прибыль максимальна, когда MR = MC.</b></div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · доказательство</span>
+        <p>π = TR − TC → max. В точке максимума производная равна нулю: TR′ − TC′ = 0. Производная общей величины — предельная: MR − MC = 0 → <b>MR = MC</b>. На графике прибыль — парабола ветвями вниз; <b>точки безубыточности</b> Q₁ и Q₂ — где TR = TC; вершина — оптимальный выпуск Q*.</p>
+      </div>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции</span>
+      <h3>Как это делают кофейни и Gloria Jeans</h3>
+      <ul>
+        <li>В магазине при ставке 200 ₽ больше половины часов убыточны по предельным величинам. Закрываться нельзя, скидки снизят выручку ещё больше. Решение — <b>перестроить график</b>: в слабые часы — студенты (120–140 ₽), в пиковые — опытные продавцы и управляющие.</li>
+        <li>По словам преподавателя, Gloria Jeans купила такую систему управления персоналом у американцев почти за 3 млн долларов, а кофейни рядом с вузом делают то же бесплатно: утром и вечером — школьники, в обед, на бизнес-ланчи — менеджер и постоянный персонал.</li>
+        <li>Гостиница (пример слушательницы): делегацию школьников обслуживают волонтёры, бизнес-мероприятие — профессиональный клининг и аниматоры. Выгоды должны соответствовать издержкам.</li>
+      </ul>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>MR = MC — это не TR = TC</h3>
+      <ul>
+        <li><b>TR = TC</b> — точка безубыточности: прибыль равна нулю.</li>
+        <li><b>MR = MC</b> — максимум прибыли. В этой точке TR больше TC: равны только <b>приросты</b>.</li>
+        <li>Пока MR &gt; MC, выпуск выгодно наращивать; если MR &lt; MC — сокращать.</li>
+      </ul>
+    </div>
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Мнение преподавателя</span>
+      <h3>Зачем руководителю теория</h3>
+      <p>Слушатель рассказал: школьники-промоутеры приносили +20–30 % дохода при затратах в пару процентов. Преподаватель: «Вы считали дискретно, на единицу, — возможно, не дошли до оптимума». Теория — не то же самое, что практика: практика — конкретный процесс, теория — познание закономерностей. «Если хотя бы одна модель даст вам вывод — всё не зря».</p>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Правило для любого «ещё одного»</h3>
+      <ul>
+        <li>Ещё час работы, ещё смена, ещё рекламная кампания, ещё один менеджер — сравнивайте <b>дополнительную выручку</b> с <b>дополнительными затратами</b>, а не средние показатели за год.</li>
+        <li>Постоянные издержки в это решение не входят: аренду вы платите в любом случае.</li>
+        <li>Следующее занятие (понедельник) начнётся с задач на формулы производства, издержек и продаж.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ЧЕК-ЛИСТ ══════════ -->
+<section class="sec" id="checklist">
+  <div class="sec-head fade">
+    <div class="num-badge n1">✓</div>
+    <h2 class="sec-title">Что выучить к аттестации</h2>
+    <p class="sec-desc">Отмечайте пункт, когда можете объяснить его своими словами без подсказки. Отметки сохраняются в браузере.</p>
+  </div>
+  <div class="card fade">
+    <div class="checklist-progress-bar"><div class="checklist-progress-fill" id="checklist-progress"></div></div>
+    <ul class="checklist-items">
+      <li><label><input type="checkbox" data-checklist-item="c1"> Эластичность — мера реакции; коэффициент — отношение процентных изменений, безразмерный</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c2"> Ed по цене всегда отрицателен (закон спроса), берут по модулю</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c3"> Пять случаев: 0, меньше 1, 1, больше 1, бесконечность — и как выглядит линия</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c4"> «В 3 раза» = +200 %; расчёт Ed по двум процентам</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c5"> Эластичность и выручка: когда рост цены увеличивает TR, а когда уменьшает</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c6"> Изменение выручки через индексы: 1,1 × 0,7 = 0,77 → −23 %</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c7"> Шесть факторов эластичности; в долгосрочном периоде спрос эластичнее</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c8"> Эластичность по доходу: плюс — нормальный, минус — низший</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c9"> Перекрёстная: плюс — субституты, минус — комплементы</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c10"> Минимальная цена (пол) и акциз — разные меры</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c11"> Собственность как институт; Остром и общие ресурсы</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c12"> Фирма максимизирует прибыль π = TR − TC; три процесса</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c13"> Производственная функция Q = f(K, L)</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c14"> Мгновенный, краткосрочный, долгосрочный периоды; деление зависит от технологии</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c15"> TP, AP, MP; участки А, Б, В; закон убывающей отдачи</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c16"> Постоянные и переменные издержки; TC = FC + VC; средние и предельные</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c17"> Правило MR = MC; точки безубыточности; доказательство через производную</label></li>
+    </ul>
+    <p class="checklist-done" id="checklist-done" hidden>Четвёртое занятие готово к аттестации.</p>
+  </div>
+</section>
+
+<!-- ══════════ КВИЗ ══════════ -->
+<section class="sec" id="quiz">
+  <div class="sec-head fade">
+    <div class="num-badge n2">?</div>
+    <h2 class="sec-title">Проверьте себя</h2>
+    <p class="sec-desc">Пятнадцать вопросов в формате теста. После ответа — правильный вариант и короткий разбор.</p>
+  </div>
+  <div class="quiz fade">
+    <div class="quiz-question" data-quiz="1" data-explain="Эластичность — качественная характеристика: мера реакции одной переменной на изменение другой. Количественная — коэффициент.">
+      <p class="quiz-text">1. Эластичность — это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q1" value="right"> мера реакции одной переменной в ответ на изменение другой</label>
+        <label><input type="radio" name="q1" value="wrong"> отношение цены к объёму</label>
+        <label><input type="radio" name="q1" value="wrong"> скорость роста выручки</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="1">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="1" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="2" data-explain="Цена «в 3 раза» — это +200 %. |Ed| = 10 / 200 = 0,05 — спрос неэластичен.">
+      <p class="quiz-text">2. Цена выросла в 3 раза, объём продаж упал на 10 %. Коэффициент эластичности спроса по цене (по модулю):</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q2" value="wrong"> 0,03</label>
+        <label><input type="radio" name="q2" value="right"> 0,05</label>
+        <label><input type="radio" name="q2" value="wrong"> 0,3</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="2">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="2" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="3" data-explain="По закону спроса связь обратная, поэтому Ed отрицателен; в анализе берут модуль.">
+      <p class="quiz-text">3. Коэффициент эластичности спроса по цене всегда…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q3" value="wrong"> положителен</label>
+        <label><input type="radio" name="q3" value="right"> отрицателен</label>
+        <label><input type="radio" name="q3" value="wrong"> равен единице</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="3">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="3" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="4" data-explain="Вертикаль: объём не меняется при любой цене — абсолютно неэластичный спрос, Ed = 0 (инсулин).">
+      <p class="quiz-text">4. Вертикальная линия спроса соответствует…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q4" value="wrong"> абсолютно эластичному спросу</label>
+        <label><input type="radio" name="q4" value="wrong"> единичной эластичности</label>
+        <label><input type="radio" name="q4" value="right"> абсолютно неэластичному спросу</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="4">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="4" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="5" data-explain="При |Ed| &lt; 1 объём падает меньше, чем растёт цена, — выручка растёт.">
+      <p class="quiz-text">5. Спрос на товар неэластичен. Фирма повышает цену. Выручка…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q5" value="right"> вырастет</label>
+        <label><input type="radio" name="q5" value="wrong"> упадёт</label>
+        <label><input type="radio" name="q5" value="wrong"> не изменится</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="5">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="5" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="6" data-explain="1,1 × 0,7 = 0,77 → −23 %. Проценты не вычитаются, а перемножаются индексами.">
+      <p class="quiz-text">6. Цена выросла на 10 %, объём упал на 30 %. Выручка изменилась на…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q6" value="wrong"> −20 %</label>
+        <label><input type="radio" name="q6" value="right"> −23 %</label>
+        <label><input type="radio" name="q6" value="wrong"> −33 %</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="6">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="6" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="7" data-explain="Много заменителей — легко перейти на другой товар. Малая доля в бюджете и короткий период делают спрос менее эластичным.">
+      <p class="quiz-text">7. Что делает спрос на товар более эластичным?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q7" value="wrong"> малая доля в бюджете покупателя</label>
+        <label><input type="radio" name="q7" value="right"> наличие многих заменителей</label>
+        <label><input type="radio" name="q7" value="wrong"> короткий период после изменения цены</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="7">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="7" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="8" data-explain="Со временем люди находят замену (экономичные машины, транспорт) — long run эластичнее short run.">
+      <p class="quiz-text">8. Спрос на бензин в долгосрочном периоде по сравнению с краткосрочным…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q8" value="wrong"> менее эластичен</label>
+        <label><input type="radio" name="q8" value="right"> более эластичен</label>
+        <label><input type="radio" name="q8" value="wrong"> одинаков</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="8">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="8" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="9" data-explain="E по доходу &lt; 0 — низшее (инфериорное) благо: доход растёт — покупают меньше.">
+      <p class="quiz-text">9. Эластичность спроса по доходу отрицательна. Это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q9" value="wrong"> нормальный товар</label>
+        <label><input type="radio" name="q9" value="wrong"> товар роскоши</label>
+        <label><input type="radio" name="q9" value="right"> низшее благо</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="9">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="9" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="10" data-explain="Плюс — субституты: подорожал один — покупают больше другого. Комплементы — минус.">
+      <p class="quiz-text">10. Перекрёстная эластичность двух товаров положительна. Это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q10" value="right"> субституты</label>
+        <label><input type="radio" name="q10" value="wrong"> комплементы</label>
+        <label><input type="radio" name="q10" value="wrong"> независимые товары</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="10">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="10" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="11" data-explain="Это пол цены (ценовое ограничение). Акциз — налог, он сдвигает предложение.">
+      <p class="quiz-text">11. Минимальная розничная цена на водку — это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q11" value="wrong"> акциз</label>
+        <label><input type="radio" name="q11" value="right"> пол цены</label>
+        <label><input type="radio" name="q11" value="wrong"> потолок цены</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="11">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="11" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="12" data-explain="В short run меняется только переменный фактор (труд), капитал постоянен. Деление условно и зависит от технологии.">
+      <p class="quiz-text">12. Краткосрочный период в теории фирмы — это период, когда…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q12" value="wrong"> меняются все факторы</label>
+        <label><input type="radio" name="q12" value="right"> меняется только труд, капитал постоянен</label>
+        <label><input type="radio" name="q12" value="wrong"> ничего изменить нельзя</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="12">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="12" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="13" data-explain="AP = TP / L — выпуск на одного работника, производительность труда. MP — прирост от дополнительного работника.">
+      <p class="quiz-text">13. Средний продукт труда показывает…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q13" value="wrong"> прирост выпуска от ещё одного работника</label>
+        <label><input type="radio" name="q13" value="right"> выпуск на одного работника</label>
+        <label><input type="radio" name="q13" value="wrong"> весь объём выпуска</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="13">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="13" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="14" data-explain="Аренда не зависит от объёма выпуска. Зарплата производственного персонала и сырьё — переменные.">
+      <p class="quiz-text">14. К постоянным издержкам относится…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q14" value="wrong"> зарплата швей-сдельщиц</label>
+        <label><input type="radio" name="q14" value="wrong"> сырьё</label>
+        <label><input type="radio" name="q14" value="right"> аренда помещения</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="14">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="14" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="15" data-explain="MR = MC — равны предельные величины. TR = TC — точка безубыточности, прибыль ноль.">
+      <p class="quiz-text">15. Фирма максимизирует прибыль, когда…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q15" value="wrong"> TR = TC</label>
+        <label><input type="radio" name="q15" value="right"> MR = MC</label>
+        <label><input type="radio" name="q15" value="wrong"> AC минимальны</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="15">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="15" hidden></p>
+    </div>
+  </div>
+  <p class="quiz-score-box fade" id="quiz-score" style="margin-top:18px">Отвечено: 0 / 15</p>
+</section>
+
+<!-- ══════════ ЗАКЛЮЧЕНИЕ ══════════ -->
+<section class="sec" id="final">
+  <div class="sec-head fade">
+    <div class="num-badge n3">★</div>
+    <h2 class="sec-title">Шпаргалка: главное из занятия</h2>
+  </div>
+  <figure class="img-card fade" data-lightbox style="margin-bottom:28px">
+    <img src="../png/zanyatie_04/11_final_shpargalka.webp" width="1672" height="941" alt="Дворец памяти: пружина эластичности и четыре мини-графика, две кассы выручки, песочные часы, пончики и принтер, швейный цех с участками А Б В, здание FC плюс VC и график магазина MR равно MC" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+    <figcaption class="img-missing-caption">Шпаргалка к аттестации (промпт 11)</figcaption>
+  </figure>
+  <ol class="conclusion-list fade">
+    <li><strong>Эластичность = %ΔQ / %ΔP.</strong> По цене — всегда минус, берём модуль: меньше 1 — неэластичный, больше 1 — эластичный.</li>
+    <li><strong>Выручка:</strong> неэластичный спрос — поднимай цену, выручка вырастет; эластичный — снижай. Изменения перемножаются: 1,1 × 0,7 = 0,77.</li>
+    <li><strong>Факторы:</strong> заменители, доля в бюджете, доход, качество, запасы, время. Со временем спрос эластичнее.</li>
+    <li><strong>Знак решает:</strong> по доходу плюс — нормальный, минус — низший; перекрёстная плюс — субституты, минус — комплементы.</li>
+    <li><strong>Собственность — институт.</strong> Ресурс без хозяина и правил растаскивают; по Остром, община с правилами справляется сама.</li>
+    <li><strong>Фирма максимизирует π = TR − TC</strong> через производство, издержки и продажи; short run — основной период.</li>
+    <li><strong>Убывающая отдача:</strong> каждый следующий работник при тех же машинах даёт всё меньше; участка В в бизнесе быть не должно.</li>
+    <li><strong>MR = MC</strong> — максимум прибыли. Мысли предельными величинами: каждый дополнительный час, человек и рубль — не одно и то же.</li>
+  </ol>
+</section>
+
+</main>
+
+
+<div class="overlay" id="lightbox" aria-hidden="true">
+  <a class="overlay-download" id="lightbox-download" download aria-label="Скачать изображение">⬇ Скачать</a>
+  <button class="overlay-close" id="lightbox-close" aria-label="Закрыть">✕</button>
+  <img id="lightbox-img" alt="">
+</div>
+
+<div id="fs-overlay" aria-hidden="true">
+  <div id="fs-bar">
+    <span id="fs-title"></span>
+    <button type="button" id="fs-close" aria-label="Закрыть полноэкранный режим">✕</button>
+  </div>
+  <iframe id="fs-frame" title="Полноэкранная визуализация"></iframe>
+</div>
+
+<footer>
+  <p>Президентская программа · «Экономика для менеджеров» · преподаватель И. Г. Переломова · материалы с пометкой «Дополнение» добавлены к лекции</p>
+</footer>
+
+<script>
+/* Префикс имени файла при скачивании инфографики */
+const BRAND = "ekonomika-z4";
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (!reduceMotion && "IntersectionObserver" in window) {
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in");
+        reveal.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.06, rootMargin: "0px 0px -24px"});
+  document.querySelectorAll(".fade").forEach((element) => reveal.observe(element));
+} else {
+  document.querySelectorAll(".fade").forEach((element) => element.classList.add("in"));
+}
+
+/* Подсветка активной секции в навбаре */
+const navLinks = [...document.querySelectorAll(".nav-link")];
+const sections = [...document.querySelectorAll("main section[id]")];
+if ("IntersectionObserver" in window) {
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach((link) => {
+        link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`);
+      });
+    });
+  }, {rootMargin: "-35% 0px -55%", threshold: 0});
+  sections.forEach((section) => sectionObserver.observe(section));
+}
+
+/* Лайтбокс */
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const lightboxDownload = document.getElementById("lightbox-download");
+function brandedFilename(url) {
+  const name = url.split("/").pop().split("?")[0];
+  return `${BRAND}_${name}`;
+}
+document.querySelectorAll(".img-card[data-lightbox]").forEach((card) => {
+  card.addEventListener("click", () => {
+    if (card.classList.contains("img-missing")) return;
+    const img = card.querySelector("img");
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightboxDownload.href = img.src;
+    lightboxDownload.download = brandedFilename(img.src);
+    lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
+  });
+});
+function closeLightbox() {
+  if (lightbox.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  lightboxImg.src = "";
+}
+document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (event) => { if (event.target === lightbox) closeLightbox(); });
+
+/* Фуллскрин для iframe-карточек */
+const fsOverlay = document.getElementById("fs-overlay");
+const fsFrame = document.getElementById("fs-frame");
+const fsTitle = document.getElementById("fs-title");
+document.querySelectorAll(".viz-fs").forEach((button) => {
+  button.addEventListener("click", () => {
+    fsFrame.src = button.dataset.fsSrc;
+    fsTitle.textContent = button.dataset.fsTitle;
+    fsOverlay.classList.add("open");
+    fsOverlay.setAttribute("aria-hidden", "false");
+  });
+});
+function closeFs() {
+  if (fsOverlay.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  fsOverlay.classList.remove("open");
+  fsOverlay.setAttribute("aria-hidden", "true");
+  fsFrame.src = "";
+}
+document.getElementById("fs-close").addEventListener("click", closeFs);
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if (fsOverlay.classList.contains("open")) { closeFs(); } else { closeLightbox(); }
+});
+
+/* Копирование промптов */
+document.querySelectorAll("[data-copy]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const code = document.getElementById(button.dataset.copy);
+    if (!code) return;
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(code.innerText);
+      button.textContent = "Скопировано";
+    } catch {
+      button.textContent = "Выделите текст";
+    }
+    window.setTimeout(() => { button.textContent = original; }, 1600);
+  });
+});
+
+/* Чек-лист готовности */
+const CHECKLIST_KEY = "ekonomika-z4-checklist";
+const checklistInputs = [...document.querySelectorAll("[data-checklist-item]")];
+const checklistProgress = document.getElementById("checklist-progress");
+const checklistDone = document.getElementById("checklist-done");
+function loadChecklistState() {
+  try { return JSON.parse(localStorage.getItem(CHECKLIST_KEY) || "{}"); } catch { return {}; }
+}
+function saveChecklistState(state) {
+  try { localStorage.setItem(CHECKLIST_KEY, JSON.stringify(state)); } catch { /* приватный режим */ }
+}
+function renderChecklistProgress() {
+  const checked = checklistInputs.filter((input) => input.checked).length;
+  checklistProgress.style.width = `${Math.round((checked / checklistInputs.length) * 100)}%`;
+  checklistDone.hidden = checked !== checklistInputs.length;
+}
+const savedChecklist = loadChecklistState();
+checklistInputs.forEach((input) => {
+  const key = input.dataset.checklistItem;
+  input.checked = Boolean(savedChecklist[key]);
+  input.addEventListener("change", () => {
+    const state = loadChecklistState();
+    state[key] = input.checked;
+    saveChecklistState(state);
+    renderChecklistProgress();
+  });
+});
+renderChecklistProgress();
+
+/* Квиз */
+const QUIZ_TOTAL = document.querySelectorAll(".quiz-question").length;
+let quizAnswered = 0;
+let quizCorrect = 0;
+const quizScoreEl = document.getElementById("quiz-score");
+document.querySelectorAll(".quiz-check").forEach((button) => {
+  button.addEventListener("click", () => {
+    const index = button.dataset.quizCheck;
+    const question = document.querySelector(`.quiz-question[data-quiz="${index}"]`);
+    const selected = question.querySelector(`input[name="q${index}"]:checked`);
+    const feedback = document.querySelector(`[data-quiz-feedback="${index}"]`);
+    if (!selected) {
+      feedback.textContent = "Выберите вариант ответа.";
+      feedback.className = "quiz-feedback incorrect";
+      feedback.hidden = false;
+      return;
+    }
+    const alreadyAnswered = button.disabled;
+    const isCorrect = selected.value === "right";
+    feedback.textContent = isCorrect ? "Верно!" : "Не совсем — правильный вариант выделен выше.";
+    if (question.dataset.explain) {
+      const explain = document.createElement("span");
+      explain.className = "explain";
+      explain.textContent = question.dataset.explain;
+      feedback.appendChild(explain);
+    }
+    feedback.className = `quiz-feedback ${isCorrect ? "correct" : "incorrect"}`;
+    feedback.hidden = false;
+    question.querySelectorAll("input").forEach((input) => { input.disabled = true; });
+    question.querySelector('input[value="right"]').closest("label").classList.add("quiz-correct-answer");
+    button.disabled = true;
+    if (!alreadyAnswered) {
+      quizAnswered += 1;
+      if (isCorrect) quizCorrect += 1;
+      quizScoreEl.textContent = `Отвечено: ${quizAnswered} / ${QUIZ_TOTAL} · верно: ${quizCorrect}`;
+    }
+  });
+});
+</script>
+</body>
+</html>
