@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Домашнее задание к занятию 4: эластичность спроса</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --amber-lt:#fffbeb;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+  --nav-h:56px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(99,102,241,.14),transparent 32%),
+    radial-gradient(circle at 85% 6%,rgba(14,165,233,.13),transparent 34%),
+    linear-gradient(180deg,#f8fafc 0%,#eef2ff 30%,#f8fafc 100%);
+  color:var(--text);line-height:1.65;overflow-x:hidden;
+}
+a{color:var(--indigo-dk)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;z-index:900;
+  gap:2px;overflow-x:auto;scrollbar-width:none;
+}
+nav.top::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:.93rem;color:var(--indigo-dk);white-space:nowrap;margin:0 10px 0 4px;flex-shrink:0;text-decoration:none}
+.nav-sep{width:1px;height:18px;background:var(--border);margin:0 6px;flex-shrink:0}
+.nav-link{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0}
+.nav-link:hover{color:var(--indigo);background:var(--indigo-lt)}
+
+main{max-width:860px;margin:0 auto;padding:calc(var(--nav-h) + 40px) 16px 56px}
+h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;letter-spacing:-.5px;line-height:1.2;margin-bottom:10px}
+h1 em{font-style:normal;color:var(--indigo)}
+.lead{color:var(--muted);font-size:1rem;margin-bottom:22px}
+.note-callout{background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:14px;padding:14px 18px;margin-bottom:28px}
+.note-callout p{color:var(--indigo-dk);font-size:.92rem}
+.note-callout p + p{margin-top:6px}
+
+.part{margin-top:40px}
+.part h2{font-size:clamp(1.2rem,2.6vw,1.6rem);font-weight:800;margin-bottom:6px}
+.part .hint{color:var(--muted);font-size:.9rem;margin-bottom:16px}
+
+.q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+.q + .q{margin-top:14px}
+.q-text{font-weight:700;margin-bottom:12px}
+.q-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.q-opts label{display:flex;align-items:flex-start;gap:8px;font-size:.93rem;cursor:pointer}
+.q-opts input{accent-color:var(--indigo);margin-top:5px;flex-shrink:0}
+.q-opts label.right{color:var(--green);font-weight:700}
+.q-opts label.wrong{color:var(--red);text-decoration:line-through}
+.q-tf .q-opts{flex-direction:row;gap:18px}
+.q-check{padding:8px 16px;border-radius:9px;border:none;background:var(--indigo);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit}
+.q-check:hover{background:var(--indigo-dk)}
+.q-check:disabled{opacity:.5;cursor:default}
+.q-fb{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem}
+.q-fb.ok{background:var(--green-lt);color:var(--green)}
+.q-fb.bad{background:var(--red-lt);color:var(--red)}
+.q-fb .why{display:block;margin-top:6px;color:var(--text);font-weight:500}
+.q-fb .why b{font-weight:800}
+.q-fb .src{display:block;margin-top:6px;font-size:.84rem}
+
+.score{position:sticky;bottom:12px;margin:32px auto 0;max-width:420px;text-align:center;font-weight:800;color:var(--indigo-dk);background:rgba(255,255,255,.96);border:1px solid #c7d2fe;border-radius:12px;padding:10px 14px;box-shadow:0 4px 18px rgba(15,23,42,.08)}
+
+details.key{margin-top:40px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0 20px}
+details.key summary{cursor:pointer;padding:14px 0;font-weight:800;list-style:none}
+details.key summary::-webkit-details-marker{display:none}
+details.key[open] summary{border-bottom:1px dashed var(--border)}
+.key-body{padding:12px 0 18px;font-size:.93rem}
+.key-body h3{font-size:.95rem;margin:12px 0 4px}
+.key-body h3:first-child{margin-top:0}
+.key-body ol{padding-left:22px}
+
+.tbl-wrap{overflow-x:auto;margin-bottom:8px}
+.tbl{border-collapse:collapse;font-size:.84rem;min-width:620px}
+.tbl th,.tbl td{border:1px solid var(--border);padding:6px 8px;text-align:left;vertical-align:top}
+.tbl thead th{background:var(--indigo-lt);color:var(--indigo-dk)}
+.tbl tbody th{background:#f8fafc;white-space:nowrap}
+.key-body p{margin-bottom:6px}
+details.key + #quiz{margin-top:0}
+#theory{margin:0 0 8px}
+.ans{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;margin-bottom:12px;font-size:.93rem;font-weight:600}
+.ans input{width:110px;padding:6px 9px;border:1px solid var(--border);border-radius:8px;font:inherit}
+.ans select{padding:6px 8px;border:1px solid var(--border);border-radius:8px;font:inherit}
+.q textarea{width:100%;margin:10px 0;padding:8px 10px;border:1px solid var(--border);border-radius:9px;font:inherit;font-size:.9rem;resize:vertical}
+details.sol{margin-top:10px;border-top:1px dashed var(--border);padding-top:8px}
+details.sol summary{cursor:pointer;font-weight:800;color:var(--indigo-dk)}
+details.sol div{padding-top:8px;font-size:.92rem}
+details.sol p+p{margin-top:6px}
+details.sol ol,details.sol ul,.key-body ol{padding-left:22px;display:flex;flex-direction:column;gap:5px}
+blockquote{border-left:4px solid #c7d2fe;background:#f8fafc;padding:10px 14px;border-radius:8px;font-size:.88rem;line-height:1.6;margin-top:8px}
+.src{font-size:.8rem;color:var(--muted);margin-top:6px}
+footer{text-align:center;padding:32px 20px 48px;color:var(--muted);font-size:.85rem}
+@media (max-width:600px){.q{padding:16px}.q-tf .q-opts{flex-direction:column;gap:8px}}
+</style>
+</head>
+<body>
+<nav class="top" aria-label="Навигация по странице">
+  <a class="nav-link" href="../index.html">← Все уроки</a>
+  <span class="nav-sep"></span>
+  <a class="nav-logo" href="zanyatie_04.html">Занятие 4</a>
+  <span class="nav-sep"></span>
+  <a class="nav-link" href="#p1">Задачи</a>
+  <a class="nav-link" href="#c1">ОПЕК</a>
+  <a class="nav-link" href="#c2">Алкоголь</a>
+  <a class="nav-link" href="#c3">Gloria Jeans</a>
+  <a class="nav-link" href="#key">Ответы списком</a>
+</nav>
+
+<main>
+  <h1>Домашнее задание: <em>эластичность спроса</em></h1>
+  <p class="lead">Раздаточный лист к занятию 4 (21.10.2026), И. Г. Переломова: три задачи и три кейса. По словам преподавателя, разбор будет на следующем занятии.</p>
+
+  <div class="note-callout">
+    <p>В задачах введите ответ и нажмите «Проверить»: проверка допускает округление. В кейсах сначала запишите свой ответ, потом откройте разбор. Ваши тексты не сохраняются и никуда не отправляются.</p>
+    <p>Разборы составлены по лекции и учебнику Пиндайка и Рубинфельда, на который ссылается лист; ключа преподавателя у нас нет.</p>
+  </div>
+
+  <section class="part" id="p1">
+    <h2>Задачи</h2>
+    <p class="hint">Главная формула: E = %ΔQ / %ΔX. Знак коэффициента по доходу и перекрёстного — важен.</p>
+
+    <div class="q" data-task>
+      <p class="q-text">1. При увеличении суммарного дохода потребителей муки с 5 до 7 млн руб. спрос на неё сократился с 50 до 40 тыс. т. Оцените коэффициент эластичности спроса по доходу. К какому типу товаров принадлежит мука?</p>
+      <div class="ans"><label>E по доходу = <input type="text" inputmode="decimal" data-answer="-0.5" data-alt="-0.667" data-tol="0.03" aria-label="Коэффициент эластичности по доходу"></label>
+        <label>Тип товара <select aria-label="Тип товара"><option value="">— выберите —</option><option value="normal">нормальный</option><option value="inferior">низший (инфериорный)</option><option value="lux">роскошь</option></select></label></div>
+      <button type="button" class="q-check" data-kind="t1">Проверить</button>
+      <div class="q-fb" hidden></div>
+      <details class="sol"><summary>Решение</summary><div>
+        <p>%ΔQ = (40 − 50) / 50 = −20 %; %ΔI = (7 − 5) / 5 = +40 %. E = −20 / 40 = <b>−0,5</b>.</p>
+        <p>Если считать по формуле средней точки (её любят в учебниках): ΔQ / средний Q = −10 / 45 = −22,2 %, ΔI / средний I = 2 / 6 = 33,3 %, E ≈ <b>−0,67</b>. Вывод тот же.</p>
+        <p><b>E &lt; 0 — мука низший (инфериорный) товар:</b> доход вырос — её покупают меньше (переходят на готовый хлеб, выпечку, другие продукты).</p>
+      </div></details>
+    </div>
+
+    <div class="q" data-task>
+      <p class="q-text">2. При увеличении цены масла на 2 % спрос на него сократился на 3 %, а спрос на маргарин увеличился на 2,5 %. Найдите ценовую эластичность спроса на масло и перекрёстную эластичность спроса на маргарин.</p>
+      <div class="ans"><label>Ed масла = <input type="text" inputmode="decimal" data-answer="-1.5" data-abs="1" data-tol="0.02" aria-label="Ценовая эластичность масла"></label>
+        <label>E перекрёстная = <input type="text" inputmode="decimal" data-answer="1.25" data-tol="0.02" aria-label="Перекрёстная эластичность маргарина"></label></div>
+      <button type="button" class="q-check" data-kind="t2">Проверить</button>
+      <div class="q-fb" hidden></div>
+      <details class="sol"><summary>Решение</summary><div>
+        <p>Ценовая: Ed = −3 / +2 = <b>−1,5</b> (по модулю 1,5 &gt; 1 — спрос на масло <b>эластичен</b>).</p>
+        <p>Перекрёстная: E = +2,5 / +2 = <b>1,25</b> &gt; 0 — масло и маргарин <b>субституты</b>: подорожало масло — покупают больше маргарина.</p>
+      </div></details>
+    </div>
+
+    <div class="q" data-task>
+      <p class="q-text">3. Эластичность спроса по цене на товар «Альфа» равна (−0,4), эластичность спроса по доходу — 1,6. В текущем месяце доход потребителей увеличился на 1 %, одновременно цена «Альфы» снизилась на 2 %. На сколько процентов изменился спрос на «Альфу»?</p>
+      <div class="ans"><label>%ΔQ = <input type="text" inputmode="decimal" data-answer="2.4" data-tol="0.02" aria-label="Изменение спроса в процентах"> %</label></div>
+      <button type="button" class="q-check" data-kind="t3">Проверить</button>
+      <div class="q-fb" hidden></div>
+      <details class="sol"><summary>Решение</summary><div>
+        <p>Эффекты складываются: %ΔQ = E<sub>I</sub> × %ΔI + E<sub>P</sub> × %ΔP.</p>
+        <p>От дохода: 1,6 × (+1 %) = +1,6 %. От цены: (−0,4) × (−2 %) = +0,8 %. Итого <b>+2,4 %</b>.</p>
+        <p>Ловушка: «минус на минус» — снижение цены при отрицательной эластичности увеличивает спрос.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="part" id="c1">
+    <h2>Кейс 1. Спрос на бензин и автомобили: почему ОПЕК не удержала цены</h2>
+    <div class="q">
+      <p class="q-text">В 1970-х ОПЕК согласованно сократила поставки нефти. В 1973–1974 годах реальная цена выросла больше чем на 50 %, в 1979, 1980 и 1981 годах — на 14, 34 и 34 %. Но в 1982–1985 годах цены снижались на 10 % в год, в 1986-м координация распалась и цена упала на 45 %, а в 1990-м вернулась к уровню 1970 года. <b>Объясните с точки зрения теории спроса и предложения и эластичности, почему ОПЕК не удалось сохранить высокие цены.</b></p>
+      <p class="src">Источник кейса: Пиндайк Р., Рубинфельд Д. Микроэкономика. М.: Дело, 2001. С. 58.</p>
+      <textarea rows="4" placeholder="Ваш ответ — для себя"></textarea>
+      <details class="sol"><summary>Разбор</summary><div>
+        <ol>
+          <li><b>В краткосрочном периоде спрос на нефть неэластичен.</b> Машины, котельные и заводы уже стоят, быстро их не заменить. Поэтому сокращение поставок резко подняло цену, а выручка ОПЕК выросла (раздел 3 урока: при неэластичном спросе рост цены увеличивает выручку).</li>
+          <li><b>В долгосрочном периоде спрос становится эластичным.</b> Потребители пересели на экономичные малолитражки, утеплили дома, промышленность перешла на газ, уголь и атомную энергию. Спрос на нефть ОПЕК сократился, кривая спроса со временем стала положе (раздел 4: long run эластичнее short run).</li>
+          <li><b>Предложение конкурентов тоже эластично в долгом периоде.</b> Высокие цены сделали выгодной добычу вне ОПЕК — в Северном море, на Аляске, в Мексике, в СССР. Рыночное предложение выросло, кривая сдвинулась вправо.</li>
+          <li><b>Картель неустойчив.</b> Каждой стране выгодно тайно продавать больше квоты. Когда спрос упал, начались «разброд и шатания», и в 1986 году координация распалась: предложение выросло, цена рухнула на 45 %.</li>
+        </ol>
+        <p><b>Итог:</b> сокращением поставок можно поднять цену только на короткое время. Со временем покупатели находят замену, конкуренты наращивают добычу, и цена возвращается вниз.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="part" id="c2">
+    <h2>Кейс 2. Эластичность спроса на алкоголь</h2>
+    <div class="q">
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>Показатели</th><th>Самогон</th><th>Водка</th><th>Пиво</th><th>Вино</th></tr></thead>
+          <tbody>
+            <tr><th>Эластичность спроса по цене</th><td>—</td><td>−1,774</td><td>−3,017</td><td>−1,045</td></tr>
+            <tr><th>Эластичность спроса по доходу</th><td>−1,049</td><td>0,524</td><td>1,114</td><td>1,034</td></tr>
+            <tr><th>Перекрёстная эластичность по цене водки</th><td>5,598</td><td>—</td><td>4,132</td><td>−1,537</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="src">Источник: Андриенко Ю. В., Немцов А. В. Оценка индивидуального спроса на алкоголь // Консорциум экономических исследований и образования. Серия «Научные доклады». 2005. № 05/10.</p>
+      <p class="q-text" style="margin-top:10px">Интерпретируйте таблицу: какие товары эластичны по цене, какие нормальные и низшие, кто кому субститут и комплемент? Что это значит для государственной политики?</p>
+      <textarea rows="4" placeholder="Ваш ответ — для себя"></textarea>
+      <details class="sol"><summary>Разбор</summary><div>
+        <ul>
+          <li><b>По цене</b> все три легальных напитка эластичны (|Ed| &gt; 1). Самый эластичный — пиво (3,0): у него больше всего заменителей. Вино — почти единичная эластичность (1,05). Водка (1,77) эластичнее вина: у неё есть дешёвый нелегальный заменитель — самогон. У самогона цены нет: он не продаётся на рынке.</li>
+          <li><b>По доходу:</b> водка, пиво и вино — нормальные товары (E &gt; 0). Пиво и вино (E &gt; 1) ведут себя как «предметы роскоши»: с ростом дохода их доля в расходах растёт. Водка (0 &lt; E &lt; 1) — как «необходимость». <b>Самогон — низшее благо</b> (E = −1,05): доходы падают — пьют больше самогона.</li>
+          <li><b>Перекрёстная по цене водки:</b> самогон (5,6) и пиво (4,1) — <b>субституты</b>; самогон — особенно сильный: подорожание водки на 1 % увеличивает потребление самогона примерно на 5,6 %. Вино (−1,5) — <b>комплемент</b> водки (так по данным исследования).</li>
+          <li><b>Для политики:</b> резкое подорожание водки (акцизы, минимальная цена) перетягивает потребление в самогон, особенно у бедных. Здоровье от этого может ухудшиться, а бюджет недополучит акцизы. Поэтому, как сказала преподаватель, государство должно изучать эластичность, прежде чем поднимать цены.</li>
+        </ul>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="part" id="c3">
+    <h2>Кейс 3. «Кризис идёт. Прошу встать!» — Gloria Jeans</h2>
+    <div class="q">
+      <p class="q-text">Опираясь на отрывок статьи Веры Красновой («Эксперт», № 2 (641), 19 января 2009 года), прокомментируйте с позиций экономической теории ситуацию, в которой находится компания «Глория Джинс».</p>
+      <blockquote>— Некоторые компании просто снижают цены на свою продукцию в качестве антикризисной меры. Вы не планируете такое?<br>— Да, в связи с тем, что у нас зарплата упала с 500 до 250 долларов, мы оказались конкурентоспособнее китайцев. Наше производство на 80 % сосредоточено в России, так что мы можем позволить себе снизить цену на свою продукцию, произведённую здесь, на 25 % в рублях, или на 50 % в долларах. Поэтому я думаю, что многие люди, покупавшие одежду у наших конкурентов, придут к нам. Наш слоган — «Value for money», то есть ценность нашего продукта выше его цены. Если взять три ценовых сегмента — высокий, средний и нижний — и в каждом три уровня, то «Глория Джинс» по цене находится на верхнем уровне нижнего сегмента, но по ценностям мы иногда бываем даже в средне-среднем. Так вот, во время кризиса из двух составляющих нашего слогана на первый план выйдет цена, то есть наше преимущество ещё увеличится. Впрочем, у нас тоже произойдёт определённый отток покупателей, но какой, я ещё не посчитал.</blockquote>
+      <textarea rows="4" placeholder="Ваш ответ — для себя"></textarea>
+      <details class="sol"><summary>Разбор</summary><div>
+        <ol>
+          <li><b>Издержки и предложение.</b> После девальвации рубля зарплата в долларах упала вдвое (500 → 250 $). Издержки отечественного производства стали ниже, чем у импорта из Китая. Предложение «Глории Джинс» сдвигается вправо: компания может продавать дешевле и оставаться прибыльной.</li>
+          <li><b>Эластичность и выручка.</b> В нижнем сегменте у одежды много заменителей, спрос эластичен. Снижение цены на 25 % должно увеличить объём продаж больше чем на 25 %, и выручка вырастет: компания рассчитывает на покупателей конкурентов. На лекции преподаватель сказала, что так и вышло.</li>
+          <li><b>Падение доходов в кризис.</b> Доходы покупателей снижаются. Для дорогих брендов это сдвиг спроса влево. А бюджетная одежда для части покупателей ведёт себя как низшее благо: к ней переходят с более дорогих марок. Отсюда «на первый план выйдет цена». Но часть своих покупателей компания всё равно потеряет — «отток, какой — ещё не посчитал».</li>
+          <li><b>Конкуренция и субституты.</b> Импортная одежда в рублях подорожала, а «Глория Джинс» дешевеет. Это рост цены субститута: спрос на неё растёт (перекрёстная эластичность положительна).</li>
+          <li><b>Риск.</b> Слишком сильное снижение цены может перевести бренд в восприятии покупателей «в сток», в низший сегмент (предупреждение преподавателя), и разрушить слоган «Value for money».</li>
+        </ol>
+      </div></details>
+    </div>
+  </section>
+
+  <details class="key" id="key">
+    <summary>📋 Все ответы списком</summary>
+    <div class="key-body">
+      <ol>
+        <li>E по доходу = −0,5 (по средней точке ≈ −0,67); мука — низший (инфериорный) товар.</li>
+        <li>Ed масла = −1,5 (эластичный спрос); перекрёстная E маргарина = 1,25 — субституты.</li>
+        <li>Спрос на «Альфу» вырос на 2,4 % (+1,6 % от дохода, +0,8 % от снижения цены).</li>
+        <li>ОПЕК: краткосрочно спрос и предложение неэластичны — цены выросли; долгосрочно спрос эластичнее (экономия, замена топлива), выросла добыча вне ОПЕК, картель распался — цены упали.</li>
+        <li>Алкоголь: все легальные напитки эластичны по цене (пиво больше всех); водка, пиво, вино — нормальные, самогон — низшее благо; самогон и пиво — субституты водки, вино — комплемент.</li>
+        <li>Gloria Jeans: девальвация снизила издержки → можно снизить цены; спрос в нижнем сегменте эластичен → выручка должна расти; доходы падают → покупатели переходят на бюджетные марки; риск — «сток» и отток своих покупателей.</li>
+      </ol>
+    </div>
+  </details>
+</main>
+
+<footer>
+  <p>Президентская программа · «Экономика для менеджеров» · преподаватель И. Г. Переломова · <a href="zanyatie_04.html">урок 4</a></p>
+</footer>
+
+<script>
+/* Разбор числа: запятая или точка, знак минус любого вида */
+function parseNum(text) {
+  const clean = String(text).trim().replace(",", ".").replace(/[−–—]/g, "-");
+  return clean === "" ? NaN : Number(clean);
+}
+function near(value, target, tol) {
+  return Math.abs(value - target) <= tol;
+}
+function check(input) {
+  const value = parseNum(input.value);
+  const target = Number(input.dataset.answer);
+  const tol = Number(input.dataset.tol);
+  if (Number.isNaN(value)) return null;
+  if (near(value, target, tol)) return true;
+  if (input.dataset.alt && near(value, Number(input.dataset.alt), tol)) return true;
+  if (input.dataset.abs && near(Math.abs(value), Math.abs(target), tol)) return "abs";
+  return false;
+}
+
+document.querySelectorAll("[data-task] .q-check").forEach((button) => {
+  button.addEventListener("click", () => {
+    const task = button.closest("[data-task]");
+    const feedback = task.querySelector(".q-fb");
+    const inputs = [...task.querySelectorAll("input")];
+    const select = task.querySelector("select");
+    const results = inputs.map(check);
+    const notes = [];
+    if (results.some((r) => r === null) || (select && !select.value)) {
+      feedback.className = "q-fb bad";
+      feedback.textContent = "Заполните все поля.";
+      feedback.hidden = false;
+      return;
+    }
+    if (results.includes("abs")) notes.push("Модуль верный, но у ценовой эластичности знак минус (закон спроса).");
+    let ok = results.every((r) => r === true);
+    const almost = !ok && results.every((r) => r === true || r === "abs");
+    if (select && select.value !== "inferior") { ok = false; notes.push("Подумайте о знаке: доход вырос, а спрос упал."); }
+    const lead = ok ? "Верно!" : almost && !(select && select.value !== "inferior") ? "Почти." : "Пока не так.";
+    feedback.className = `q-fb ${ok ? "ok" : "bad"}`;
+    feedback.textContent = [lead, ...notes, ok ? "" : "Откройте решение ниже."].filter(Boolean).join(" ");
+    feedback.hidden = false;
+  });
+});
+</script>
+</body>
+</html>
