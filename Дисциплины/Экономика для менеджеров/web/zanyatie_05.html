@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Экономика для менеджеров — занятие 5: продукт, издержки, прибыль</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --cyan:#0ea5e9;
+  --cyan-lt:#e0f2fe;
+  --amber:#f59e0b;
+  --amber-lt:#fffbeb;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+  --nav-h:56px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(99,102,241,.14),transparent 32%),
+    radial-gradient(circle at 85% 6%,rgba(14,165,233,.13),transparent 34%),
+    linear-gradient(180deg,#f8fafc 0%,#eef2ff 30%,#f8fafc 100%);
+  color:var(--text);
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;z-index:900;
+  gap:2px;overflow-x:auto;scrollbar-width:none;
+}
+nav.top::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:.93rem;color:var(--indigo-dk);white-space:nowrap;margin:0 10px 0 4px;flex-shrink:0}
+.nav-sep{width:1px;height:18px;background:var(--border);margin:0 6px;flex-shrink:0}
+.nav-link{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;transition:color .2s,background .2s;flex-shrink:0}
+.nav-link:hover,.nav-link.active{color:var(--indigo);background:var(--indigo-lt)}
+.nav-link:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* HERO */
+#hero{
+  min-height:100vh;padding:calc(var(--nav-h) + 56px) 24px 64px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
+.hero-badge{padding:5px 14px;background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:100px;font-size:.78rem;font-weight:700;color:var(--indigo-dk)}
+.hero-title{font-size:clamp(2rem,5.5vw,3.6rem);font-weight:900;line-height:1.12;letter-spacing:-1.5px;margin-bottom:16px;max-width:900px}
+.hero-title em{color:var(--indigo);font-style:normal}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:660px;margin-bottom:36px}
+.hero-img{max-width:900px;width:100%;margin-bottom:40px}
+.hero-nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:820px}
+.hero-nav a{padding:8px 16px;border-radius:10px;background:var(--card);border:1px solid var(--border);font-size:.82rem;font-weight:600;color:var(--text);text-decoration:none;box-shadow:0 2px 8px rgba(15,23,42,.05);transition:transform .15s,box-shadow .15s}
+.hero-nav a:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,.15)}
+
+/* SECTIONS */
+.sec{max-width:1180px;margin:0 auto;padding:72px 24px}
+.sec-head{margin-bottom:36px}
+.num-badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:13px;font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:14px}
+.n1{background:linear-gradient(135deg,#6366f1,#818cf8)}
+.n2{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
+.n3{background:linear-gradient(135deg,#8b5cf6,#a78bfa)}
+.n4{background:linear-gradient(135deg,#16a34a,#4ade80)}
+.n5{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+.n6{background:linear-gradient(135deg,#ec4899,#f472b6)}
+.n7{background:linear-gradient(135deg,#dc2626,#f87171)}
+.n8{background:linear-gradient(135deg,#0891b2,#22d3ee)}
+.n9{background:linear-gradient(135deg,#4338ca,#6366f1)}
+.sec-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.sec-desc{font-size:1rem;color:var(--muted);max-width:760px;line-height:1.75}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+
+/* CARD GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.grid .c-name{font-weight:800;margin-bottom:8px;font-size:.96rem}
+.grid p:not(.c-name){color:var(--muted);font-size:.88rem;line-height:1.6}
+
+/* CALLOUTS */
+.note-callout{background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:14px;padding:16px 20px;margin-bottom:24px}
+.note-callout p{color:var(--indigo-dk);font-size:.92rem;line-height:1.7}
+.warn-callout{background:var(--amber-lt);border:1px solid #fcd34d;border-radius:16px;padding:20px 24px;margin-top:20px}
+.warn-callout p{color:#78350f;line-height:1.7;font-size:.93rem}
+
+/* IMAGE CARD + PLACEHOLDER */
+.img-card{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.12);cursor:zoom-in}
+.img-card img{display:block;width:100%;height:auto}
+.img-card .img-missing-caption{display:none}
+.img-card.img-missing{border:2px dashed var(--border);background:var(--indigo-lt);min-height:220px;display:flex;align-items:center;justify-content:center;box-shadow:none;cursor:default}
+.img-card.img-missing img{display:none}
+.img-card.img-missing .img-missing-caption{display:block;color:var(--muted);font-size:.85rem;text-align:center;padding:24px;max-width:340px}
+
+/* VIZ CARD (iframe) */
+.viz{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.viz-bar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#f8fafc;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#febb2c}.dg{background:#27c840}
+.viz-lbl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);flex:1}
+.viz-fs{display:flex;align-items:center;gap:5px;padding:4px 10px;background:transparent;border:1px solid var(--border);border-radius:6px;font-size:.71rem;font-weight:600;color:var(--muted);cursor:pointer;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+.viz-fs:hover{background:var(--indigo-lt);color:var(--indigo);border-color:#c7d2fe}
+.viz iframe{width:100%;border:none;display:block}
+
+/* PROMPT BOX */
+.prompt-box{background:#0f172a;border-radius:14px;overflow:hidden;margin-bottom:18px}
+.prompt-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#1e293b;color:#e2e8f0;font-size:.82rem;font-weight:700}
+.copy-btn{padding:5px 12px;border-radius:8px;border:1px solid #475569;background:transparent;color:#e2e8f0;font-size:.76rem;font-weight:700;cursor:pointer;transition:background .2s}
+.copy-btn:hover{background:#334155}
+.prompt-box pre{margin:0;padding:18px 16px;color:#e2e8f0;font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+
+/* LIGHTBOX */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.92);z-index:2000;display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:auto}
+.overlay img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.overlay-close{position:absolute;top:18px;right:22px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.overlay-close:hover{background:rgba(255,255,255,.22)}
+.overlay-download{position:absolute;top:18px;right:72px;height:40px;padding:0 16px;border-radius:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;z-index:2}
+.overlay-download:hover{background:rgba(255,255,255,.22)}
+
+/* FULLSCREEN IFRAME OVERLAY */
+#fs-overlay{position:fixed;inset:0;background:rgba(2,6,23,.94);z-index:2100;display:none;flex-direction:column}
+#fs-overlay.open{display:flex}
+#fs-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(255,255,255,.08)}
+#fs-title{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.65);flex:1}
+#fs-close{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.8);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#fs-close:hover{background:rgba(255,255,255,.2)}
+#fs-frame{flex:1;border:none;background:#fff}
+
+/* CHECKLIST */
+.checklist-progress-bar{height:10px;border-radius:100px;background:var(--indigo-lt);overflow:hidden;margin-bottom:20px}
+.checklist-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--indigo),var(--cyan));border-radius:100px;transition:width .3s ease}
+.checklist-items{list-style:none;display:flex;flex-direction:column;gap:12px}
+.checklist-items label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.95rem}
+.checklist-items input{width:18px;height:18px;accent-color:var(--indigo);cursor:pointer;flex-shrink:0}
+.checklist-done{margin-top:18px;padding:12px 16px;background:var(--green-lt);color:var(--green);border-radius:10px;font-weight:700}
+
+/* QUIZ */
+.quiz{display:flex;flex-direction:column;gap:18px}
+.quiz-question{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.quiz-text{font-weight:700;margin-bottom:12px}
+.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.quiz-options label{display:flex;align-items:center;gap:8px;font-size:.92rem;cursor:pointer}
+.quiz-options label.quiz-correct-answer{color:var(--green);font-weight:700}
+.quiz-options input{accent-color:var(--indigo)}
+.quiz-check{padding:8px 16px;border-radius:9px;border:none;background:var(--indigo);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer}
+.quiz-check:hover{background:var(--indigo-dk)}
+.quiz-feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem}
+.quiz-feedback.correct{background:var(--green-lt);color:var(--green)}
+.quiz-feedback.incorrect{background:var(--red-lt);color:var(--red)}
+.quiz-score-box{text-align:center;font-weight:800;color:var(--indigo-dk)}
+
+/* CONCLUSION */
+.conclusion-list{list-style:none;counter-reset:concl;display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.conclusion-list li{counter-increment:concl;padding-left:38px;position:relative;font-size:1rem}
+.conclusion-list li::before{content:counter(concl);position:absolute;left:0;top:-2px;width:26px;height:26px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+.svc-link{color:var(--indigo);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+
+/* SCROLL REVEAL */
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.fade.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.fade{opacity:1;transform:none;transition:none}}
+@media (max-width:900px){.sec{padding:56px 18px}}
+
+
+/* ДОПОЛНИТЕЛЬНЫЕ БЛОКИ УЧЕБНОЙ СТРАНИЦЫ */
+.legend-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:-14px 0 30px;max-width:900px}
+.legend-row span{font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:var(--card);color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.card h3{font-size:1.02rem;font-weight:800;margin-bottom:8px}
+.card p,.card li{font-size:.94rem;line-height:1.7}
+.card ul,.card ol{padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.lecture-tag,.extra-tag,.practice-tag,.trap-tag,.opinion-tag{display:inline-block;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:100px;margin-bottom:8px}
+.lecture-tag{background:var(--indigo-lt);color:var(--indigo-dk)}
+.extra-tag{background:var(--cyan-lt);color:#0369a1}
+.practice-tag{background:var(--green-lt);color:var(--green)}
+.trap-tag{background:var(--red-lt);color:var(--red)}
+.opinion-tag{background:var(--amber-lt);color:#92400e}
+.extra{background:linear-gradient(180deg,#f0f9ff,#fff);border:1px solid #bae6fd;border-left:5px solid var(--cyan);border-radius:16px;padding:18px 22px}
+.practice{background:linear-gradient(180deg,var(--green-lt),#fff);border:1px solid #bbf7d0;border-left:5px solid var(--green);border-radius:16px;padding:18px 22px}
+.trap{background:var(--red-lt);border:1px solid #fecaca;border-left:5px solid var(--red);border-radius:16px;padding:16px 22px}
+.opinion{background:var(--amber-lt);border:1px solid #fcd34d;border-left:5px solid var(--amber);border-radius:16px;padding:18px 22px}
+.extra h3,.practice h3,.trap h3,.opinion h3{font-size:1rem;font-weight:800;margin-bottom:6px}
+.extra p,.extra li,.practice p,.practice li,.trap p,.trap li,.opinion p,.opinion li{font-size:.93rem;line-height:1.7}
+.extra ul,.practice ul,.practice ol,.trap ul,.opinion ul{padding-left:20px;display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.src{font-size:.8rem;color:var(--muted);margin-top:8px}
+.src a{color:#0369a1}
+.def{background:var(--card);border:1px solid #c7d2fe;border-left:5px solid var(--indigo);border-radius:14px;padding:14px 20px;font-size:1rem;line-height:1.7}
+.def b{color:var(--indigo-dk)}
+.formula{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:clamp(1.2rem,2.6vw,1.7rem);font-weight:800;text-align:center;padding:16px;background:var(--indigo-lt);border-radius:14px;color:var(--indigo-dk);letter-spacing:.5px}
+details.ref{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0 18px}
+details.ref + details.ref{margin-top:8px}
+details.ref summary{cursor:pointer;padding:12px 0;font-weight:800;font-size:.93rem;list-style:none;display:flex;gap:8px;align-items:center}
+details.ref summary::before{content:"🧭"}
+details.ref summary::-webkit-details-marker{display:none}
+details.ref[open] summary{border-bottom:1px dashed var(--border)}
+details.ref .ref-body{padding:10px 0 14px;font-size:.92rem;line-height:1.7;color:#334155}
+details.ref .ref-body p + p{margin-top:6px}
+table.cmp{width:100%;border-collapse:collapse;background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--border);font-size:.92rem}
+table.cmp th{background:var(--indigo-lt);color:var(--indigo-dk);text-align:left;padding:10px 14px;font-size:.84rem}
+table.cmp td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top;line-height:1.6}
+table.cmp td:first-child{font-weight:700}
+.table-wrap{overflow-x:auto}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.flow .step{flex:1 1 140px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;position:relative}
+.flow .step b{display:block;color:var(--indigo-dk);font-size:.92rem}
+.flow .step span{font-size:.84rem;color:var(--muted)}
+.flow .step .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.78rem;font-weight:800;align-items:center;justify-content:center;margin-bottom:6px}
+.quiz-feedback .explain{display:block;margin-top:6px;color:var(--text);font-weight:500}
+
+footer{text-align:center;padding:32px 20px 48px;color:var(--muted);font-size:.85rem}
+/* podcast */
+.podcast{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;max-width:760px;width:100%;margin:0 auto 28px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 10px rgba(15,23,42,.06);text-align:left}
+.podcast-head{flex:1 1 220px}
+.podcast-title{font-weight:800;font-size:1rem;color:var(--indigo-dk)}
+.podcast-meta{font-size:.82rem;color:var(--muted)}
+.podcast audio{flex:1 1 280px;height:40px}
+.podcast-dl{padding:9px 16px;border-radius:10px;background:var(--indigo);color:#fff;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap}
+.podcast-dl:hover{filter:brightness(1.1)}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Навигация по странице">
+  <a class="nav-link" href="../index.html">← Все уроки</a>
+  <span class="nav-sep"></span>
+  <span class="nav-logo">Экономика · занятие 5</span>
+  <span class="nav-sep"></span>
+  <a class="nav-link" href="#s1">Фирма</a>
+  <a class="nav-link" href="#s2">Производство</a>
+  <a class="nav-link" href="#s3">TP, AP, MP</a>
+  <a class="nav-link" href="#s4">Задачи</a>
+  <a class="nav-link" href="#s5">FC и VC</a>
+  <a class="nav-link" href="#s6">Средние и MC</a>
+  <a class="nav-link" href="#s7">Зеркало</a>
+  <a class="nav-link" href="#s8">Цена</a>
+  <a class="nav-link" href="#s9">Бухгалтер и экономист</a>
+  <a class="nav-link" href="#s10">Три прибыли</a>
+  <a class="nav-link" href="#checklist">Чек-лист</a>
+  <a class="nav-link" href="#quiz">Квиз</a>
+</nav>
+
+<header id="hero">
+  <div class="hero-badges">
+    <span class="hero-badge">Занятие 5 · 26.10.2026</span>
+    <span class="hero-badge">Экономика производителя · практикум</span>
+    <span class="hero-badge">Экзамен 05.11 · тестирование 09.11</span>
+  </div>
+  <h1 class="hero-title">Сколько стоит <em>ещё одна</em> штука — и стоит ли вообще этим заниматься</h1>
+  <p class="hero-sub">После этой страницы вы заполните таблицу продукта и издержек по любому условию, увидите, почему издержки — зеркало производительности, выберете объём по цене и поймёте, когда фирме выгоднее закрыться. А ещё научитесь смотреть на прибыль глазами экономиста: с учётом того, что ваши ресурсы могли бы заработать в другом месте.</p>
+  <!-- podcast:start -->
+  <div class="podcast" aria-label="Подкаст по уроку">
+    <div class="podcast-head">
+      <div class="podcast-title">🎧 Подкаст по уроку</div>
+      <div class="podcast-meta">Беседа по опорному конспекту · 18 мин · MP3, 9 МБ</div>
+    </div>
+    <audio controls preload="none" src="../audio/zanyatie_05.mp3"></audio>
+    <a class="podcast-dl" href="../audio/zanyatie_05.mp3" download>⬇ Скачать</a>
+  </div>
+  <!-- podcast:end -->
+  <div class="legend-row" aria-label="Обозначения на странице">
+    <span>📘 Из лекции</span>
+    <span>➕ Дополнение: не из лекции, с источником</span>
+    <span>🧭 Справка: кто это и в чём суть</span>
+    <span>🛠 На практике</span>
+    <span>⚠️ Ловушка теста</span>
+    <span>💬 Мнение преподавателя</span>
+  </div>
+  <figure class="img-card hero-img" data-lightbox>
+    <img src="../png/zanyatie_05/00_karta_zanyatiya.webp" width="1672" height="941" alt="Карта занятия: трёхэтажное здание фирмы — цех, касса, кабинет директора; десять остановок с вопросами" loading="eager" fetchpriority="high" onerror="this.closest('.img-card').classList.add('img-missing')">
+    <figcaption class="img-missing-caption">Карта занятия: 10 разделов и их вопросы (промпт 00)</figcaption>
+  </figure>
+  <nav class="hero-nav" aria-label="Разделы страницы">
+    <a href="#s1">1 · Фирма и три величины</a>
+    <a href="#s2">2 · Производство и периоды</a>
+    <a href="#s3">3 · TP, AP, MP</a>
+    <a href="#s4">4 · Практикум по продукту</a>
+    <a href="#s5">5 · Постоянные и переменные</a>
+    <a href="#s6">6 · Средние и предельные издержки</a>
+    <a href="#s7">7 · Зеркало производительности</a>
+    <a href="#s8">8 · Цена решает</a>
+    <a href="#s9">9 · Бухгалтер и экономист</a>
+    <a href="#s10">10 · Три прибыли</a>
+    <a href="#quiz">Проверить себя</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ══════════ 1 ══════════ -->
+<section class="sec" id="s1">
+  <div class="sec-head fade">
+    <div class="num-badge n1">1</div>
+    <h2 class="sec-title">Фирма: прибыль, три процесса, три типа величин</h2>
+    <p class="sec-desc">Повторение прошлого занятия — каркас, на который ляжет весь практикум.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_05/01_firma_velichiny.webp" width="1672" height="941" alt="Корабль-фирма с компасом «Прибыль max», три шестерни: производство, издержки, продажи; бочка, чашка и капля — общие, средние и предельные величины" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Фирма и три типа величин (промпт 01)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="def"><b>Фирма в неоклассической теории — институт, стремящийся к максимизации прибыли.</b> π = TR − TC. Выручка TR = P × Q — «то, что продавец считает в конце рабочего дня».</div>
+      <div class="def"><b>Три процесса:</b> производство (технология, отдача от ресурсов) → издержки (добавляются цены ресурсов: зарплата и цена капитала) → продажи (выручка).</div>
+    </div>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Тип величин</th><th>Буква</th><th>Смысл</th><th>Пример</th></tr></thead>
+        <tbody>
+          <tr><td>Общие (совокупные, валовые)</td><td>T — total</td><td>масштаб процесса целиком</td><td>TP, TC, TR</td></tr>
+          <tr><td>Средние</td><td>A — average</td><td>на единицу ресурса или продукта</td><td>AP = TP / L, ATC = TC / Q</td></tr>
+          <tr><td>Предельные (дополнительные)</td><td>M — marginal</td><td>что даёт ещё одна единица</td><td>MP = ΔTP / ΔL, MC = ΔTC / ΔQ</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <details class="ref fade"><summary>🧭 «Настоящий экономист мыслит предельными величинами»</summary><div class="ref-body">
+      <p>Это один из десяти принципов экономики Н. Грегори Мэнкью: «рациональные люди мыслят в предельных величинах». Решение «ещё одной смены», «ещё одной партии» принимают, сравнивая дополнительную выгоду с дополнительными затратами, а не средние показатели за год. Именно равенство предельного дохода и предельных издержек (MR = MC) даёт максимум прибыли — закон 21 в <a href="zakony.html#law-21">реестре законов</a>.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ══════════ 2 ══════════ -->
+<section class="sec" id="s2">
+  <div class="sec-head fade">
+    <div class="num-badge n2">2</div>
+    <h2 class="sec-title">Производство: чёрный ящик и три периода</h2>
+    <p class="sec-desc">Первый процесс — технология. Здесь ещё нет денег: только сколько ресурсов вошло и сколько продукта вышло.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_05/02_proizvodstvo_periody.webp" width="1672" height="941" alt="Чёрный ящик «Производство»: на входе труд, земля, капитал и предпринимательские способности, сведённые в L и K, на выходе Q; три часа — мгновенный, краткосрочный и долгосрочный периоды" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Чёрный ящик и три периода (промпт 02)</figcaption>
+    </figure>
+    <div class="def fade"><b>Производство — процесс трансформации ресурсов в благо.</b> Схема «кибернетического чёрного ящика»: на входе ограниченные экономические ресурсы, на выходе ограниченное благо Q (штуки). Четыре ресурса: <b>труд, земля, капитал, предпринимательские способности</b>. Ресурсы создают не только продукт, но и факторный доход.</div>
+    <div class="two fade">
+      <div class="def"><b>В микроэкономике ресурсы агрегируются</b> (объединяются): труд + предпринимательские способности = <b>L</b> (человеко-часы), земля + капитал = <b>K</b> (нормо-часы, или машино-часы, — часы работы оборудования).</div>
+      <div class="def"><b>Производственная функция Q = f(K, L)</b> — зависимость выпуска от количества ресурсов. Денег в ней нет: цены ресурсов не определяются, только количества.</div>
+    </div>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Период</th><th>Что можно изменить</th><th>Пример с лекции</th></tr></thead>
+        <tbody>
+          <tr><td>Мгновенный</td><td>ничего: K и L постоянны, выпуск постоянен</td><td>кофейне нужно три дня на закупку, авиазаводу — два года на новые самолёты</td></tr>
+          <tr><td><b>Краткосрочный (short run)</b></td><td>только переменный фактор — труд; K = const</td><td>швейная фабрика в аудитории: людей добавляют, пока не заняты все машины в три смены</td></tr>
+          <tr><td>Долгосрочный (long run)</td><td>всё: и K, и L (двухфакторная функция)</td><td>новое помещение, оборудование, новые сотрудники</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Период — это не календарь</h3>
+      <ul>
+        <li><b>Деление на периоды условное и зависит от технологии, а не от бухгалтерского учёта.</b> Короткий период не равен «году», длинный — «пяти годам».</li>
+        <li><b>Short run — основной период деятельности фирмы.</b> Дальше всё — о нём: «везде указывайте, что речь о краткосрочном периоде».</li>
+        <li>TP (произведено) и Q (продано) в жизни различаются, в простых моделях их считают одним и тем же.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 3 ══════════ -->
+<section class="sec" id="s3">
+  <div class="sec-head fade">
+    <div class="num-badge n3">3</div>
+    <h2 class="sec-title">Общий, средний и предельный продукт</h2>
+    <p class="sec-desc">Три графика, на которых держатся задачи экзамена: «в первую очередь будут спрашивать технологическую и экономическую эффективность фирмы».</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_05/03_tp_ap_mp_pravilo.webp" width="1672" height="941" alt="Два графика друг под другом: холм TP с пунктирным спадом; горбы AP и MP, MP пересекает AP в её вершине; швейный цех, где операции делятся между работниками" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">TP, AP, MP и правило средних (промпт 03)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="def"><b>AP = TP / L — средний продукт труда, производительность труда</b>: сколько продукции один работник делает в единицу времени.</div>
+      <div class="def"><b>MP = ΔTP / ΔL — предельный продукт</b>: дополнительное количество продукции от дополнительно нанятого работника (штуки в час).</div>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · как растёт TP</span>
+      <ul>
+        <li><b>Ускоренный рост:</b> сначала один работник обходит все станки и делает все операции; потом операции делят на двоих, троих, при 10 операциях каждый занят своим — интенсификация максимальна (L₀ работников). MP растёт.</li>
+        <li><b>Замедление:</b> людей добавляют до полной загрузки станков (три смены, 24 часа); каждый новый даёт меньше. MP падает.</li>
+        <li><b>Спад — пунктиром:</b> «его, по сути, нет». Таких людей не нанимают: «мы им будем зарплату платить, а они ничего не создают».</li>
+      </ul>
+    </div>
+    <div class="def fade"><b>Правило предельных и средних величин:</b> предельная величина пересекает среднюю <b>в точке её максимума или минимума</b>. MP пересекает AP в максимуме AP. Пока MP &gt; AP, средний продукт растёт; когда MP &lt; AP — падает. Закон 22 в <a href="zakony.html#law-22">реестре</a>.</div>
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр из занятия 4 · швейный цех</span>
+        <button type="button" class="viz-fs" data-fs-src="proizvodstvo_trenazher.html" data-fs-title="Тренажёр: швейный цех, TP, AP, MP">⛶ На весь экран</button>
+      </div>
+      <iframe src="proizvodstvo_trenazher.html" height="560" loading="lazy" title="Тренажёр: общий, средний и предельный продукт швейного цеха"></iframe>
+    </div>
+    <details class="ref fade"><summary>🧭 Почему пересечение — именно в вершине</summary><div class="ref-body">
+      <p>Средняя оценка в классе растёт, если новый ученик пишет лучше среднего, и падает, если хуже. Предельный работник — «новый ученик». Пока его вклад выше среднего, AP растёт; ровно в момент, когда вклад сравнялся со средним, рост останавливается — это и есть вершина AP. То же верно для издержек: MC пересекает AVC и ATC в их минимумах (раздел 6).</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ══════════ 4 ══════════ -->
+<section class="sec" id="s4">
+  <div class="sec-head fade">
+    <div class="num-badge n1">4</div>
+    <h2 class="sec-title">Практикум: задачи на продукт</h2>
+    <p class="sec-desc">Задания 1 и 2 раздаточного листа — «такую задачу вы, возможно, увидите на экзамене». Сначала решите сами, потом откройте разбор. Картинка с приёмами — после задач.</p>
+  </div>
+  <div class="stack">
+    <div class="card fade">
+      <span class="lecture-tag">📘 Задача 1 · дискретные данные</span>
+      <h3>Заполните AP и MP</h3>
+      <div class="table-wrap">
+        <table class="cmp">
+          <thead><tr><th>L, чел.-ч</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr></thead>
+          <tbody>
+            <tr><td>TP, шт.</td><td>0</td><td>4</td><td>6</td><td>9</td><td>10</td><td>10,5</td><td>10,7</td><td>10,8</td><td>10,8</td></tr>
+            <tr><td>AP</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td></tr>
+            <tr><td>MP</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:6px;font-size:.85rem;color:var(--muted)">Строку TP восстановили по ответам, продиктованным на занятии: фото раздаточного листа нет.</p>
+      <details class="ref" style="margin-top:10px"><summary>Ответ и разбор</summary><div class="ref-body">
+        <p>AP = —, 4, 3, 3, 2,5, 2,1, 1,78, 1,54, 1,35. MP = —, 4, 2, 3, 1, 0,5, 0,2, 0,1, 0.</p>
+        <p>Столбец L = 0 преподаватель предложила дописать самим: «ноль имеет концептуальное значение». В нуле AP и MP — прочерк: на ноль не делим. MP всегда считают от предыдущей позиции: MP₄ = (10 − 9) / (4 − 3) = 1. Если шаг не единица, делим на приращение: MP = (TPₜ − TP₀) / (Lₜ − L₀).</p>
+      </div></details>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Задача 2 · восстановить таблицу</span>
+      <h3>8, 9, 10 и 11 работников</h3>
+      <p>8 работников вместе производят 4000 единиц продукции, 9 — 4590. Найм 10-го увеличит производство ещё на 410. Если фирма наймёт 11 работников, средний продукт каждого составит 490. Найдите TP, AP и MP для всех четырёх случаев.</p>
+      <details class="ref" style="margin-top:10px"><summary>Ответ и разбор</summary><div class="ref-body">
+        <div class="table-wrap">
+          <table class="cmp">
+            <thead><tr><th>L</th><th>8</th><th>9</th><th>10</th><th>11</th></tr></thead>
+            <tbody>
+              <tr><td>TP</td><td><b>4000</b></td><td><b>4590</b></td><td>5000</td><td>5390</td></tr>
+              <tr><td>AP</td><td>500</td><td>510</td><td>500</td><td><b>490</b></td></tr>
+              <tr><td>MP</td><td>— (нет данных о 7)</td><td>590</td><td><b>410</b></td><td>390</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Главное — перевести слова в столбцы. «Вместе произвели» — TP. «Найм 10-го увеличит ещё на 410» — это <b>предельный</b> продукт, а не средний: «средний — это было бы: каждый из 10 делает 410». TP₁₀ = 4590 + 410 = 5000. «Средний продукт каждого 490» — AP, значит, TP₁₁ = 490 × 11 = 5390, MP₁₁ = 5390 − 5000 = 390.</p>
+      </div></details>
+    </div>
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_05/04_zadachi_produkt.webp" width="1672" height="941" alt="Стол детектива: таблица со знаками вопроса и три лупы-ключа: TP = AP × L, MP — шаг от предыдущего, в нуле — прочерк" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Как решать задачи на продукт (промпт 04)</figcaption>
+    </figure>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Сокращение штата — тоже задача на MP</h3>
+      <p>Слушатель на занятии: «У меня как раз сейчас увольнение сотрудников, оптимизация». Вопрос руководителя — не «сколько в среднем делает человек», а «на сколько упадёт выпуск без последнего нанятого» (его MP). Если MP близок к нулю — сокращение почти не скажется на выпуске. Преподаватель: «Нет ничего практичнее хорошей теории».</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 5 ══════════ -->
+<section class="sec" id="s5">
+  <div class="sec-head fade">
+    <div class="num-badge n2">5</div>
+    <h2 class="sec-title">Постоянные и переменные издержки</h2>
+    <p class="sec-desc">По таблице продукта не скажешь, кто эффективнее: неизвестно, сколько стоит труд. Добавляем цены ресурсов — это и есть издержки.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_05/05_fc_vc.webp" width="1672" height="941" alt="Пустой ночной салон красоты со счётчиком постоянных платежей; цех, где кран затрат открывается с каждой единицей; графики FC, VC и TC" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Постоянные и переменные издержки (промпт 05)</figcaption>
+    </figure>
+    <div class="def fade"><b>Издержки краткосрочного периода: TC = FC + VC.</b> TC (total cost) — себестоимость всей партии целиком.</div>
+    <div class="two fade">
+      <div class="def"><b>Постоянные (FC, fixed cost) не зависят от объёма выпуска</b> и есть даже при Q = 0: аренда, охрана (если её требует лицензия), зарплата администрации и непроизводственного персонала, амортизация, проценты по ранее взятым кредитам, лицензии и патенты, подписки на софт (1С, ИИ).</div>
+      <div class="def"><b>Переменные (VC, variable cost) зависят от объёма:</b> прежде всего зарплата производственного персонала, затем сырьё, материалы, полуфабрикаты, электроэнергия на производственные цели.</div>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Задание 3 · решите сами</span>
+      <h3>Производитель мороженого: постоянные или переменные?</h3>
+      <ol>
+        <li>Затраты на покупку молока и сахара.</li>
+        <li>Затраты на разработку нового сорта (рецептуры).</li>
+        <li>Заработная плата работников цеха.</li>
+      </ol>
+      <details class="ref" style="margin-top:10px"><summary>Ответ и разбор</summary><div class="ref-body">
+        <p>1 — <b>переменные</b>: больше мороженого — больше молока. 3 — <b>переменные</b>: зарплата производственного персонала растёт с выпуском. 2 — <b>постоянные</b>: рецепт создают или покупают один раз, как лицензию, и делают по нему годами, независимо от объёма. Слушатели спорили, преподаватель закрыла спор: «в моей интерпретации это постоянные».</p>
+        <p>Ещё два пункта листа в записи неразборчивы; по ответам на занятии оба — постоянные.</p>
+      </div></details>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Задание 4 · решите сами</span>
+      <h3>Разложите TC на FC и VC</h3>
+      <div class="table-wrap">
+        <table class="cmp">
+          <thead><tr><th>Q</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th></tr></thead>
+          <tbody><tr><td>TC</td><td>60</td><td>130</td><td>180</td><td>230</td><td>300</td></tr></tbody>
+        </table>
+      </div>
+      <details class="ref" style="margin-top:10px"><summary>Ответ и разбор</summary><div class="ref-body">
+        <p><b>FC = 60</b> — «в нулевой ячейке есть 60: ничего не делаем, но издержки есть». VC = TC − FC = 0, 70, 120, 170, 240. AFC = FC / Q = 60, 30, 20, 15 — падает.</p>
+        <p>➕ Досчёт (на занятии не звучал): ATC = 130; 90; 76,67; 75. AVC = 70; 60; 56,67; 60. MC = 70; 50; 50; 70.</p>
+      </div></details>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Пример преподавателя</span>
+      <h3>Салон, который съели постоянные издержки</h3>
+      <p>Мастера ушли с прежнего места вместе с идейной вдохновительницей и открыли свой салон в центре города. Аренда — 90 тысяч в месяц, огромный холл, два администратора, кредиты на оборудование: постоянные платежи 150–170 тысяч. Клиентов привели мастера, но владелица решила, что «это она такая крутая», и ввела регламент: окно в записи — сидите и ждите клиента с улицы. Мастера ушли в арендные кресла, а постоянная часть осталась: «салон хоть принимает клиентов, хоть не принимает — будь любезен, заплати».</p>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Признак — зависимость от объёма, а не регулярность платежа</h3>
+      <ul>
+        <li>Зарплату платят каждый месяц, но <b>зарплата производственного персонала — переменные</b>, а администрации — постоянные.</li>
+        <li>Электроэнергия на станки — переменные, на освещение офиса — постоянные.</li>
+        <li>На графике FC — горизонталь, TC — копия VC, поднятая на FC.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 6 ══════════ -->
+<section class="sec" id="s6">
+  <div class="sec-head fade">
+    <div class="num-badge n3">6</div>
+    <h2 class="sec-title">Средние и предельные издержки</h2>
+    <p class="sec-desc">Себестоимость единицы и цена ещё одной единицы. Две истории — про мобильную связь и про Sony.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_05/06_srednie_predelnye.webp" width="1672" height="941" alt="Вышка сотовой связи: в 1995 году её несёт один человек с трубкой, сегодня — тысячи абонентов; график U-образных ATC и AVC, между ними AFC, MC проходит через их минимумы" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Средние и предельные издержки (промпт 06)</figcaption>
+    </figure>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Показатель</th><th>Формула</th><th>Смысл</th></tr></thead>
+        <tbody>
+          <tr><td>ATC (AC) — средние общие</td><td>TC / Q = AFC + AVC</td><td>себестоимость единицы</td></tr>
+          <tr><td>AFC — средние постоянные</td><td>FC / Q</td><td>постоянные «размазываются» по объёму и падают</td></tr>
+          <tr><td>AVC — средние переменные</td><td>VC / Q</td><td>«корыто», парабола ветвями вверх</td></tr>
+          <tr><td>MC — предельные</td><td>ΔTC / ΔQ = <b>ΔVC / ΔQ</b></td><td>ΔFC = 0, поэтому в MC постоянных нет</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="def fade"><b>График:</b> все средние и предельные — в деньгах за штуку. ATC и AVC — параболы, расстояние между ними — AFC; с ростом выпуска оно сокращается, кривые сближаются. <b>MC пересекает AVC и ATC в их минимумах</b> — то же правило предельных и средних.</div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Кейс из учебника И. А. Кима</span>
+      <h3>Почему подешевела мобильная связь</h3>
+      <p>1995 год: «здоровенная труба», обслуживание, по Киму, около 1000 долларов; в «лихие 90-е» телефоны брали напрокат, чтобы произвести впечатление на переговорах. Через 30 лет связь, по словам преподавателя, подешевела примерно на два порядка. Экономическая причина, если отвлечься от технологии: <b>вышку содержат все абоненты, и доля каждого крайне мала</b> — AFC стремится к нулю.</p>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 По словам преподавателя · Акио Морита, Sony</span>
+      <h3>Больше партия — дороже штука</h3>
+      <p>Американские партнёры просят партию в 5000 штук — Морита согласен «по 20». Просят 10 000 и дешевле — он отвечает: «по 25». «С какой стати? По закону спроса чем больше объём, тем ниже цена». А он опирался на кривую своих издержек: фирма рассчитана на объём с минимальной себестоимостью, а за ним себестоимость единицы растёт (разрастается администрация, логистика). Цифры преподаватель «уже не помнит» — важна логика.</p>
+    </div>
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · цех, издержки и цена</span>
+        <button type="button" class="viz-fs" data-fs-src="izderzhki_trenazher.html" data-fs-title="Тренажёр: цех, издержки и цена">⛶ На весь экран</button>
+      </div>
+      <iframe src="izderzhki_trenazher.html" height="640" loading="lazy" title="Тренажёр: средний и предельный продукт, средние и предельные издержки, цена рынка"></iframe>
+    </div>
+    <details class="ref fade"><summary>🧭 Кто такие Ким и Морита</summary><div class="ref-body">
+      <p><b>Игорь Александрович Ким</b> — автор учебника по микроэкономике и коротких видеолекций, на которые опирается преподаватель («очень толковый учебник»).</p>
+      <p><b>Акио Морита</b> (1921–1999) — сооснователь Sony (компания основана в 1946 году как Tokyo Tsushin Kogyo), автор книги «Сделано в Японии» (1986) с историями переговоров.</p>
+    </div></details>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Три частые ошибки</h3>
+      <ul>
+        <li><b>MC не зависят от FC.</b> Рост аренды поднимает ATC и AFC, но не MC и не AVC.</li>
+        <li><b>MC пересекает ATC в минимуме ATC</b>, а не в своём минимуме. Минимум MC наступает раньше.</li>
+        <li><b>Объём с минимальной себестоимостью — ещё не оптимум.</b> Без цены выбрать объём нельзя (раздел 8).</li>
+        <li>По словам преподавателя, Sony тогда была монополистом. Это спорно: в 1950-е Sony была молодой небольшой фирмой, а предложенный ей заказ Bulova на 100 000 радиоприёмников превышал весь её капитал (<a href="https://en.wikipedia.org/wiki/Akio_Morita" target="_blank" rel="noopener">Wikipedia: Akio Morita</a>). Для логики кейса монополия не нужна: достаточно растущей ветви ATC.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 7 ══════════ -->
+<section class="sec" id="s7">
+  <div class="sec-head fade">
+    <div class="num-badge n1">7</div>
+    <h2 class="sec-title">Зеркало: производительность и издержки</h2>
+    <p class="sec-desc">Главная мысль занятия: технологическая эффективность определяет экономическую. Это видно и на графике, и в формуле.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_05/07_zerkalo.webp" width="1672" height="941" alt="Зеркало на горизонтальной линии: сверху горбы AP и MP, снизу их отражения — корыта AVC и MC; дробь с монетой зарплаты в числителе" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Зеркало производительности (промпт 07)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="def"><b>AVC = w / AP.</b> VC = w · L (w — ставка зарплаты, L — часы труда); AVC = w · L / Q, а L / Q = 1 / AP. Максимум AP — минимум AVC.</div>
+      <div class="def"><b>MC = w / MP.</b> MC = ΔVC / ΔQ = w · ΔL / ΔQ, а ΔL / ΔQ = 1 / MP. Максимум MP — минимум MC.</div>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции</span>
+      <p>«Мы как будто верхний график переворачиваем вниз». Пока операции делятся и производительность растёт, издержки на единицу падают; производительность пошла вниз — издержки вверх. «Если знаменатель растёт, вся дробь сокращается при неизменной зарплате». По словам преподавателя, более 60 % переменных издержек — зарплата производственного персонала. Поэтому <b>сначала — технология, потом оплата труда, потом цена</b>.</p>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Задача из учебника Кима · решите сами</span>
+      <h3>От производительности к издержкам</h3>
+      <p>FC = 24. Каждый работник обходится в 6 (w = 6). Продукт: L = 0…7, TP = 0, 1, 3, 6, 10, 13, 15, 16. Найдите AP, MP, VC, TC, AVC, AFC, ATC и MC.</p>
+      <details class="ref" style="margin-top:10px"><summary>Ответ и разбор</summary><div class="ref-body">
+        <div class="table-wrap">
+          <table class="cmp">
+            <thead><tr><th>L</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr></thead>
+            <tbody>
+              <tr><td>Q</td><td>0</td><td>1</td><td>3</td><td>6</td><td>10</td><td>13</td><td>15</td><td>16</td></tr>
+              <tr><td>AP</td><td>—</td><td>1</td><td>1,5</td><td>2</td><td>2,5</td><td>2,6</td><td>2,5</td><td>2,29</td></tr>
+              <tr><td>MP</td><td>—</td><td>1</td><td>2</td><td>3</td><td>4</td><td>3</td><td>2</td><td>1</td></tr>
+              <tr><td>VC</td><td>0</td><td>6</td><td>12</td><td>18</td><td>24</td><td>30</td><td>36</td><td>42</td></tr>
+              <tr><td>TC</td><td>24</td><td>30</td><td>36</td><td>42</td><td>48</td><td>54</td><td>60</td><td>66</td></tr>
+              <tr><td>AVC</td><td>—</td><td>6</td><td>4</td><td>3</td><td>2,4</td><td>2,31</td><td>2,4</td><td>2,63</td></tr>
+              <tr><td>AFC</td><td>—</td><td>24</td><td>8</td><td>4</td><td>2,4</td><td>1,85</td><td>1,6</td><td>1,5</td></tr>
+              <tr><td>ATC</td><td>—</td><td>30</td><td>12</td><td>7</td><td>4,8</td><td>4,15</td><td>4</td><td>4,13</td></tr>
+              <tr><td>MC</td><td>—</td><td>6</td><td>3</td><td>2</td><td>1,5</td><td>2</td><td>3</td><td>6</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><b>MC делят на приращение объёма</b>, а оно здесь разное — 2, 3, 4…: MC = ΔVC / ΔQ = 6/2 = 3, 6/3 = 2, 6/4 = 1,5. Проверка формулами: AVC = 6 / AP (6 / 2,6 = 2,31), MC = 6 / MP. AP растёт до L = 5 — AVC падает до L = 5; MP максимален при L = 4 — там минимум MC. «Самое лучшее не определим: нет цены».</p>
+      </div></details>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Снижать себестоимость — через знаменатель</h3>
+      <ul>
+        <li>Урезать зарплату (числитель) — быстро, но люди уходят. Поднять производительность (знаменатель): разделение операций, оснастка, цифровизация — дольше, но дробь худеет надолго.</li>
+        <li>Преподаватель экономистов-первокурсников ведёт сначала на производство: «ознакомиться с технологией, а потом подключать деньги».</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 8 ══════════ -->
+<section class="sec" id="s8">
+  <div class="sec-head fade">
+    <div class="num-badge n2">8</div>
+    <h2 class="sec-title">Цена решает: сколько производить и когда закрываться</h2>
+    <p class="sec-desc">Вопрос-ловушка преподавателя — на нём «попались» почти все. Ответьте сами, прежде чем смотреть картинку.</p>
+  </div>
+  <div class="stack">
+    <div class="card fade">
+      <span class="lecture-tag">📘 Сначала ответьте сами</span>
+      <h3>Какой объём лучший — Q₀, Q₁ или Q₂?</h3>
+      <p>На графике издержек отмечены три объёма. При Q₁ себестоимость единицы (ATC) минимальна, при Q₀ и Q₂ — выше. Какой объём вы выберете для своей фирмы?</p>
+      <details class="ref" style="margin-top:10px"><summary>Ответ</summary><div class="ref-body">
+        <p><b>Ни один — пока неизвестна цена рынка.</b> Слушатели ответили «Q₁» и «Q₂» — «ну вот, два вам в семестре поставила». «Вы только свои затраты просчитали. Если цена рынка ниже себестоимости — объём ноль: мы даже сырьё не окупаем». Правильно ответил только один слушатель: нужно MR = MC, а MR на графике нет.</p>
+      </div></details>
+    </div>
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_05/08_cena_reshaet.webp" width="1672" height="941" alt="График ATC, AVC и MC с тремя уровнями цены, как уровни воды в шлюзе: ниже AVC — корабль стоит у причала, между AVC и ATC — плывёт с пробоиной, выше ATC — плывёт с прибылью в точке P = MC" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Цена решает (промпт 08)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="def"><b>Маржинальный анализ требует цены.</b> Если цена не меняется, каждая дополнительная единица приносит её: <b>MR = P</b>. Оптимальный объём — где <b>MR = MC</b>; точка безубыточности — где TR = TC.</div>
+      <div class="def"><b>Правило закрытия в краткосрочном периоде:</b> если цена ниже AVC — «закрыться дешевле, чем остаться». Если AVC &lt; P &lt; ATC — работаем: окупаем все переменные и часть постоянных. Закон 24 в <a href="zakony.html#law-24">реестре</a>.</div>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Задача о яхтах · слайд «Маржинальный анализ: числовой пример» · решите сами</span>
+      <h3>Цена яхты P = 7 млн ₽. Найдите точку безубыточности и объём, максимизирующий прибыль</h3>
+      <div class="table-wrap">
+        <table class="cmp">
+          <thead><tr><th>Q, шт. в мес.</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr></thead>
+          <tbody>
+            <tr><td>FC, млн ₽</td><td>10</td><td>10</td><td>10</td><td>10</td><td>10</td><td>10</td><td>10</td><td>10</td><td>10</td></tr>
+            <tr><td>VC, млн ₽</td><td>0</td><td>7</td><td>12</td><td>16</td><td>19</td><td>21</td><td>24</td><td>31</td><td>41</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <details class="ref" style="margin-top:10px"><summary>Ответ и разбор</summary><div class="ref-body">
+        <div class="table-wrap">
+          <table class="cmp">
+            <thead><tr><th>Q</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr></thead>
+            <tbody>
+              <tr><td>TC = FC + VC</td><td>10</td><td>17</td><td>22</td><td>26</td><td>29</td><td>31</td><td>34</td><td>41</td><td>51</td></tr>
+              <tr><td>MC = ΔTC / ΔQ</td><td>—</td><td>7</td><td>5</td><td>4</td><td>3</td><td>2</td><td>3</td><td>7</td><td>10</td></tr>
+              <tr><td>MR = ΔTR / ΔQ</td><td>—</td><td>7</td><td>7</td><td>7</td><td>7</td><td>7</td><td>7</td><td>7</td><td>7</td></tr>
+              <tr><td>TR = P × Q</td><td>0</td><td>7</td><td>14</td><td>21</td><td>28</td><td>35</td><td>42</td><td>49</td><td>56</td></tr>
+              <tr><td>π = TR − TC</td><td>−10</td><td>−10</td><td>−8</td><td>−5</td><td>−1</td><td>4</td><td>8</td><td><b>8</b></td><td>5</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><b>MR = P = 7</b>: цена не меняется, каждая яхта добавляет 7. <b>Безубыточность — 5 яхт</b>: прибыль впервые становится положительной (при 4 ещё −1). <b>Максимум прибыли — 8 млн</b>, и достигается он при 6 и при 7 яхтах; седьмая яхта — последняя, для которой MR ≥ MC (7 = 7): «там, где MR = MC, по идее, 7». Восьмая уже убыточна: MC = 10 &gt; MR = 7, прибыль падает до 5.</p>
+      </div></details>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · ресторан в пустой час</span>
+      <p>В какой-то час работы ресторан уходит в минус: места не заполнены. Но не закрывается — отпуска, летний период, выходные, праздники окупят. Жёсткий критерий другой: «если на протяжении длительного времени мы не окупаем даже переменную часть — закрываемся».</p>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Порог закрытия — AVC, а не ATC</h3>
+      <ul>
+        <li>Цена ниже ATC, но выше AVC — фирма <b>несёт убыток, но продолжает работать</b>: при закрытии она потеряет все FC, а так — меньше.</li>
+        <li>Закрываться — при P &lt; min AVC. В долгосрочном периоде фирма уходит, если P &lt; min ATC.</li>
+        <li>Минимум ATC (Q₁) — не оптимальный объём: оптимум определяет пересечение цены и MC.</li>
+      </ul>
+    </div>
+    <details class="ref fade"><summary>➕ Дополнение: долгосрочный порог</summary><div class="ref-body">
+      <p>В долгосрочном периоде постоянных издержек нет — все издержки переменные. Поэтому фирма остаётся на рынке, только если цена покрывает минимум средних общих издержек. На лекции это правило не формулировали; так оно дано у Н. Г. Мэнкью («Принципы экономикс», гл. 14 «Фирмы на конкурентных рынках»).</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ══════════ 9 ══════════ -->
+<section class="sec" id="s9">
+  <div class="sec-head fade">
+    <div class="num-badge n3">9</div>
+    <h2 class="sec-title">Бухгалтер и экономист: явные и неявные издержки</h2>
+    <p class="sec-desc">Управленческое решение упростим до одного: оставить бизнес или избавиться от него. Для этого бухгалтерских цифр мало.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_05/09_buhgalter_ekonomist.webp" width="1672" height="941" alt="Кофейня с пунктирной границей фирмы: внешние ресурсы входят через ворота в книгу явных издержек; над собственными зданием, кофемашиной и владельцем — облако «если бы…» с неявными издержками; бухгалтер с книгой и экономист с биноклем" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Бухгалтер и экономист (промпт 09)</figcaption>
+    </figure>
+    <div class="def fade"><b>Издержки производства — все затраты, связанные с преобразованием ресурсов в продукцию.</b> Чтобы понять разницу подходов, нужно очертить <b>границы фирмы</b>. Кофейня: своё здание, своё оборудование, владелец сам управляет — <b>внутренние ресурсы</b>. Бариста, бухгалтер, десерты кондитера, услуги — <b>внешние</b>, купленные по цене рынка.</div>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Различие</th><th>Бухгалтерский подход</th><th>Экономический подход</th></tr></thead>
+        <tbody>
+          <tr><td>1. Какие ресурсы</td><td>только пересекающие границу фирмы — внешние</td><td>внешние <b>и внутренние</b></td></tr>
+          <tr><td>2. Как оценивают</td><td>по <b>фактической цене приобретения</b>, точно и количественно</td><td>по <b>альтернативной ценности</b>: сколько дало бы лучшее другое использование</td></tr>
+          <tr><td>3. Где отражаются</td><td>в бухгалтерской отчётности по законодательству</td><td>нигде: носят вменённый характер, «только в голове предпринимателя»</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="two fade">
+      <div class="def"><b>Явные издержки</b> — бухгалтерские: всё, что прошло по счетам фирмы.</div>
+      <div class="def"><b>Неявные (вменённые) издержки</b> — альтернативная оценка внутренних ресурсов: сдать помещение, продать оборудование и купить ценные бумаги, самому пойти в найм. <b>Экономические издержки = явные + неявные.</b></div>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Пример преподавателя</span>
+      <h3>Восковые фигуры и «Лукоморье»</h3>
+      <p>Нулевые, ночной поезд. Попутчица возила по городам восковые фигуры — Наташу Ростову, Распутина: бизнес «ни шатко ни валко». А её коллеги подобрали декорации «Лукоморья», выброшенные кукольным театром, повезли леших и ведьм — и привечали детей: «зачем мне Наташа Ростова, если ребёнку пять лет?» Они «срубили много денег». <b>Успех — в способности увидеть возможности, которых не видят другие.</b> Не каждый способен разглядеть спектр альтернатив для ресурсов, которые уже есть в фирме.</p>
+    </div>
+    <details class="ref fade"><summary>🧭 Альтернативные издержки — из занятия 3</summary><div class="ref-body">
+      <p>Слушатель вспомнил определение: «мера того, что должно быть отдано, чтобы получить желаемое». Преподаватель: «Если мы здесь — мы не дома, и лучшее, что я могла бы делать вместо пары, — щи сварить». Неявные издержки — это альтернативные издержки собственных ресурсов фирмы (закон 9 в <a href="zakony.html#law-9">реестре</a>).</p>
+    </div></details>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Посчитайте свою «невидимую зарплату»</h3>
+      <ul>
+        <li>Собственник, который работает в своём бизнесе без зарплаты, кажется «прибыльным». Добавьте к издержкам то, что ему платили бы в найме, и аренду своего помещения — бизнес может оказаться убыточным.</li>
+        <li>Сравнивайте альтернативы за одно и то же время и при прочих равных — так преподаватель ответила на вопрос слушателя.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 10 ══════════ -->
+<section class="sec" id="s10">
+  <div class="sec-head fade">
+    <div class="num-badge n1">10</div>
+    <h2 class="sec-title">Три прибыли: бухгалтерская, экономическая, нормальная</h2>
+    <p class="sec-desc">«Понять, что такое нормальная прибыль, — высший пилотаж понимания разницы подходов». Таблицу преподаватель взяла у коллег с кафедры.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_05/10_tri_pribyli.webp" width="1672" height="941" alt="Три столбца выручки 100: явные 60, бухгалтерская прибыль 40, неявные 30, 40 и больше 40; экономическая прибыль плюс 10 с бегущими конкурентами, ноль с весами равновесия, минус с открытой дверью выхода" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Три прибыли (промпт 10)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="def"><b>Бухгалтерская прибыль = TR − явные издержки.</b> С неё платят налоги. «У бухгалтера работа на этом закончилась».</div>
+      <div class="def"><b>Экономическая прибыль = бухгалтерская прибыль − неявные издержки</b> = TR − экономические издержки.</div>
+    </div>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Сценарий (TR 100, явные 60, бух. прибыль 40)</th><th>Неявные</th><th>Экономическая прибыль</th><th>Решение</th></tr></thead>
+        <tbody>
+          <tr><td>«Попал в струю»: первым купил станок для масок, нашёл «Лукоморье»</td><td>капитал 20 + труд 10 = 30</td><td><b>+10</b></td><td>«лучшее место в лучшее время», сверхприбыль — но на рынок придут конкуренты</td></tr>
+          <tr><td>Конкуренты повторили, его зовут на хорошую зарплату</td><td>20 + 20 = 40</td><td><b>0</b></td><td><b>нормальная прибыль</b>: фирма и рынок в равновесии — «к нам никто не ломится, и мы никуда не уйдём»</td></tr>
+          <tr><td>Стоматология подруги: место на кафедре, деньги от продажи — в недвижимость</td><td>20 + 30 = 50</td><td><b>−10</b></td><td>ресурсы уходят: клинику продали</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fade" style="font-size:.85rem;color:var(--muted)">Цифры — со слайдов преподавателя «Бухгалтерский и экономический подход к издержкам и прибыли». Экономические издержки в трёх сценариях: 90, 100 и 110.</p>
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · остаться или уйти</span>
+        <button type="button" class="viz-fs" data-fs-src="pribyl_trenazher.html" data-fs-title="Тренажёр: бухгалтерская и экономическая прибыль">⛶ На весь экран</button>
+      </div>
+      <iframe src="pribyl_trenazher.html" height="560" loading="lazy" title="Тренажёр: бухгалтерская, экономическая и нормальная прибыль"></iframe>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Нулевая экономическая прибыль — не ноль денег</h3>
+      <ul>
+        <li>При нулевой экономической прибыли владелец получает свои 40 — ровно столько, сколько его ресурсы дали бы в лучшей альтернативе. Это и есть <b>нормальная прибыль</b>.</li>
+        <li>В учебниках: нормальная прибыль — минимальный доход, удерживающий предпринимателя в деле; она входит в неявные издержки.</li>
+        <li>Бухгалтерская прибыль ≥ экономической всегда (неявные издержки не бывают отрицательными).</li>
+        <li>Положительная бухгалтерская прибыль не означает, что бизнес стоит продолжать: смотрят на экономическую.</li>
+      </ul>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · ответы на вопросы</span>
+      <ul>
+        <li><b>Где увидеть неявные издержки конкурентов?</b> Нигде: никто не покажет отчётность. Конъюнктуру оценивают косвенно — по тенденциям, своей выручке, публикациям в телеграм-каналах.</li>
+        <li><b>Почему клинику кто-то купил, если она невыгодна?</b> Оценка внутренних ресурсов у покупателя другая: у него нет таких альтернатив трудоустройства.</li>
+      </ul>
+    </div>
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Мнение преподавателя</span>
+      <h3>Уровень управленца — в умении видеть альтернативы</h3>
+      <p>Бухгалтерский учёт сейчас во многом автоматизирован, и хороший бухгалтер — ценность. Но «понимание того, какие существуют альтернативы для вложения ресурсов, как раз показывает уровень экономиста как управленца — человека, способного увидеть спектр возможностей и применить их».</p>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Домашнее задание</span>
+      <p>Последняя задача раздаточного листа — по этой теме, «решение моё не смотрите, пробуйте сами». Разбор — в начале следующего занятия. Фото листа пока нет: когда оно будет, задачи появятся на отдельной странице с проверкой. Слайды лекции преподавателя — «Маржинальный анализ в экономике» и «Бухгалтерский и экономический подход к издержкам и прибыли» — сверены с этой страницей.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ЧЕК-ЛИСТ ══════════ -->
+<section class="sec" id="checklist">
+  <div class="sec-head fade">
+    <div class="num-badge n1">✓</div>
+    <h2 class="sec-title">Что выучить к аттестации</h2>
+    <p class="sec-desc">Отмечайте пункт, когда можете объяснить его своими словами без подсказки. Отметки сохраняются в браузере.</p>
+  </div>
+  <div class="card fade">
+    <div class="checklist-progress-bar"><div class="checklist-progress-fill" id="checklist-progress"></div></div>
+    <ul class="checklist-items">
+      <li><label><input type="checkbox" data-checklist-item="c1"> π = TR − TC; три процесса; общие, средние и предельные величины</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c2"> Чёрный ящик производства; четыре ресурса; агрегирование в L и K</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c3"> Производственная функция Q = f(K, L): без денег, только количества</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c4"> Три периода; деление по технологии; short run — основной</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c5"> AP = TP / L — производительность; MP = ΔTP / ΔL</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c6"> Правило: MP пересекает AP в максимуме; MC пересекает AVC и ATC в минимумах</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c7"> «Найм ещё одного увеличит на N» — это MP; TP = AP × L; в нуле — прочерк</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c8"> TC = FC + VC; примеры постоянных и переменных</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c9"> ATC = AFC + AVC; AFC падает с ростом Q</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c10"> MC = ΔTC / ΔQ = ΔVC / ΔQ; делить на приращение объёма</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c11"> AVC = w / AP; MC = w / MP — зеркало производительности</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c12"> Без цены объём не выбрать; MR = P; оптимум MR = MC; безубыточность TR = TC</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c13"> Закрытие в short run: P &lt; min AVC; при AVC &lt; P &lt; ATC работаем в убыток</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c14"> Границы фирмы: внутренние и внешние ресурсы</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c15"> Три различия бухгалтерского и экономического подхода</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c16"> Явные и неявные издержки; экономические = явные + неявные</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c17"> Бухгалтерская, экономическая, нормальная прибыль; что значит &gt; 0, = 0, &lt; 0</label></li>
+    </ul>
+    <p class="checklist-done" id="checklist-done" hidden>Пятое занятие готово к аттестации.</p>
+  </div>
+</section>
+
+<!-- ══════════ КВИЗ ══════════ -->
+<section class="sec" id="quiz">
+  <div class="sec-head fade">
+    <div class="num-badge n2">?</div>
+    <h2 class="sec-title">Проверьте себя</h2>
+    <p class="sec-desc">Пятнадцать вопросов в формате теста. После ответа — правильный вариант и короткий разбор.</p>
+  </div>
+  <div class="quiz fade">
+    <div class="quiz-question" data-quiz="1" data-explain="В краткосрочном периоде капитал постоянен, меняется только переменный фактор — чаще всего труд. Деление на периоды зависит от технологии.">
+      <p class="quiz-text">1. Краткосрочный период — это период, в котором…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q1" value="wrong"> фирма не может изменить ни один фактор</label>
+        <label><input type="radio" name="q1" value="right"> меняется только переменный фактор (труд), капитал постоянен</label>
+        <label><input type="radio" name="q1" value="wrong"> меняются все факторы производства</label>
+        <label><input type="radio" name="q1" value="wrong"> длительность не превышает одного года</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="1">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="1" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="2" data-explain="Средний продукт труда AP = TP / L — выпуск на одного работника, то есть производительность труда.">
+      <p class="quiz-text">2. Производительность труда в теории производства — это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q2" value="right"> средний продукт труда AP = TP / L</label>
+        <label><input type="radio" name="q2" value="wrong"> предельный продукт труда MP</label>
+        <label><input type="radio" name="q2" value="wrong"> совокупный продукт TP</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="2">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="2" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="3" data-explain="Правило предельных и средних: предельная величина пересекает среднюю в точке её экстремума. MP пересекает AP в максимуме AP.">
+      <p class="quiz-text">3. Кривая предельного продукта пересекает кривую среднего продукта…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q3" value="wrong"> в максимуме MP</label>
+        <label><input type="radio" name="q3" value="right"> в максимуме AP</label>
+        <label><input type="radio" name="q3" value="wrong"> там, где TP максимален</label>
+        <label><input type="radio" name="q3" value="wrong"> они никогда не пересекаются</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="3">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="3" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="4" data-explain="«Найм 10-го увеличит ещё на 410» — это прирост выпуска, то есть MP₁₀. TP₁₀ = 4590 + 410 = 5000.">
+      <p class="quiz-text">4. 9 работников производят 4590 единиц, найм 10-го увеличит производство ещё на 410. Совокупный продукт 10 работников:</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q4" value="wrong"> 4100</label>
+        <label><input type="radio" name="q4" value="right"> 5000</label>
+        <label><input type="radio" name="q4" value="wrong"> 4590</label>
+        <label><input type="radio" name="q4" value="wrong"> 4180</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="4">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="4" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="5" data-explain="TP₁₁ = AP × L = 490 × 11 = 5390; MP₁₁ = 5390 − 5000 = 390.">
+      <p class="quiz-text">5. 10 работников производят 5000 единиц; при 11 работниках средний продукт каждого — 490. Предельный продукт 11-го работника:</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q5" value="wrong"> 490</label>
+        <label><input type="radio" name="q5" value="wrong"> 10</label>
+        <label><input type="radio" name="q5" value="right"> 390</label>
+        <label><input type="radio" name="q5" value="wrong"> 5390</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="5">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="5" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="6" data-explain="Постоянные издержки не зависят от объёма выпуска: аренда. Сырьё, материалы и зарплата производственного персонала — переменные.">
+      <p class="quiz-text">6. Какие издержки относятся к постоянным в краткосрочном периоде?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q6" value="wrong"> затраты на сырьё и материалы</label>
+        <label><input type="radio" name="q6" value="wrong"> зарплата рабочих у станков</label>
+        <label><input type="radio" name="q6" value="right"> арендная плата за помещение</label>
+        <label><input type="radio" name="q6" value="wrong"> электроэнергия для станков</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="6">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="6" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="7" data-explain="При Q = 0 переменных издержек нет, значит, TC = FC = 60. VC при Q = 3: 230 − 60 = 170.">
+      <p class="quiz-text">7. При Q = 0 общие издержки равны 60, при Q = 3 — 230. Переменные издержки при Q = 3:</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q7" value="right"> 170</label>
+        <label><input type="radio" name="q7" value="wrong"> 230</label>
+        <label><input type="radio" name="q7" value="wrong"> 76,7</label>
+        <label><input type="radio" name="q7" value="wrong"> 60</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="7">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="7" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="8" data-explain="AFC = FC / Q: постоянная величина делится на растущий объём, поэтому средние постоянные издержки непрерывно снижаются (кейс мобильной связи).">
+      <p class="quiz-text">8. С ростом объёма выпуска средние постоянные издержки (AFC)…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q8" value="wrong"> не меняются</label>
+        <label><input type="radio" name="q8" value="right"> непрерывно снижаются</label>
+        <label><input type="radio" name="q8" value="wrong"> сначала снижаются, потом растут</label>
+        <label><input type="radio" name="q8" value="wrong"> растут</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="8">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="8" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="9" data-explain="MC = ΔTC / ΔQ = ΔVC / ΔQ: постоянные издержки не меняются (ΔFC = 0) и на предельные не влияют.">
+      <p class="quiz-text">9. Рост арендной платы в краткосрочном периоде изменит…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q9" value="wrong"> MC и AVC</label>
+        <label><input type="radio" name="q9" value="right"> ATC и AFC, но не MC</label>
+        <label><input type="radio" name="q9" value="wrong"> только MC</label>
+        <label><input type="radio" name="q9" value="wrong"> все виды издержек одинаково</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="9">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="9" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="10" data-explain="MC = w / MP. Когда предельный продукт максимален, предельные издержки минимальны — зеркальное отражение.">
+      <p class="quiz-text">10. Предельные издержки минимальны, когда…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q10" value="wrong"> максимален средний продукт</label>
+        <label><input type="radio" name="q10" value="right"> максимален предельный продукт</label>
+        <label><input type="radio" name="q10" value="wrong"> максимален совокупный продукт</label>
+        <label><input type="radio" name="q10" value="wrong"> минимальны средние постоянные издержки</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="10">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="10" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="11" data-explain="AVC = w / AP = 6 / 2,5 = 2,4.">
+      <p class="quiz-text">11. Ставка зарплаты — 6 за час, средний продукт труда — 2,5 шт. в час. Средние переменные издержки:</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q11" value="wrong"> 15</label>
+        <label><input type="radio" name="q11" value="right"> 2,4</label>
+        <label><input type="radio" name="q11" value="wrong"> 8,5</label>
+        <label><input type="radio" name="q11" value="wrong"> 0,42</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="11">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="11" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="12" data-explain="Порог закрытия в краткосрочном периоде — минимум AVC. Цена выше AVC, но ниже ATC: убыток меньше FC, поэтому фирма продолжает работать.">
+      <p class="quiz-text">12. Цена ниже средних общих, но выше средних переменных издержек. В краткосрочном периоде фирма…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q12" value="wrong"> немедленно закрывается</label>
+        <label><input type="radio" name="q12" value="right"> продолжает работать, минимизируя убыток</label>
+        <label><input type="radio" name="q12" value="wrong"> получает экономическую прибыль</label>
+        <label><input type="radio" name="q12" value="wrong"> наращивает выпуск до минимума ATC</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="12">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="12" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="13" data-explain="Неявные (вменённые) издержки — альтернативная оценка собственных ресурсов: что дали бы своё помещение, капитал и труд владельца в лучшем другом применении.">
+      <p class="quiz-text">13. Неявные издержки — это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q13" value="wrong"> скрытые от налоговой платежи</label>
+        <label><input type="radio" name="q13" value="right"> альтернативная стоимость собственных ресурсов фирмы</label>
+        <label><input type="radio" name="q13" value="wrong"> платежи внешним поставщикам</label>
+        <label><input type="radio" name="q13" value="wrong"> амортизация оборудования</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="13">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="13" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="14" data-explain="Бухгалтерская = 100 − 60 = 40. Экономическая = 40 − 30 = 10.">
+      <p class="quiz-text">14. Выручка — 100, явные издержки — 60, неявные — 30. Бухгалтерская и экономическая прибыль:</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q14" value="wrong"> 40 и 70</label>
+        <label><input type="radio" name="q14" value="wrong"> 10 и 40</label>
+        <label><input type="radio" name="q14" value="right"> 40 и 10</label>
+        <label><input type="radio" name="q14" value="wrong"> 70 и 10</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="14">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="14" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="15" data-explain="Нулевая экономическая прибыль — это нормальная прибыль: владелец получает столько же, сколько дали бы его ресурсы в лучшей альтернативе. Фирма и рынок в равновесии.">
+      <p class="quiz-text">15. Экономическая прибыль фирмы равна нулю. Это означает, что…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q15" value="wrong"> владелец ничего не зарабатывает</label>
+        <label><input type="radio" name="q15" value="wrong"> бухгалтерская прибыль тоже равна нулю</label>
+        <label><input type="radio" name="q15" value="right"> фирма получает нормальную прибыль, рынок в равновесии</label>
+        <label><input type="radio" name="q15" value="wrong"> фирме нужно закрыться</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="15">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="15" hidden></p>
+    </div>
+  </div>
+  <p class="quiz-score-box fade" id="quiz-score" style="margin-top:18px">Отвечено: 0 / 15</p>
+</section>
+
+<!-- ══════════ ЗАКЛЮЧЕНИЕ ══════════ -->
+<section class="sec" id="final">
+  <div class="sec-head fade">
+    <div class="num-badge n3">★</div>
+    <h2 class="sec-title">Шпаргалка: главное из занятия</h2>
+  </div>
+  <figure class="img-card fade" data-lightbox style="margin-bottom:28px">
+    <img src="../png/zanyatie_05/11_final_shpargalka.webp" width="1672" height="941" alt="Дворец памяти: трёхэтажная фирма с ответами — чёрный ящик и кривые продукта в цеху, издержки и зеркало в кассе, уровни цены, граница кофейни и три двери прибыли в кабинете" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+    <figcaption class="img-missing-caption">Шпаргалка к аттестации (промпт 11)</figcaption>
+  </figure>
+  <ol class="conclusion-list fade">
+    <li><strong>Short run — основной период:</strong> капитал постоянен, выпуск растёт только трудом. Периоды задаёт технология.</li>
+    <li><strong>AP = TP / L, MP = ΔTP / ΔL.</strong> MP пересекает AP в её максимуме. «Ещё на N» — это MP.</li>
+    <li><strong>TC = FC + VC.</strong> Постоянные не зависят от объёма и платятся даже при нуле.</li>
+    <li><strong>ATC = AFC + AVC; MC = ΔVC / ΔQ.</strong> MC проходит через минимумы AVC и ATC; FC на MC не влияют.</li>
+    <li><strong>Зеркало:</strong> AVC = w / AP, MC = w / MP. Дешевле производить — значит сначала производить лучше.</li>
+    <li><strong>Без цены объём не выбрать.</strong> Оптимум MR = MC; закрываемся при P &lt; AVC.</li>
+    <li><strong>Экономические издержки = явные + неявные.</strong> Бухгалтер видит чеки, экономист — альтернативы.</li>
+    <li><strong>Экономическая прибыль</strong> &gt; 0 — сверхприбыль, = 0 — нормальная прибыль и равновесие, &lt; 0 — ресурсы уходят.</li>
+  </ol>
+</section>
+
+</main>
+
+
+<div class="overlay" id="lightbox" aria-hidden="true">
+  <a class="overlay-download" id="lightbox-download" download aria-label="Скачать изображение">⬇ Скачать</a>
+  <button class="overlay-close" id="lightbox-close" aria-label="Закрыть">✕</button>
+  <img id="lightbox-img" alt="">
+</div>
+
+<div id="fs-overlay" aria-hidden="true">
+  <div id="fs-bar">
+    <span id="fs-title"></span>
+    <button type="button" id="fs-close" aria-label="Закрыть полноэкранный режим">✕</button>
+  </div>
+  <iframe id="fs-frame" title="Полноэкранная визуализация"></iframe>
+</div>
+
+<footer>
+  <p>Президентская программа · «Экономика для менеджеров» · преподаватель И. Г. Переломова · материалы с пометкой «Дополнение» добавлены к лекции</p>
+</footer>
+
+<script>
+/* Префикс имени файла при скачивании инфографики */
+const BRAND = "ekonomika-z5";
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (!reduceMotion && "IntersectionObserver" in window) {
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in");
+        reveal.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.06, rootMargin: "0px 0px -24px"});
+  document.querySelectorAll(".fade").forEach((element) => reveal.observe(element));
+} else {
+  document.querySelectorAll(".fade").forEach((element) => element.classList.add("in"));
+}
+
+/* Подсветка активной секции в навбаре */
+const navLinks = [...document.querySelectorAll(".nav-link")];
+const sections = [...document.querySelectorAll("main section[id]")];
+if ("IntersectionObserver" in window) {
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach((link) => {
+        link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`);
+      });
+    });
+  }, {rootMargin: "-35% 0px -55%", threshold: 0});
+  sections.forEach((section) => sectionObserver.observe(section));
+}
+
+/* Лайтбокс */
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const lightboxDownload = document.getElementById("lightbox-download");
+function brandedFilename(url) {
+  const name = url.split("/").pop().split("?")[0];
+  return `${BRAND}_${name}`;
+}
+document.querySelectorAll(".img-card[data-lightbox]").forEach((card) => {
+  card.addEventListener("click", () => {
+    if (card.classList.contains("img-missing")) return;
+    const img = card.querySelector("img");
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightboxDownload.href = img.src;
+    lightboxDownload.download = brandedFilename(img.src);
+    lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
+  });
+});
+function closeLightbox() {
+  if (lightbox.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  lightboxImg.src = "";
+}
+document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (event) => { if (event.target === lightbox) closeLightbox(); });
+
+/* Фуллскрин для iframe-карточек */
+const fsOverlay = document.getElementById("fs-overlay");
+const fsFrame = document.getElementById("fs-frame");
+const fsTitle = document.getElementById("fs-title");
+document.querySelectorAll(".viz-fs").forEach((button) => {
+  button.addEventListener("click", () => {
+    fsFrame.src = button.dataset.fsSrc;
+    fsTitle.textContent = button.dataset.fsTitle;
+    fsOverlay.classList.add("open");
+    fsOverlay.setAttribute("aria-hidden", "false");
+  });
+});
+function closeFs() {
+  if (fsOverlay.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  fsOverlay.classList.remove("open");
+  fsOverlay.setAttribute("aria-hidden", "true");
+  fsFrame.src = "";
+}
+document.getElementById("fs-close").addEventListener("click", closeFs);
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if (fsOverlay.classList.contains("open")) { closeFs(); } else { closeLightbox(); }
+});
+
+/* Копирование промптов */
+document.querySelectorAll("[data-copy]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const code = document.getElementById(button.dataset.copy);
+    if (!code) return;
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(code.innerText);
+      button.textContent = "Скопировано";
+    } catch {
+      button.textContent = "Выделите текст";
+    }
+    window.setTimeout(() => { button.textContent = original; }, 1600);
+  });
+});
+
+/* Чек-лист готовности */
+const CHECKLIST_KEY = "ekonomika-z5-checklist";
+const checklistInputs = [...document.querySelectorAll("[data-checklist-item]")];
+const checklistProgress = document.getElementById("checklist-progress");
+const checklistDone = document.getElementById("checklist-done");
+function loadChecklistState() {
+  try { return JSON.parse(localStorage.getItem(CHECKLIST_KEY) || "{}"); } catch { return {}; }
+}
+function saveChecklistState(state) {
+  try { localStorage.setItem(CHECKLIST_KEY, JSON.stringify(state)); } catch { /* приватный режим */ }
+}
+function renderChecklistProgress() {
+  const checked = checklistInputs.filter((input) => input.checked).length;
+  checklistProgress.style.width = `${Math.round((checked / checklistInputs.length) * 100)}%`;
+  checklistDone.hidden = checked !== checklistInputs.length;
+}
+const savedChecklist = loadChecklistState();
+checklistInputs.forEach((input) => {
+  const key = input.dataset.checklistItem;
+  input.checked = Boolean(savedChecklist[key]);
+  input.addEventListener("change", () => {
+    const state = loadChecklistState();
+    state[key] = input.checked;
+    saveChecklistState(state);
+    renderChecklistProgress();
+  });
+});
+renderChecklistProgress();
+
+/* Квиз */
+const QUIZ_TOTAL = document.querySelectorAll(".quiz-question").length;
+let quizAnswered = 0;
+let quizCorrect = 0;
+const quizScoreEl = document.getElementById("quiz-score");
+document.querySelectorAll(".quiz-check").forEach((button) => {
+  button.addEventListener("click", () => {
+    const index = button.dataset.quizCheck;
+    const question = document.querySelector(`.quiz-question[data-quiz="${index}"]`);
+    const selected = question.querySelector(`input[name="q${index}"]:checked`);
+    const feedback = document.querySelector(`[data-quiz-feedback="${index}"]`);
+    if (!selected) {
+      feedback.textContent = "Выберите вариант ответа.";
+      feedback.className = "quiz-feedback incorrect";
+      feedback.hidden = false;
+      return;
+    }
+    const alreadyAnswered = button.disabled;
+    const isCorrect = selected.value === "right";
+    feedback.textContent = isCorrect ? "Верно!" : "Не совсем — правильный вариант выделен выше.";
+    if (question.dataset.explain) {
+      const explain = document.createElement("span");
+      explain.className = "explain";
+      explain.textContent = question.dataset.explain;
+      feedback.appendChild(explain);
+    }
+    feedback.className = `quiz-feedback ${isCorrect ? "correct" : "incorrect"}`;
+    feedback.hidden = false;
+    question.querySelectorAll("input").forEach((input) => { input.disabled = true; });
+    question.querySelector('input[value="right"]').closest("label").classList.add("quiz-correct-answer");
+    button.disabled = true;
+    if (!alreadyAnswered) {
+      quizAnswered += 1;
+      if (isCorrect) quizCorrect += 1;
+      quizScoreEl.textContent = `Отвечено: ${quizAnswered} / ${QUIZ_TOTAL} · верно: ${quizCorrect}`;
+    }
+  });
+});
+</script>
+</body>
+</html>

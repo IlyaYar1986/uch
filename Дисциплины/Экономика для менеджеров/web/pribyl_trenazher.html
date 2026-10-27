@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: бухгалтерская и экономическая прибыль</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --green:#16a34a;
+  --red:#dc2626;
+  --amber:#d97706;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.back{display:inline-block;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:6px}
+.back:hover{color:var(--indigo)}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:6px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.8rem}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.btn{padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;font:inherit;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer}
+.btn:hover,.btn.on{border-color:#c7d2fe;color:var(--indigo-dk);background:var(--indigo-lt)}
+.chart-box{border:1px solid var(--border);border-radius:12px;padding:4px;background:#fcfcff}
+svg{width:100%;height:auto;display:block;max-height:40vh}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 16px;margin:8px 0;font-size:.78rem;color:var(--muted)}
+.controls label{display:flex;gap:6px;align-items:center;font-weight:700;justify-content:space-between}
+.controls input[type=range]{accent-color:var(--indigo);flex:1;min-width:80px}
+.controls span{min-width:34px;text-align:right;color:var(--text)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0}
+.kpi{border:1px solid var(--border);border-radius:10px;padding:5px;background:#f8fafc;text-align:center}
+.kpi .k-l{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.kpi .k-v{font-size:1.05rem;font-weight:900}
+.result{border:1px solid #c7d2fe;border-left:5px solid var(--indigo);background:var(--indigo-lt);border-radius:12px;padding:8px 12px;font-size:.84rem}
+.result b{color:var(--indigo-dk)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html" target="_top">← Все уроки</a>
+<div class="top">
+  <h1>Остаться или уйти: три прибыли</h1>
+  <span class="sub">Бухгалтер видит чеки, экономист — ещё и упущенные возможности собственных ресурсов</span>
+</div>
+<div class="btns">
+  <button type="button" class="btn" data-s="1">1. «Попал в струю»</button>
+  <button type="button" class="btn" data-s="2">2. Конкуренты повторили</button>
+  <button type="button" class="btn" data-s="3">3. Клиника подруги</button>
+</div>
+<div class="chart-box">
+  <svg id="bars" viewBox="0 0 600 190" role="img" aria-label="Разложение выручки на издержки и прибыль"></svg>
+</div>
+<div class="controls">
+  <label for="tr">Выручка TR <input type="range" id="tr" min="40" max="160" step="5" value="100"><span id="tr-v"></span></label>
+  <label for="ex">Явные издержки (по счетам) <input type="range" id="ex" min="10" max="150" step="5" value="60"><span id="ex-v"></span></label>
+  <label for="ik">Свой капитал в лучшей альтернативе <input type="range" id="ik" min="0" max="60" step="5" value="20"><span id="ik-v"></span></label>
+  <label for="il">Свой труд в найме <input type="range" id="il" min="0" max="60" step="5" value="10"><span id="il-v"></span></label>
+</div>
+<div class="kpis">
+  <div class="kpi"><div class="k-l">Бухгалтерская прибыль</div><div class="k-v" id="k-b"></div></div>
+  <div class="kpi"><div class="k-l">Неявные издержки</div><div class="k-v" id="k-i"></div></div>
+  <div class="kpi"><div class="k-l">Экономическая прибыль</div><div class="k-v" id="k-e"></div></div>
+</div>
+<div class="result" id="result" aria-live="polite"></div>
+
+<script>
+/* Сценарии — как в таблице преподавателя: TR = 100, явные = 60, бухгалтерская прибыль = 40.
+   Неявные: 1) капитал 20 + труд 10 = 30; 2) 20 + 20 = 40; 3) 20 + 30 = 50 — экономическая прибыль −10 (слайды преподавателя). */
+const SCEN = {
+  1: { tr: 100, ex: 60, ik: 20, il: 10 },
+  2: { tr: 100, ex: 60, ik: 20, il: 20 },
+  3: { tr: 100, ex: 60, ik: 20, il: 30 },
+};
+const $ = (id) => document.getElementById(id);
+const els = ["tr", "ex", "ik", "il"].reduce((o, k) => (o[k] = $(k), o), {});
+const v = (k) => Number(els[k].value);
+
+function bar(x, label, parts, scale, base) {
+  // parts: [{val, color, text}] — складываются вверх от нуля; отрицательная часть рисуется вниз.
+  let s = `<text x="${x + 55}" y="186" font-size="11" fill="#64748b" text-anchor="middle" font-weight="700">${label}</text>`;
+  let y = base;
+  parts.forEach((p) => {
+    if (p.val === 0) return;
+    const h = Math.abs(p.val) * scale;
+    const top = p.val > 0 ? y - h : base;
+    s += `<rect x="${x}" y="${top}" width="110" height="${h}" rx="4" fill="${p.color}"/>`;
+    if (h > 13) s += `<text x="${x + 55}" y="${top + h / 2 + 4}" font-size="10.5" fill="#fff" text-anchor="middle" font-weight="700">${p.text}</text>`;
+    if (p.val > 0) y -= h;
+  });
+  return s;
+}
+
+function render() {
+  const TR = v("tr"), EX = v("ex"), IK = v("ik"), IL = v("il");
+  ["tr", "ex", "ik", "il"].forEach((k) => ($(`${k}-v`).textContent = v(k)));
+  const B = TR - EX, IMP = IK + IL, E = B - IMP;
+  const scale = 120 / Math.max(TR, EX + IMP, 1);
+  const base = 150;
+  let s = `<line x1="20" x2="590" y1="${base}" y2="${base}" stroke="#94a3b8"/>`;
+  s += bar(40, "Выручка", [{ val: TR, color: "#64748b", text: `TR ${TR}` }], scale, base);
+  s += bar(230, "Взгляд бухгалтера", [
+    { val: Math.min(EX, TR), color: "#94a3b8", text: `явные ${EX}` },
+    { val: B > 0 ? B : 0, color: "#4338ca", text: `бух. прибыль ${B}` },
+  ], scale, base);
+  const econParts = [
+    { val: EX, color: "#94a3b8", text: `явные ${EX}` },
+    { val: IMP, color: "#d97706", text: `неявные ${IMP}` },
+  ];
+  s += bar(420, "Взгляд экономиста", econParts, scale, base);
+  const trY = base - TR * scale;
+  s += `<line x1="410" x2="540" y1="${trY}" y2="${trY}" stroke="#0f172a" stroke-dasharray="4 3"/>`;
+  s += `<text x="545" y="${trY + 4}" font-size="10" fill="#0f172a">TR</text>`;
+  if (E !== 0) {
+    const ey = base - (EX + IMP) * scale;
+    const h = Math.abs(E) * scale;
+    const top = E > 0 ? ey - h : ey;
+    s += `<rect x="420" y="${top}" width="110" height="${h}" rx="4" fill="${E > 0 ? "#16a34a" : "#dc2626"}" opacity=".85"/>`;
+    if (h > 13) s += `<text x="475" y="${top + h / 2 + 4}" font-size="10.5" fill="#fff" text-anchor="middle" font-weight="700">эк. прибыль ${E > 0 ? "+" : ""}${E}</text>`;
+  }
+  $("bars").innerHTML = s;
+
+  $("k-b").textContent = B;
+  $("k-i").textContent = IMP;
+  const eEl = $("k-e");
+  eEl.textContent = (E > 0 ? "+" : "") + E;
+  eEl.style.color = E > 0 ? "#16a34a" : E < 0 ? "#dc2626" : "#0f172a";
+
+  let msg = `Бухгалтерская прибыль = TR − явные = ${TR} − ${EX} = <b>${B}</b>. Экономическая = бухгалтерская − неявные = ${B} − ${IMP} = <b>${E}</b>. `;
+  if (E > 0) msg += `<b>Больше нуля — «лучшее место в лучшее время»</b>: ресурсы здесь приносят больше, чем в любой альтернативе. Сверхприбыль видна рынку — жди конкурентов, и она начнёт таять.`;
+  else if (E === 0) msg += `<b>Ноль — нормальная прибыль, равновесие.</b> Это не «ноль денег»: владелец получает ${IMP} — ровно столько, сколько дали бы его ресурсы в лучшей альтернативе. Уходить незачем, приходить новичкам — тоже.`;
+  else msg += `<b>Меньше нуля — ресурсы выгоднее в другом деле.</b> Бизнес продают или закрывают, даже если бухгалтерская прибыль ${B > 0 ? "положительная" : "есть"}. Покупатель может оценить его иначе: его альтернативы хуже.`;
+  $("result").innerHTML = msg;
+  document.querySelectorAll("[data-s]").forEach((b) => {
+    const sc = SCEN[b.dataset.s];
+    b.classList.toggle("on", sc.tr === TR && sc.ex === EX && sc.ik === IK && sc.il === IL);
+  });
+}
+
+Object.values(els).forEach((el) => el.addEventListener("input", render));
+document.querySelectorAll("[data-s]").forEach((b) => b.addEventListener("click", () => {
+  const sc = SCEN[b.dataset.s];
+  Object.keys(sc).forEach((k) => (els[k].value = sc[k]));
+  render();
+}));
+render();
+</script>
+</body>
+</html>
