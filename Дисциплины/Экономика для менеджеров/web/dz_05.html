@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Домашнее задание к занятию 5: издержки и прибыль</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --amber-lt:#fffbeb;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+  --nav-h:56px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(99,102,241,.14),transparent 32%),
+    radial-gradient(circle at 85% 6%,rgba(14,165,233,.13),transparent 34%),
+    linear-gradient(180deg,#f8fafc 0%,#eef2ff 30%,#f8fafc 100%);
+  color:var(--text);line-height:1.65;overflow-x:hidden;
+}
+a{color:var(--indigo-dk)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;z-index:900;
+  gap:2px;overflow-x:auto;scrollbar-width:none;
+}
+nav.top::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:.93rem;color:var(--indigo-dk);white-space:nowrap;margin:0 10px 0 4px;flex-shrink:0;text-decoration:none}
+.nav-sep{width:1px;height:18px;background:var(--border);margin:0 6px;flex-shrink:0}
+.nav-link{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0}
+.nav-link:hover{color:var(--indigo);background:var(--indigo-lt)}
+
+main{max-width:860px;margin:0 auto;padding:calc(var(--nav-h) + 40px) 16px 56px}
+h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;letter-spacing:-.5px;line-height:1.2;margin-bottom:10px}
+h1 em{font-style:normal;color:var(--indigo)}
+.lead{color:var(--muted);font-size:1rem;margin-bottom:22px}
+.note-callout{background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:14px;padding:14px 18px;margin-bottom:28px}
+.note-callout p{color:var(--indigo-dk);font-size:.92rem}
+.note-callout p + p{margin-top:6px}
+
+.part{margin-top:40px}
+.part h2{font-size:clamp(1.2rem,2.6vw,1.6rem);font-weight:800;margin-bottom:6px}
+.part .hint{color:var(--muted);font-size:.9rem;margin-bottom:16px}
+
+.q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+.q + .q{margin-top:14px}
+.q-text{font-weight:700;margin-bottom:12px}
+.q-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.q-opts label{display:flex;align-items:flex-start;gap:8px;font-size:.93rem;cursor:pointer}
+.q-opts input{accent-color:var(--indigo);margin-top:5px;flex-shrink:0}
+.q-opts label.right{color:var(--green);font-weight:700}
+.q-opts label.wrong{color:var(--red);text-decoration:line-through}
+.q-tf .q-opts{flex-direction:row;gap:18px}
+.q-check{padding:8px 16px;border-radius:9px;border:none;background:var(--indigo);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit}
+.q-check:hover{background:var(--indigo-dk)}
+.q-check:disabled{opacity:.5;cursor:default}
+.q-fb{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem}
+.q-fb.ok{background:var(--green-lt);color:var(--green)}
+.q-fb.bad{background:var(--red-lt);color:var(--red)}
+.q-fb .why{display:block;margin-top:6px;color:var(--text);font-weight:500}
+.q-fb .why b{font-weight:800}
+.q-fb .src{display:block;margin-top:6px;font-size:.84rem}
+
+.q-num{display:flex;flex-wrap:wrap;gap:10px 18px;margin-bottom:14px}
+.q-num label{display:flex;align-items:center;gap:8px;font-size:.93rem}
+.q-num input{width:110px;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font:inherit}
+.q-num input.right{border-color:var(--green);background:var(--green-lt)}
+.q-num input.wrong{border-color:var(--red);background:var(--red-lt)}
+.score{position:sticky;bottom:12px;margin:32px auto 0;max-width:420px;text-align:center;font-weight:800;color:var(--indigo-dk);background:rgba(255,255,255,.96);border:1px solid #c7d2fe;border-radius:12px;padding:10px 14px;box-shadow:0 4px 18px rgba(15,23,42,.08)}
+
+details.key{margin-top:40px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0 20px}
+details.key summary{cursor:pointer;padding:14px 0;font-weight:800;list-style:none}
+details.key summary::-webkit-details-marker{display:none}
+details.key[open] summary{border-bottom:1px dashed var(--border)}
+.key-body{padding:12px 0 18px;font-size:.93rem}
+.key-body h3{font-size:.95rem;margin:12px 0 4px}
+.key-body h3:first-child{margin-top:0}
+.key-body ol{padding-left:22px}
+
+footer{text-align:center;padding:32px 20px 48px;color:var(--muted);font-size:.85rem}
+@media (max-width:600px){.q{padding:16px}.q-tf .q-opts{flex-direction:column;gap:8px}}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Навигация по странице">
+  <a class="nav-link" href="../index.html">← Все уроки</a>
+  <span class="nav-sep"></span>
+  <a class="nav-logo" href="zanyatie_05.html">Занятие 5</a>
+  <span class="nav-sep"></span>
+  <a class="nav-link" href="#p1">I. Верно/неверно</a>
+  <a class="nav-link" href="#p2">II. Один ответ</a>
+  <a class="nav-link" href="#p3">III. Несколько ответов</a>
+  <a class="nav-link" href="#p4">Задачи</a>
+  <a class="nav-link" href="#p5">Лист с занятия</a>
+  <a class="nav-link" href="#key">Ответы списком</a>
+</nav>
+
+<main>
+  <h1>Домашнее задание: <em>издержки и прибыль фирмы</em></h1>
+  <p class="lead">Тест «Издержки производства и их учёт в управленческих решениях. Максимизация прибыли фирмы» к занятию 5 (26.10.2026), раздаточный лист И. Г. Переломовой: 21 задание в четырёх частях. В конце — задачи с листа «Издержки производства в краткосрочном периоде», который решали на занятии.</p>
+
+  <div class="note-callout">
+    <p>Сначала ответьте сами, потом нажмите «Проверить». После проверки правильный ответ выделится зелёным, а ниже появится разбор и ссылка на раздел урока, где это объясняется.</p>
+    <p>Ответы составлены по материалу лекции и учебникам; ключа преподавателя нет. К задачам 2, 4 и 5 преподаватель сама написала решения на листе («решение моё не смотрите») — они совпадают с разбором. Спорные места: I.4 (два или три периода) и опечатка в задаче 3 — оба разобраны в пояснениях.</p>
+  </div>
+
+  <div id="quiz"></div>
+
+  <details class="key" id="key">
+    <summary>📋 Все ответы списком — чтобы перенести в бланк</summary>
+    <div class="key-body" id="key-body"></div>
+  </details>
+
+  <p class="score" id="score" aria-live="polite">Проверено: 0 / 25 · верно: 0</p>
+</main>
+
+<footer>
+  <p>Президентская программа · «Экономика для менеджеров» · преподаватель И. Г. Переломова · <a href="zanyatie_05.html">урок 5</a></p>
+</footer>
+
+<script>
+/* Задания: type — tf (верно/неверно), one (один ответ), many (несколько ответов), num (ввод чисел).
+   right — номера правильных вариантов с нуля; у num — fields: [{label, answer}], допуск 0,06. sec — раздел урока 5. */
+const LESSON = "zanyatie_05.html";
+const SECTIONS = {
+  s1: "1 · Фирма и три величины",
+  s2: "2 · Производство и периоды",
+  s5: "5 · Постоянные и переменные",
+  s6: "6 · Средние и предельные издержки",
+  s8: "8 · Цена решает",
+  s9: "9 · Бухгалтер и экономист",
+  s10: "10 · Три прибыли"
+};
+const TF = ["Верно", "Неверно"];
+
+const PARTS = [
+  {
+    id: "p1", title: "I. Оцените суждения: верно или неверно",
+    hint: "Ищите одно лишнее слово: «только», «это и есть», «два периода».",
+    items: [
+      {type: "tf", text: "Бухгалтерские издержки — фактические денежные расходы плюс амортизационные отчисления на капитал.", options: TF, right: [0], sec: "s9",
+        why: "Верно. Бухгалтер учитывает то, что прошло по счетам фирмы: фактические платежи по цене приобретения и амортизацию своего оборудования. Это и есть явные издержки."},
+      {type: "tf", text: "Экономические издержки включают в себя только неявные издержки фирмы.", options: TF, right: [1], sec: "s9",
+        why: "Ловушка — слово «только». <b>Экономические издержки = явные + неявные.</b> Экономист учитывает и купленные ресурсы, и альтернативную стоимость собственных."},
+      {type: "tf", text: "Явные (денежные) издержки — альтернативные издержки, которые принимают форму денежных платежей поставщикам факторов производства и комплектующих изделий (промежуточного продукта).", options: TF, right: [0], sec: "s9",
+        why: "Верно — это учебниковое определение. Явные издержки тоже альтернативные: деньги, заплаченные поставщику, можно было потратить иначе. Отличие от неявных — форма денежного платежа внешнему поставщику."},
+      {type: "tf", text: "В деятельности фирмы в экономической теории и хозяйственной практике выделяют два периода времени: краткосрочный и долгосрочный.", options: TF, right: [1], sec: "s2",
+        why: "По курсу — <b>неверно</b>: преподаватель выделяет <b>три</b> периода — мгновенный, краткосрочный и долгосрочный (слайд «В деятельности фирмы различают три периода времени»).<br>⚠️ Во многих учебниках говорят о двух периодах, мгновенный не выделяют. Ориентируйтесь на лекцию: суждение задумано как ловушка на «два»."},
+      {type: "tf", text: "Совокупные издержки — это постоянные издержки фирмы.", options: TF, right: [1], sec: "s5",
+        why: "<b>TC = FC + VC</b>: совокупные издержки — сумма постоянных и переменных. Равны постоянным они только при нулевом выпуске."}
+    ]
+  },
+  {
+    id: "p2", title: "II. Выберите единственный правильный ответ",
+    hint: "Главный вопрос к каждой статье затрат: зависит ли она от объёма выпуска?",
+    items: [
+      {type: "one", text: "1. Салон красоты еженедельно закупает шампуни, маски и средства для укладки волос, кремы и другие товары. Издержки на эти покупки относятся к:", options: ["постоянным", "рыночным", "неявным", "переменным"], right: [3], sec: "s5",
+        why: "Расходные материалы тратятся на каждого клиента: больше клиентов — больше шампуня. Это <b>переменные</b> издержки, как молоко и сахар у производителя мороженого. «Рыночных издержек» в классификации нет, а неявными покупки быть не могут — они прошли по счетам."},
+      {type: "one", text: "2. Какое суждение о постоянных издержках фирмы в краткосрочном периоде является верным?", options: ["постоянные издержки зависят от объёма произведённой фирмой продукции", "к постоянным издержкам фирмы относят страховые взносы, арендную плату, оплату охраны помещения", "постоянные издержки представляют собой сумму совокупных и переменных издержек фирмы", "постоянные издержки определяются путём деления общих издержек на объём продукции"], right: [1], sec: "s5",
+        why: "Аренда, охрана, страховка не зависят от выпуска — это FC. Вариант 1 — определение переменных, вариант 3 перевёрнут (FC = TC − VC), вариант 4 — это ATC."},
+      {type: "one", text: "3. Правило максимизации прибыли для любой фирмы:", options: ["совокупный доход равен совокупным издержкам", "выручка равна прибыли", "предельный доход равен предельным издержкам", "предельный доход равен среднему доходу"], right: [2], sec: "s8",
+        why: "<b>MR = MC.</b> Вариант 1 (TR = TC) — точка безубыточности, прибыль там ноль. Вариант 4 (MR = AR = P) верен для совершенно конкурентной фирмы, но это свойство рынка, а не правило максимизации."},
+      {type: "one", text: "4. Общие издержки фирмы задаются зависимостью TC(Q) = Q² − 10Q + 320, где Q — выпуск фирмы в тоннах. Чему равны постоянные издержки фирмы?", options: ["1", "10", "320", "0"], right: [2], sec: "s5",
+        why: "Постоянные издержки — та часть TC, которая не зависит от Q: свободный член <b>320</b>. Проверка: при Q = 0 выпуска нет, а TC(0) = 320 — «ничего не делаем, но издержки есть»."},
+      {type: "one", text: "5. Предельные издержки показывают:", options: ["насколько изменятся общие издержки при изменении выпуска на единицу", "насколько изменятся постоянные издержки при изменении выпуска на единицу", "насколько изменятся средние общие издержки при изменении выпуска на единицу", "насколько изменятся средние постоянные издержки при изменении выпуска на единицу"], right: [0], sec: "s6",
+        why: "<b>MC = ΔTC / ΔQ</b> — прирост общих издержек на дополнительную единицу. Постоянные при изменении выпуска не меняются вовсе (ΔFC = 0), поэтому вариант 2 — ловушка."},
+      {type: "one", text: "6. Средние постоянные издержки — это:", options: ["общие издержки в расчёте на единицу продукции", "переменные издержки в расчёте на единицу продукции", "предельные издержки в расчёте на единицу продукции", "постоянные издержки в расчёте на единицу продукции"], right: [3], sec: "s6",
+        why: "<b>AFC = FC / Q.</b> Вариант 1 — ATC, вариант 2 — AVC."}
+    ]
+  },
+  {
+    id: "p3", title: "III. Выберите все правильные ответы",
+    hint: "Правильных вариантов может быть несколько. Засчитывается только точное совпадение набора.",
+    items: [
+      {type: "many", text: "1. Какие издержки относятся к постоянным?", options: ["амортизационные отчисления", "проценты по ранее привлечённым кредитам", "расходы на вспомогательные материалы", "расходы на приобретение сырья и материалов", "арендная плата"], right: [0, 1, 4], sec: "s5",
+        why: "Амортизация, проценты по <b>ранее</b> взятым кредитам и аренда не зависят от выпуска — все три были в списке постоянных на лекции. Сырьё и вспомогательные материалы расходуются на каждую единицу продукции — переменные."},
+      {type: "many", text: "2. Какие издержки относятся к переменным?", options: ["приобретение топлива для технологических целей", "заработная плата главного бухгалтера", "расходы на электроэнергию, используемую в производстве", "земельный налог", "плата за лицензию"], right: [0, 2], sec: "s5",
+        why: "Топливо и электроэнергия <b>для производства</b> растут вместе с выпуском. Главный бухгалтер — административный персонал, земельный налог и лицензия от объёма не зависят: это постоянные."},
+      {type: "many", text: "3. Выберите верные суждения об издержках производства в краткосрочном периоде:", options: ["постоянные издержки не зависят от объёма производства продукции", "к постоянным издержкам в краткосрочном периоде относят страховые взносы и оплату за охрану", "переменные издержки в краткосрочном периоде непосредственно зависят от объёма производимой продукции", "себестоимость продукции называется также постоянными издержками", "к переменным издержкам в краткосрочном периоде относят выплаты по ранее взятому кредиту"], right: [0, 1, 2], sec: "s5",
+        why: "1–3 — определения и примеры с лекции. Себестоимость — это <b>ATC</b>, средние общие издержки (вариант 4 неверен). Выплаты по ранее взятому кредиту — постоянные (вариант 5 неверен)."},
+      {type: "many", text: "4. Какие издержки швейной мастерской относятся к переменным издержкам в краткосрочном периоде?", options: ["арендная плата за помещение мастерской", "издержки на приобретение тканей, ниток, фурнитуры", "страховые взносы", "издержки на погашение процентов по ранее взятому кредиту", "издержки на выплату сдельной заработной платы работникам"], right: [1, 4], sec: "s5",
+        why: "Ткани и фурнитура — сырьё на каждое изделие. <b>Сдельная</b> зарплата начисляется за каждую сшитую вещь — переменные. Аренда, страховка и проценты по старому кредиту не зависят от выпуска."},
+      {type: "many", text: "5. Неявные издержки представляют собой:", options: ["альтернативные издержки использования факторов производства, принадлежащих владельцам фирмы (или находящихся в собственности фирмы как юридического лица)", "денежные доходы, которые могли бы быть получены от альтернативного использования этих факторов", "сумму постоянных и переменных издержек", "сумму общих и переменных издержек", "сумму средних общих и средних постоянных издержек"], right: [0, 1], sec: "s9",
+        why: "Оба первых варианта описывают одно и то же с двух сторон: неявные издержки — альтернативная стоимость <b>собственных</b> ресурсов, то есть доход, который они дали бы в лучшем другом применении (сдать помещение, пойти в найм). Вариант 3 — это TC, варианты 4 и 5 — бессмысленные суммы."}
+    ]
+  },
+  {
+    id: "p4", title: "IV. Задачи",
+    hint: "Сначала выпишите формулу, потом подставьте. Черновик — на бумаге, потом проверка.",
+    items: [
+      {type: "one", text: "Задача 1. При Q = 10 общие издержки TC = 178, при Q = 11 — TC = 204. Найдите предельные издержки X при Q = 11.", options: ["13", "26", "17,8", "204"], right: [1], sec: "s6",
+        why: "MC = ΔTC / ΔQ = (204 − 178) / (11 − 10) = <b>26</b>. 17,8 — это ATC при Q = 10, а не MC."},
+      {type: "one", text: "Задача 2. Функция краткосрочных совокупных издержек TC(Q) = Q² + 2Q + 20. Чему равны средние общие издержки при Q = 10?", options: ["10", "12", "14", "140"], right: [2], sec: "s6",
+        why: "TC(10) = 100 + 20 + 20 = 140; ATC = 140 / 10 = <b>14</b>. 140 — это TC, ловушка для тех, кто забыл разделить на Q. Это же решение преподаватель написала на листе."},
+      {type: "one", text: "Задача 3. Функция краткосрочных совокупных издержек TC(Q) = Q² + 100Q + 1600, где Q — выпуск фирмы. Чему равны общие издержки при Q = 10?", options: ["2000", "2700", "3000", "3700"], right: [1], sec: "s6",
+        why: "TC(10) = 100 + 1 000 + 1 600 = <b>2 700</b>.<br>⚠️ На листе между «100Q» и «1600» пропущен знак. Читаем как «+»: с минусом вышло бы −500, а такого ответа нет."},
+      {type: "one", text: "Задача 4. TC(Q) = 48 + 5Q + Q² + 0,1Q³. Определите средние переменные издержки (AVC) при Q = 4.", options: ["10", "10,6", "17,8", "20"], right: [1], sec: "s6",
+        why: "FC = 48 — свободный член. VC = 5Q + Q² + 0,1Q³, значит AVC = 5 + Q + 0,1Q² = 5 + 4 + 1,6 = <b>10,6</b>. 17,8 — это MC при Q = 4 (ловушка)."},
+      {type: "one", text: "Задача 5. Предприниматель владеет небольшой фирмой по производству керамики. Он нанимает одного работника за 300 тыс. руб. в год, 200 тыс. руб. в год уходит на сырьё и материалы. Под мастерскую он использует собственное помещение, которое мог бы сдавать конкуренту за 100 тыс. руб. в год. Конкурент предлагает ему место гончара с оплатой 150 тыс. руб. в год. Годовой доход от продажи изделий — 950 тыс. руб. Найдите бухгалтерскую и экономическую прибыль.", options: ["бухгалтерская 450 тыс., экономическая 200 тыс.", "бухгалтерская 250 тыс., экономическая 200 тыс.", "бухгалтерская 450 тыс., экономическая 400 тыс.", "бухгалтерская 450 тыс., экономическая — нуль"], right: [0], sec: "s10",
+        why: "Явные: 300 + 200 = 500 → бухгалтерская прибыль = 950 − 500 = <b>450</b>. Неявные: аренда своего помещения 100 + зарплата гончара в найме 150 = 250 → экономическая = 450 − 250 = <b>200</b>. Экономическая прибыль положительна: керамика — лучшее применение его ресурсов."}
+    ]
+  },
+  {
+    id: "p5", title: "Лист с занятия: издержки производства в краткосрочном периоде",
+    hint: "Задание 1 этого листа (TC = 60, 130, 180, 230, 300) разобрано в уроке, раздел 5. Здесь — задания 2–5. Дробные ответы вводите с запятой или точкой, округляя до десятых.",
+    items: [
+      {type: "num", text: "Задание 2. Восстановите таблицу затрат. Известно: ATC при Q = 1 равны 150; AFC при Q = 2 равны 60; MC при Q = 2 равны 26; VC при Q = 3 равны 78; TC при Q = 4 равны 216. Найдите:", fields: [{label: "FC", answer: 120}, {label: "TC при Q = 2", answer: 176}, {label: "ATC при Q = 3", answer: 66}, {label: "MC при Q = 4", answer: 18}], sec: "s6",
+        why: "Ключ — AFC: FC = AFC × Q = 60 × 2 = <b>120</b>, и так при любом Q. Дальше по цепочке: TC₁ = ATC × Q = 150 → TC₂ = TC₁ + MC₂ = <b>176</b> → TC₃ = FC + VC₃ = 120 + 78 = 198 → ATC₃ = 198 / 3 = <b>66</b> → MC₄ = 216 − 198 = <b>18</b>.<br>Вся таблица (Q = 0…4): TC 120, 150, 176, 198, 216; VC 0, 30, 56, 78, 96; AFC —, 120, 60, 40, 30; ATC —, 150, 88, 66, 54; AVC —, 30, 28, 26, 24; MC —, 30, 26, 22, 18."},
+      {type: "num", text: "Задание 3. MC(10) = 10, AC(9) = 5. Найдите AC(10).", fields: [{label: "AC(10)", answer: 5.5}], sec: "s6",
+        why: "TC(9) = AC × Q = 5 × 9 = 45. TC(10) = TC(9) + MC(10) = 45 + 10 = 55. AC(10) = 55 / 10 = <b>5,5</b>. Средние растут, потому что MC (10) выше средних (5) — правило предельных и средних."},
+      {type: "num", text: "Задание 4. TC(10) = 52, AC(9) = 5,3, MC(9) = 5. Найдите MC(10) и TC(8).", fields: [{label: "MC(10)", answer: 4.3}, {label: "TC(8)", answer: 42.7}], sec: "s6",
+        why: "TC(9) = 5,3 × 9 = 47,7. MC(10) = TC(10) − TC(9) = 52 − 47,7 = <b>4,3</b>. MC(9) = TC(9) − TC(8), значит TC(8) = 47,7 − 5 = <b>42,7</b>."},
+      {type: "num", text: "Задание 5. TC(Q) = 48 + 5Q + Q² + 0,1Q³. Выведите функции ATC, AVC и MC и найдите их значения при Q = 4.", fields: [{label: "ATC(4)", answer: 22.6}, {label: "AVC(4)", answer: 10.6}, {label: "MC(4)", answer: 17.8}], sec: "s6",
+        why: "FC = 48, VC = 5Q + Q² + 0,1Q³.<br>ATC = TC / Q = 48/Q + 5 + Q + 0,1Q² → 12 + 5 + 4 + 1,6 = <b>22,6</b>.<br>AVC = VC / Q = 5 + Q + 0,1Q² → <b>10,6</b>.<br>MC = TC′ = 5 + 2Q + 0,3Q² → 5 + 8 + 4,8 = <b>17,8</b>.<br>Проверка: ATC − AVC = AFC = 48 / 4 = 12. MC выше AVC — значит, AVC при Q = 4 уже растут."}
+    ]
+  }
+];
+
+const quiz = document.getElementById("quiz");
+const scoreEl = document.getElementById("score");
+const total = PARTS.reduce((sum, part) => sum + part.items.length, 0);
+let checked = 0;
+let correct = 0;
+
+PARTS.forEach((part) => {
+  const box = document.createElement("section");
+  box.className = "part";
+  box.id = part.id;
+  box.innerHTML = `<h2>${part.title}</h2><p class="hint">${part.hint}</p>`;
+  part.items.forEach((item, qIndex) => {
+    const name = `${part.id}q${qIndex}`;
+    const inputType = item.type === "many" ? "checkbox" : "radio";
+    const q = document.createElement("div");
+    q.className = `q${item.type === "tf" ? " q-tf" : ""}`;
+    const opts = item.type === "num"
+      ? `<div class="q-num">${item.fields.map((field, fIndex) => `<label>${field.label} = <input type="text" inputmode="decimal" name="${name}f${fIndex}" autocomplete="off"></label>`).join("")}</div>`
+      : `<div class="q-opts">${item.options.map((option, oIndex) => {
+          const prefix = item.type === "tf" ? "" : `${oIndex + 1}) `;
+          return `<label><input type="${inputType}" name="${name}" value="${oIndex}"> ${prefix}${option}</label>`;
+        }).join("")}</div>`;
+    const text = item.type === "tf" ? `${qIndex + 1}. ${item.text}` : item.text;
+    q.innerHTML = `<p class="q-text">${text}</p>${opts}` +
+      `<button type="button" class="q-check">Проверить</button><p class="q-fb" hidden></p>`;
+    const button = q.querySelector(".q-check");
+    const feedback = q.querySelector(".q-fb");
+    if (item.type === "num") {
+      button.addEventListener("click", () => {
+        const inputs = [...q.querySelectorAll("input")];
+        const values = inputs.map((input) => parseFloat(input.value.replace(",", ".").replace(/\s/g, "")));
+        if (values.some((value) => Number.isNaN(value))) {
+          feedback.className = "q-fb bad";
+          feedback.textContent = "Заполните все поля числами.";
+          feedback.hidden = false;
+          return;
+        }
+        const marks = values.map((value, i) => Math.abs(value - item.fields[i].answer) < 0.06);
+        const isRight = marks.every(Boolean);
+        inputs.forEach((input, i) => { input.disabled = true; input.classList.add(marks[i] ? "right" : "wrong"); });
+        const answers = item.fields.map((field) => `${field.label} = ${String(field.answer).replace(".", ",")}`).join("; ");
+        feedback.className = `q-fb ${isRight ? "ok" : "bad"}`;
+        feedback.innerHTML = (isRight ? "Верно!" : `Не совсем. Правильно: ${answers}.`) +
+          `<span class="why">${item.why}</span>` +
+          `<a class="src" href="${LESSON}#${item.sec}">→ В уроке: раздел ${SECTIONS[item.sec]}</a>`;
+        feedback.hidden = false;
+        button.disabled = true;
+        checked += 1;
+        if (isRight) correct += 1;
+        scoreEl.textContent = `Проверено: ${checked} / ${total} · верно: ${correct}`;
+      });
+      box.appendChild(q);
+      return;
+    }
+    button.addEventListener("click", () => {
+      const inputs = [...q.querySelectorAll("input")];
+      const chosen = inputs.filter((input) => input.checked).map((input) => Number(input.value));
+      if (!chosen.length) {
+        feedback.className = "q-fb bad";
+        feedback.textContent = "Сначала выберите ответ.";
+        feedback.hidden = false;
+        return;
+      }
+      const isRight = chosen.length === item.right.length && chosen.every((value) => item.right.includes(value));
+      inputs.forEach((input) => {
+        const value = Number(input.value);
+        input.disabled = true;
+        if (item.right.includes(value)) input.closest("label").classList.add("right");
+        else if (input.checked) input.closest("label").classList.add("wrong");
+      });
+      feedback.className = `q-fb ${isRight ? "ok" : "bad"}`;
+      feedback.innerHTML = (isRight ? "Верно!" : "Не совсем — правильный ответ выделен зелёным.") +
+        `<span class="why">${item.why}</span>` +
+        `<a class="src" href="${LESSON}#${item.sec}">→ В уроке: раздел ${SECTIONS[item.sec]}</a>`;
+      feedback.hidden = false;
+      button.disabled = true;
+      checked += 1;
+      if (isRight) correct += 1;
+      scoreEl.textContent = `Проверено: ${checked} / ${total} · верно: ${correct}`;
+    });
+    box.appendChild(q);
+  });
+  quiz.appendChild(box);
+});
+
+/* Ответы списком для бланка */
+document.getElementById("key-body").innerHTML = PARTS.map((part) => {
+  const lines = part.items.map((item) => {
+    const answer = item.type === "num"
+      ? item.fields.map((field) => `${field.label} = ${String(field.answer).replace(".", ",")}`).join("; ")
+      : item.type === "tf"
+        ? item.options[item.right[0]].toLowerCase()
+        : item.right.map((index) => `${index + 1}) ${item.options[index]}`).join("; ");
+    return `<li>${answer}</li>`;
+  }).join("");
+  return `<h3>${part.title}</h3><ol>${lines}</ol>`;
+}).join("");
+</script>
+</body>
+</html>
