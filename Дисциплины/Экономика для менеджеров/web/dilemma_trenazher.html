@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: дилемма заключённых</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --green:#16a34a;
+  --red:#dc2626;
+  --amber:#d97706;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.back{display:inline-block;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:6px}
+.back:hover{color:var(--indigo)}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:6px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.8rem}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;align-items:center}
+.btns .lbl{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase}
+.btn{padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;font:inherit;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer}
+.btn:hover,.btn.on{border-color:#c7d2fe;color:var(--indigo-dk);background:var(--indigo-lt)}
+.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:10px}
+.box{border:1px solid var(--border);border-radius:12px;padding:8px;background:#fcfcff}
+.box h2{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+table{border-collapse:separate;border-spacing:4px;width:100%;font-size:.8rem}
+th{font-weight:800;color:var(--muted);font-size:.72rem;text-align:center}
+td.cell{border:2px solid var(--border);border-radius:10px;padding:6px 4px;text-align:center;background:#fff;transition:.2s}
+td.cell.nash{border-color:var(--amber);background:#fffbeb}
+td.cell.best{box-shadow:inset 0 0 0 2px #86efac}
+td.cell.last{outline:3px solid var(--indigo);outline-offset:1px}
+td.cell input{width:46px;font:inherit;font-weight:800;text-align:center;border:1px solid var(--border);border-radius:6px;padding:2px}
+td.cell .who{font-size:.6rem;color:var(--muted);font-weight:700}
+.tag{display:inline-block;font-size:.6rem;font-weight:800;border-radius:6px;padding:1px 5px;margin-top:3px}
+.tag.n{background:#fde68a;color:#92400e}
+.tag.b{background:#dcfce7;color:#166534}
+.analysis{font-size:.8rem;margin-top:6px}
+.analysis b{color:var(--indigo-dk)}
+.play .choice{display:flex;gap:6px;margin:6px 0}
+.play .choice .btn{flex:1;padding:8px;font-size:.82rem;color:var(--text)}
+.score{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:6px 0}
+.kpi{border:1px solid var(--border);border-radius:10px;padding:5px;background:#f8fafc;text-align:center}
+.kpi .k-l{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.kpi .k-v{font-size:1.05rem;font-weight:900}
+.log{font-size:.74rem;color:var(--muted);max-height:9.5em;overflow:auto}
+select{font:inherit;font-size:.76rem;border:1px solid var(--border);border-radius:8px;padding:3px 6px}
+.result{border:1px solid #c7d2fe;border-left:5px solid var(--indigo);background:var(--indigo-lt);border-radius:12px;padding:8px 12px;font-size:.84rem;margin-top:8px}
+.result b{color:var(--indigo-dk)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+@media (max-width:700px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html" target="_top">← Все уроки</a>
+<div class="top">
+  <h1>Дилемма заключённых</h1>
+  <span class="sub">Сыграйте сами, потом поменяйте выигрыши и найдите, где дилемма исчезает</span>
+</div>
+<div class="btns">
+  <span class="lbl">Сюжет:</span>
+  <button type="button" class="btn" data-g="prison">Бонни и Клайд (годы тюрьмы)</button>
+  <button type="button" class="btn" data-g="money">Дед Мороз (млн ₽)</button>
+  <button type="button" class="btn" data-g="opec">Картель ОПЕК (прибыль, млрд $)</button>
+</div>
+<div class="grid">
+  <div class="box">
+    <h2>Матрица выигрышей (можно менять числа)</h2>
+    <table id="matrix"></table>
+    <div class="analysis" id="analysis" aria-live="polite"></div>
+  </div>
+  <div class="box play">
+    <h2>Игра: вы — <span id="me-name"></span></h2>
+    <label style="font-size:.76rem;font-weight:700;color:var(--muted)">Партнёр в соседней камере:
+      <select id="bot">
+        <option value="selfish">рациональный эгоист</option>
+        <option value="tit">зеркало (повторяет ваш прошлый ход)</option>
+        <option value="random">непредсказуемый</option>
+        <option value="loyal">верный партнёр</option>
+      </select>
+    </label>
+    <div class="choice">
+      <button type="button" class="btn" id="play0"></button>
+      <button type="button" class="btn" id="play1"></button>
+    </div>
+    <div class="score">
+      <div class="kpi"><div class="k-l">Раунд</div><div class="k-v" id="k-r">0</div></div>
+      <div class="kpi"><div class="k-l">Вы, итого</div><div class="k-v" id="k-me">0</div></div>
+      <div class="kpi"><div class="k-l">Партнёр, итого</div><div class="k-v" id="k-him">0</div></div>
+    </div>
+    <div class="log" id="log"></div>
+    <button type="button" class="btn" id="reset" style="margin-top:6px">Начать заново</button>
+  </div>
+</div>
+<div class="result" id="result" aria-live="polite">Сделайте первый ход: решение принимаете в одиночку, договориться с партнёром нельзя.</div>
+
+<script>
+/* Матрица: M[i][j] = [выигрыш строки, выигрыш столбца]; i — ход «строки» (вы), j — ход «столбца» (партнёр).
+   Стратегия 0 — кооперация (молчать / отказаться / соблюдать квоту), 1 — предать (сознаться / согласиться / нарастить добычу).
+   Равновесие по Нэшу — клетка, где ни одному игроку не выгодно в одиночку сменить ход. */
+const GAMES = {
+  prison: { me: "Бонни", him: "Клайд", s: ["молчать", "сознаться"], unit: "лет",
+    m: [[[-1, -1], [-25, 0]], [[0, -25], [-8, -8]]] },
+  money: { me: "президент", him: "Ирина Геннадьевна", s: ["отказаться (2 млн партнёру)", "согласиться (1 млн себе)"], unit: "млн",
+    m: [[[2, 2], [0, 3]], [[3, 0], [1, 1]]] },
+  opec: { me: "Иран", him: "Ирак", s: ["соблюдать квоту", "тайно добывать больше"], unit: "млрд $",
+    m: [[[10, 10], [4, 14]], [[14, 4], [6, 6]]] },
+};
+const $ = (id) => document.getElementById(id);
+let game = "prison", M, round = 0, sumMe = 0, sumHim = 0, lastMine = null, lastCell = null;
+
+function load(g) {
+  game = g;
+  M = JSON.parse(JSON.stringify(GAMES[g].m));
+  reset();
+}
+function reset() {
+  round = 0; sumMe = 0; sumHim = 0; lastMine = null; lastCell = null;
+  $("log").innerHTML = "";
+  $("result").innerHTML = "Сделайте первый ход: решение принимаете в одиночку, договориться с партнёром нельзя.";
+  draw();
+}
+
+function analyse() {
+  // Лучшие ответы
+  const bestRow = [0, 1].map((j) => (M[0][j][0] > M[1][j][0] ? [0] : M[0][j][0] < M[1][j][0] ? [1] : [0, 1]));
+  const bestCol = [0, 1].map((i) => (M[i][0][1] > M[i][1][1] ? [0] : M[i][0][1] < M[i][1][1] ? [1] : [0, 1]));
+  const nash = [];
+  for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) if (bestRow[j].includes(i) && bestCol[i].includes(j)) nash.push([i, j]);
+  const domRow = bestRow[0].length === 1 && bestRow[1].length === 1 && bestRow[0][0] === bestRow[1][0] ? bestRow[0][0] : null;
+  const domCol = bestCol[0].length === 1 && bestCol[1].length === 1 && bestCol[0][0] === bestCol[1][0] ? bestCol[0][0] : null;
+  // Есть ли клетка лучше равновесия для обоих
+  let better = null;
+  nash.forEach(([i, j]) => {
+    for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++)
+      if (M[a][b][0] > M[i][j][0] && M[a][b][1] > M[i][j][1]) better = [a, b, i, j];
+  });
+  return { nash, domRow, domCol, better };
+}
+
+function draw() {
+  const G = GAMES[game], A = analyse();
+  $("me-name").textContent = G.me;
+  $("play0").textContent = G.s[0];
+  $("play1").textContent = G.s[1];
+  let h = `<tr><th></th><th>${G.him}: ${G.s[0]}</th><th>${G.him}: ${G.s[1]}</th></tr>`;
+  for (let i = 0; i < 2; i++) {
+    h += `<tr><th>${G.me}: ${G.s[i]}</th>`;
+    for (let j = 0; j < 2; j++) {
+      const isN = A.nash.some(([a, b]) => a === i && b === j);
+      const isB = A.better && A.better[0] === i && A.better[1] === j;
+      const isL = lastCell && lastCell[0] === i && lastCell[1] === j;
+      h += `<td class="cell${isN ? " nash" : ""}${isB ? " best" : ""}${isL ? " last" : ""}">
+        <div class="who">${G.me} ; ${G.him}</div>
+        <input type="number" step="1" value="${M[i][j][0]}" data-i="${i}" data-j="${j}" data-k="0" aria-label="Выигрыш ${G.me}">
+        <input type="number" step="1" value="${M[i][j][1]}" data-i="${i}" data-j="${j}" data-k="1" aria-label="Выигрыш ${G.him}">
+        ${isN ? '<div><span class="tag n">равновесие по Нэшу</span></div>' : ""}${isB ? '<div><span class="tag b">лучше для обоих</span></div>' : ""}
+      </td>`;
+    }
+    h += "</tr>";
+  }
+  $("matrix").innerHTML = h;
+  $("matrix").querySelectorAll("input").forEach((inp) => inp.addEventListener("change", () => {
+    M[inp.dataset.i][inp.dataset.j][inp.dataset.k] = Number(inp.value) || 0;
+    draw();
+  }));
+
+  let t = "";
+  if (A.domRow !== null) t += `Доминирующая стратегия ${G.me}: <b>${G.s[A.domRow]}</b> — выгоднее при любом ходе партнёра. `;
+  else t += `У игрока «${G.me}» нет доминирующей стратегии — лучший ход зависит от партнёра. `;
+  if (A.domCol !== null) t += `У партнёра («${G.him}»): <b>${G.s[A.domCol]}</b>. `;
+  t += A.nash.length ? `Равновесие по Нэшу (жёлтая рамка): ${A.nash.map(([i, j]) => `«${G.s[i]} / ${G.s[j]}» (${M[i][j][0]}; ${M[i][j][1]})`).join(", ")}. ` : "Равновесия в чистых стратегиях нет. ";
+  if (A.better) t += `<b>Это дилемма:</b> клетка с зелёной рамкой (${M[A.better[0]][A.better[1]][0]}; ${M[A.better[0]][A.better[1]][1]}) лучше для обоих, но без сговора рациональные игроки до неё не доходят.`;
+  else t += `Дилеммы нет: равновесие и так лучшее для обоих. Попробуйте вернуть числа сюжета.`;
+  $("analysis").innerHTML = t;
+}
+
+function botMove() {
+  const bot = $("bot").value;
+  if (bot === "loyal") return 0;
+  if (bot === "random") return Math.random() < 0.5 ? 0 : 1;
+  if (bot === "tit") return lastMine === null ? 0 : lastMine;
+  const A = analyse();
+  if (A.domCol !== null) return A.domCol;
+  return M[0][0][1] + M[1][0][1] >= M[0][1][1] + M[1][1][1] ? 0 : 1;
+}
+
+function play(mine) {
+  const G = GAMES[game], his = botMove();
+  const [pMe, pHim] = M[mine][his];
+  round++; sumMe += pMe; sumHim += pHim; lastMine = mine; lastCell = [mine, his];
+  $("k-r").textContent = round;
+  $("k-me").textContent = sumMe;
+  $("k-him").textContent = sumHim;
+  $("log").insertAdjacentHTML("afterbegin", `<div>Раунд ${round}: вы — «${G.s[mine]}», партнёр — «${G.s[his]}» → ${pMe} ; ${pHim} ${G.unit}</div>`);
+  let r = "";
+  if (mine === 1 && his === 1) r = `Оба выбрали «${G.s[1]}» — это и есть <b>равновесие по Нэшу</b>: ни одному в одиночку менять ход невыгодно. Но вместе вы получили ${pMe + pHim} — хуже, чем если бы оба выбрали «${G.s[0]}» (${M[0][0][0] + M[0][0][1]}). <b>Рационально для каждого ≠ выгодно для всех.</b>`;
+  else if (mine === 0 && his === 1) r = `Вы доверились — партнёр предал: вы ${pMe}, он ${pHim}. Именно этого риска боялась команда в аудитории: «минус 8 и минус 25 — это разные вещи».`;
+  else if (mine === 1 && his === 0) r = `Вы предали доверившегося партнёра и получили лучший для себя исход (${pMe}). Если игра повторяется, «зеркало» ответит тем же в следующем раунде.`;
+  else r = `Оба выбрали «${G.s[0]}» — лучший исход для обоих (${pMe}; ${pHim}). Но это не равновесие: каждому выгодно тайно сменить ход. Так распадаются картели.`;
+  if ($("bot").value === "tit" && round >= 3) r += " Против «зеркала» в повторяющейся игре кооперация окупается.";
+  $("result").innerHTML = r;
+  draw();
+}
+
+document.querySelectorAll("[data-g]").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll("[data-g]").forEach((x) => x.classList.toggle("on", x === b));
+  load(b.dataset.g);
+}));
+$("play0").addEventListener("click", () => play(0));
+$("play1").addEventListener("click", () => play(1));
+$("reset").addEventListener("click", reset);
+$("bot").addEventListener("change", reset);
+document.querySelector('[data-g="prison"]').classList.add("on");
+load("prison");
+</script>
+</body>
+</html>

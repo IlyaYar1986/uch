@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: монополия против конкуренции</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --green:#16a34a;
+  --red:#dc2626;
+  --amber:#d97706;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.back{display:inline-block;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:6px}
+.back:hover{color:var(--indigo)}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:6px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.8rem}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.btn{padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;font:inherit;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer}
+.btn:hover,.btn.on{border-color:#c7d2fe;color:var(--indigo-dk);background:var(--indigo-lt)}
+.sep{width:1px;background:var(--border);margin:0 4px}
+.chart-box{border:1px solid var(--border);border-radius:12px;padding:4px;background:#fcfcff}
+svg{width:100%;height:auto;display:block;max-height:42vh}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 16px;margin:8px 0;font-size:.78rem;color:var(--muted)}
+.controls label{display:flex;gap:6px;align-items:center;font-weight:700;justify-content:space-between}
+.controls input[type=range]{accent-color:var(--indigo);flex:1;min-width:80px}
+.controls span{min-width:34px;text-align:right;color:var(--text)}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0}
+.kpi{border:1px solid var(--border);border-radius:10px;padding:5px;background:#f8fafc;text-align:center}
+.kpi .k-l{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.kpi .k-v{font-size:1.05rem;font-weight:900}
+.result{border:1px solid #c7d2fe;border-left:5px solid var(--indigo);background:var(--indigo-lt);border-radius:12px;padding:8px 12px;font-size:.84rem}
+.result b{color:var(--indigo-dk)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--indigo-dk);outline-offset:2px}
+@media (max-width:640px){.kpis{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html" target="_top">← Все уроки</a>
+<div class="top">
+  <h1>Монополия против конкуренции</h1>
+  <span class="sub">Объём — по MR = MC, цена — по кривой спроса; кто сколько выигрывает</span>
+</div>
+<div class="btns">
+  <button type="button" class="btn" data-m="mono">Монополия</button>
+  <button type="button" class="btn" data-m="comp">Конкурентный рынок</button>
+  <button type="button" class="btn" data-m="discr">Монополия + дискриминация 1-й степени</button>
+  <span class="sep"></span>
+  <button type="button" class="btn" data-p="t3">Задача 3: P = 90 − 2Q, MC = 30</button>
+  <button type="button" class="btn" data-p="t2">Задача 2: MR = 120 − Q, MC = 20 + 3Q</button>
+</div>
+<div class="chart-box">
+  <svg id="chart" viewBox="0 0 600 230" role="img" aria-label="Спрос, предельный доход, предельные издержки и излишки"></svg>
+</div>
+<div class="controls">
+  <label for="a">Спрос: P = a − bQ, a = <input type="range" id="a" min="60" max="200" step="5" value="90"><span id="a-v"></span></label>
+  <label for="b">наклон спроса b = <input type="range" id="b" min="0.5" max="4" step="0.5" value="2"><span id="b-v"></span></label>
+  <label for="c">MC = c + eQ, c = <input type="range" id="c" min="0" max="80" step="5" value="30"><span id="c-v"></span></label>
+  <label for="e">рост MC e = <input type="range" id="e" min="0" max="4" step="0.5" value="0"><span id="e-v"></span></label>
+</div>
+<div class="kpis">
+  <div class="kpi"><div class="k-l">Объём Q</div><div class="k-v" id="k-q"></div></div>
+  <div class="kpi"><div class="k-l">Цена P</div><div class="k-v" id="k-p"></div></div>
+  <div class="kpi"><div class="k-l">Излишек покупателей</div><div class="k-v" id="k-cs" style="color:#2563eb"></div></div>
+  <div class="kpi"><div class="k-l">Выигрыш фирмы</div><div class="k-v" id="k-ps" style="color:#16a34a"></div></div>
+  <div class="kpi"><div class="k-l">Общественные потери</div><div class="k-v" id="k-dwl" style="color:#dc2626"></div></div>
+</div>
+<div class="result" id="result" aria-live="polite"></div>
+
+<script>
+/* Спрос P = a − bQ, MR = a − 2bQ, MC = c + eQ.
+   Монополия: MR = MC → Qm = (a − c)/(2b + e), Pm = a − bQm.
+   Конкуренция: P = MC → Qc = (a − c)/(b + e), Pc = a − bQc.
+   Дискриминация 1-й степени: каждому — его максимальная цена, объём = Qc, излишек покупателей = 0.
+   Выигрыш фирмы — излишек производителя (выручка минус переменные издержки, без FC). */
+const $ = (id) => document.getElementById(id);
+const els = ["a", "b", "c", "e"].reduce((o, k) => (o[k] = $(k), o), {});
+const v = (k) => Number(els[k].value);
+const PRESETS = { t3: { a: 90, b: 2, c: 30, e: 0 }, t2: { a: 120, b: 0.5, c: 20, e: 3 } };
+let mode = "mono";
+const fmt = (x, d = 1) => x.toLocaleString("ru-RU", { maximumFractionDigits: d });
+
+function render() {
+  const a = v("a"), b = v("b"), c = v("c"), e = v("e");
+  ["a", "b", "c", "e"].forEach((k) => ($(`${k}-v`).textContent = fmt(v(k))));
+  if (c >= a) { $("result").innerHTML = "MC выше максимальной цены спроса — производить невыгодно никому. Уменьшите c или увеличьте a."; $("chart").innerHTML = ""; return; }
+  const Qm = (a - c) / (2 * b + e), Pm = a - b * Qm, MCm = c + e * Qm;
+  const Qc = (a - c) / (b + e), Pc = a - b * Qc;
+  const Qmax = (a / b) * 1.02, Pmax = a * 1.08;
+  const X = (q) => 50 + q * (520 / Qmax), Y = (p) => 205 - p * (190 / Pmax);
+
+  let s = `<line x1="50" y1="205" x2="585" y2="205" stroke="#94a3b8"/><line x1="50" y1="205" x2="50" y2="8" stroke="#94a3b8"/>`;
+  s += `<text x="580" y="222" font-size="11" fill="#64748b" text-anchor="end">Q</text><text x="38" y="16" font-size="11" fill="#64748b">P</text>`;
+
+  let Q, P, CS, PS, DWL;
+  if (mode === "comp") {
+    Q = Qc; P = Pc;
+    CS = 0.5 * Qc * (a - Pc); PS = 0.5 * Qc * (Pc - c); DWL = 0;
+    s += `<polygon points="${X(0)},${Y(a)} ${X(Qc)},${Y(Pc)} ${X(0)},${Y(Pc)}" fill="#2563eb" opacity=".18"/>`;
+    s += `<polygon points="${X(0)},${Y(Pc)} ${X(Qc)},${Y(Pc)} ${X(0)},${Y(c)}" fill="#16a34a" opacity=".2"/>`;
+  } else if (mode === "discr") {
+    Q = Qc; P = Pc;
+    CS = 0; PS = 0.5 * Qc * (a - c); DWL = 0;
+    s += `<polygon points="${X(0)},${Y(a)} ${X(Qc)},${Y(Pc)} ${X(0)},${Y(c)}" fill="#16a34a" opacity=".22"/>`;
+  } else {
+    Q = Qm; P = Pm;
+    CS = 0.5 * Qm * (a - Pm);
+    PS = Qm * (Pm - c) - 0.5 * e * Qm * Qm;
+    DWL = 0.5 * (Qc - Qm) * (Pm - MCm);
+    s += `<polygon points="${X(0)},${Y(a)} ${X(Qm)},${Y(Pm)} ${X(0)},${Y(Pm)}" fill="#2563eb" opacity=".18"/>`;
+    s += `<polygon points="${X(0)},${Y(Pm)} ${X(Qm)},${Y(Pm)} ${X(Qm)},${Y(MCm)} ${X(0)},${Y(c)}" fill="#16a34a" opacity=".2"/>`;
+    s += `<polygon points="${X(Qm)},${Y(Pm)} ${X(Qc)},${Y(Pc)} ${X(Qm)},${Y(MCm)}" fill="#dc2626" opacity=".35"/>`;
+  }
+
+  // Кривые
+  s += `<line x1="${X(0)}" y1="${Y(a)}" x2="${X(a / b)}" y2="${Y(0)}" stroke="#16a34a" stroke-width="2.4"/>`;
+  s += `<text x="${X(a / b) - 6}" y="${Y(0) - 6}" font-size="12" fill="#16a34a" font-weight="800" text-anchor="end">D</text>`;
+  if (mode !== "comp") {
+    s += `<line x1="${X(0)}" y1="${Y(a)}" x2="${X(a / (2 * b))}" y2="${Y(0)}" stroke="#d97706" stroke-width="2" stroke-dasharray="6 3"/>`;
+    s += `<text x="${X(a / (2 * b)) + 4}" y="${Y(0) - 6}" font-size="12" fill="#d97706" font-weight="800">MR</text>`;
+  }
+  const qEnd = Math.min(Qmax, (Pmax - c) / Math.max(e, 1e-9));
+  s += `<line x1="${X(0)}" y1="${Y(c)}" x2="${X(qEnd)}" y2="${Y(c + e * qEnd)}" stroke="#4338ca" stroke-width="2.4"/>`;
+  s += `<text x="${X(qEnd) - 4}" y="${Y(c + e * qEnd) - 6}" font-size="12" fill="#4338ca" font-weight="800" text-anchor="end">MC</text>`;
+
+  // Точки
+  s += `<circle cx="${X(Qc)}" cy="${Y(Pc)}" r="4.5" fill="#0f172a"/><text x="${X(Qc) + 7}" y="${Y(Pc) - 6}" font-size="11" font-weight="800">C</text>`;
+  s += `<line x1="${X(Qc)}" y1="${Y(Pc)}" x2="${X(Qc)}" y2="205" stroke="#0f172a" stroke-dasharray="3 3"/>`;
+  s += `<text x="${X(Qc)}" y="220" font-size="11" text-anchor="middle" font-weight="700">Qc = ${fmt(Qc)}</text>`;
+  if (mode === "mono") {
+    s += `<line x1="${X(Qm)}" y1="${Y(Pm)}" x2="${X(Qm)}" y2="205" stroke="#d97706" stroke-dasharray="3 3"/>`;
+    s += `<line x1="50" y1="${Y(Pm)}" x2="${X(Qm)}" y2="${Y(Pm)}" stroke="#d97706" stroke-dasharray="3 3"/>`;
+    s += `<circle cx="${X(Qm)}" cy="${Y(MCm)}" r="3.5" fill="#d97706"/>`;
+    s += `<circle cx="${X(Qm)}" cy="${Y(Pm)}" r="5" fill="#d97706"/><text x="${X(Qm) + 7}" y="${Y(Pm) - 6}" font-size="11" font-weight="800" fill="#d97706">M</text>`;
+    s += `<text x="${X(Qm)}" y="220" font-size="11" text-anchor="middle" font-weight="700" fill="#d97706">Qm = ${fmt(Qm)}</text>`;
+    s += `<text x="46" y="${Y(Pm) + 4}" font-size="11" text-anchor="end" font-weight="700" fill="#d97706">Pm</text>`;
+  }
+  s += `<text x="46" y="${Y(Pc) + 4}" font-size="11" text-anchor="end" font-weight="700">Pc</text>`;
+  $("chart").innerHTML = s;
+
+  $("k-q").textContent = fmt(Q);
+  $("k-p").textContent = mode === "discr" ? "у каждого своя" : fmt(P);
+  $("k-cs").textContent = fmt(CS, 0);
+  $("k-ps").textContent = fmt(PS, 0);
+  $("k-dwl").textContent = fmt(DWL, 0);
+
+  let msg;
+  if (mode === "mono") msg = `Монополист ищет <b>MR = MC</b>: a − 2bQ = c + eQ → <b>Qm = ${fmt(Qm)}</b>. Цену берёт с кривой спроса — точка M: <b>Pm = ${fmt(Pm)}</b>. MR падает вдвое быстрее цены, поэтому объём меньше конкурентного (Qc = ${fmt(Qc)}), а цена выше (Pc = ${fmt(Pc)}). Красный треугольник — <b>общественные потери ${fmt(DWL, 0)}</b>: товар, за который покупатели готовы платить больше, чем он стоит в производстве, просто не создан.`;
+  else if (mode === "comp") msg = `На конкурентном рынке фирмы — price-taker, выпуск идёт до <b>P = MC</b>: Qc = ${fmt(Qc)}, Pc = ${fmt(Pc)}. Потерь нет: создан весь товар, за который готовы заплатить хотя бы его предельные издержки. Сравните с монополией — излишек покупателей здесь больше.`;
+  else msg = `<b>Дискриминация 1-й степени:</b> каждый покупатель платит свою максимальную цену — монополист «идёт по линии спроса». Ему выгодно продавать до Qc = ${fmt(Qc)}, поэтому общественных потерь нет, но <b>весь излишек покупателей забрала фирма</b>: ${fmt(PS, 0)}. Это возможно только у price-maker, который полностью контролирует продажи.`;
+  $("result").innerHTML = msg;
+  document.querySelectorAll("[data-m]").forEach((btn) => btn.classList.toggle("on", btn.dataset.m === mode));
+  document.querySelectorAll("[data-p]").forEach((btn) => {
+    const p = PRESETS[btn.dataset.p];
+    btn.classList.toggle("on", p.a === a && p.b === b && p.c === c && p.e === e);
+  });
+}
+
+Object.values(els).forEach((el) => el.addEventListener("input", render));
+document.querySelectorAll("[data-m]").forEach((btn) => btn.addEventListener("click", () => { mode = btn.dataset.m; render(); }));
+document.querySelectorAll("[data-p]").forEach((btn) => btn.addEventListener("click", () => {
+  const p = PRESETS[btn.dataset.p];
+  Object.keys(p).forEach((k) => (els[k].value = p[k]));
+  mode = "mono";
+  render();
+}));
+render();
+</script>
+</body>
+</html>

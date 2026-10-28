@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Экономика для менеджеров — занятие 6: рыночные структуры</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --indigo:#6366f1;
+  --indigo-dk:#4338ca;
+  --indigo-lt:#eef2ff;
+  --cyan:#0ea5e9;
+  --cyan-lt:#e0f2fe;
+  --amber:#f59e0b;
+  --amber-lt:#fffbeb;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+  --nav-h:56px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(99,102,241,.14),transparent 32%),
+    radial-gradient(circle at 85% 6%,rgba(14,165,233,.13),transparent 34%),
+    linear-gradient(180deg,#f8fafc 0%,#eef2ff 30%,#f8fafc 100%);
+  color:var(--text);
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;z-index:900;
+  gap:2px;overflow-x:auto;scrollbar-width:none;
+}
+nav.top::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:.93rem;color:var(--indigo-dk);white-space:nowrap;margin:0 10px 0 4px;flex-shrink:0}
+.nav-sep{width:1px;height:18px;background:var(--border);margin:0 6px;flex-shrink:0}
+.nav-link{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;transition:color .2s,background .2s;flex-shrink:0}
+.nav-link:hover,.nav-link.active{color:var(--indigo);background:var(--indigo-lt)}
+.nav-link:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* HERO */
+#hero{
+  min-height:100vh;padding:calc(var(--nav-h) + 56px) 24px 64px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
+.hero-badge{padding:5px 14px;background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:100px;font-size:.78rem;font-weight:700;color:var(--indigo-dk)}
+.hero-title{font-size:clamp(2rem,5.5vw,3.6rem);font-weight:900;line-height:1.12;letter-spacing:-1.5px;margin-bottom:16px;max-width:900px}
+.hero-title em{color:var(--indigo);font-style:normal}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:660px;margin-bottom:36px}
+.hero-img{max-width:900px;width:100%;margin-bottom:40px}
+.hero-nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:820px}
+.hero-nav a{padding:8px 16px;border-radius:10px;background:var(--card);border:1px solid var(--border);font-size:.82rem;font-weight:600;color:var(--text);text-decoration:none;box-shadow:0 2px 8px rgba(15,23,42,.05);transition:transform .15s,box-shadow .15s}
+.hero-nav a:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,.15)}
+
+/* SECTIONS */
+.sec{max-width:1180px;margin:0 auto;padding:72px 24px}
+.sec-head{margin-bottom:36px}
+.num-badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:13px;font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:14px}
+.n1{background:linear-gradient(135deg,#6366f1,#818cf8)}
+.n2{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
+.n3{background:linear-gradient(135deg,#8b5cf6,#a78bfa)}
+.n4{background:linear-gradient(135deg,#16a34a,#4ade80)}
+.n5{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+.n6{background:linear-gradient(135deg,#ec4899,#f472b6)}
+.n7{background:linear-gradient(135deg,#dc2626,#f87171)}
+.n8{background:linear-gradient(135deg,#0891b2,#22d3ee)}
+.n9{background:linear-gradient(135deg,#4338ca,#6366f1)}
+.sec-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.sec-desc{font-size:1rem;color:var(--muted);max-width:760px;line-height:1.75}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+
+/* CARD GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.grid .c-name{font-weight:800;margin-bottom:8px;font-size:.96rem}
+.grid p:not(.c-name){color:var(--muted);font-size:.88rem;line-height:1.6}
+
+/* CALLOUTS */
+.note-callout{background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:14px;padding:16px 20px;margin-bottom:24px}
+.note-callout p{color:var(--indigo-dk);font-size:.92rem;line-height:1.7}
+.warn-callout{background:var(--amber-lt);border:1px solid #fcd34d;border-radius:16px;padding:20px 24px;margin-top:20px}
+.warn-callout p{color:#78350f;line-height:1.7;font-size:.93rem}
+
+/* IMAGE CARD + PLACEHOLDER */
+.img-card{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.12);cursor:zoom-in}
+.img-card img{display:block;width:100%;height:auto}
+.img-card .img-missing-caption{display:none}
+.img-card.img-missing{border:2px dashed var(--border);background:var(--indigo-lt);min-height:220px;display:flex;align-items:center;justify-content:center;box-shadow:none;cursor:default}
+.img-card.img-missing img{display:none}
+.img-card.img-missing .img-missing-caption{display:block;color:var(--muted);font-size:.85rem;text-align:center;padding:24px;max-width:340px}
+
+/* VIZ CARD (iframe) */
+.viz{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.viz-bar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#f8fafc;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#febb2c}.dg{background:#27c840}
+.viz-lbl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);flex:1}
+.viz-fs{display:flex;align-items:center;gap:5px;padding:4px 10px;background:transparent;border:1px solid var(--border);border-radius:6px;font-size:.71rem;font-weight:600;color:var(--muted);cursor:pointer;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+.viz-fs:hover{background:var(--indigo-lt);color:var(--indigo);border-color:#c7d2fe}
+.viz iframe{width:100%;border:none;display:block}
+
+/* PROMPT BOX */
+.prompt-box{background:#0f172a;border-radius:14px;overflow:hidden;margin-bottom:18px}
+.prompt-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#1e293b;color:#e2e8f0;font-size:.82rem;font-weight:700}
+.copy-btn{padding:5px 12px;border-radius:8px;border:1px solid #475569;background:transparent;color:#e2e8f0;font-size:.76rem;font-weight:700;cursor:pointer;transition:background .2s}
+.copy-btn:hover{background:#334155}
+.prompt-box pre{margin:0;padding:18px 16px;color:#e2e8f0;font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+
+/* LIGHTBOX */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.92);z-index:2000;display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:auto}
+.overlay img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.overlay-close{position:absolute;top:18px;right:22px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.overlay-close:hover{background:rgba(255,255,255,.22)}
+.overlay-download{position:absolute;top:18px;right:72px;height:40px;padding:0 16px;border-radius:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;z-index:2}
+.overlay-download:hover{background:rgba(255,255,255,.22)}
+
+/* FULLSCREEN IFRAME OVERLAY */
+#fs-overlay{position:fixed;inset:0;background:rgba(2,6,23,.94);z-index:2100;display:none;flex-direction:column}
+#fs-overlay.open{display:flex}
+#fs-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(255,255,255,.08)}
+#fs-title{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.65);flex:1}
+#fs-close{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.8);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#fs-close:hover{background:rgba(255,255,255,.2)}
+#fs-frame{flex:1;border:none;background:#fff}
+
+/* CHECKLIST */
+.checklist-progress-bar{height:10px;border-radius:100px;background:var(--indigo-lt);overflow:hidden;margin-bottom:20px}
+.checklist-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--indigo),var(--cyan));border-radius:100px;transition:width .3s ease}
+.checklist-items{list-style:none;display:flex;flex-direction:column;gap:12px}
+.checklist-items label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.95rem}
+.checklist-items input{width:18px;height:18px;accent-color:var(--indigo);cursor:pointer;flex-shrink:0}
+.checklist-done{margin-top:18px;padding:12px 16px;background:var(--green-lt);color:var(--green);border-radius:10px;font-weight:700}
+
+/* QUIZ */
+.quiz{display:flex;flex-direction:column;gap:18px}
+.quiz-question{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.quiz-text{font-weight:700;margin-bottom:12px}
+.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.quiz-options label{display:flex;align-items:center;gap:8px;font-size:.92rem;cursor:pointer}
+.quiz-options label.quiz-correct-answer{color:var(--green);font-weight:700}
+.quiz-options input{accent-color:var(--indigo)}
+.quiz-check{padding:8px 16px;border-radius:9px;border:none;background:var(--indigo);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer}
+.quiz-check:hover{background:var(--indigo-dk)}
+.quiz-feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem}
+.quiz-feedback.correct{background:var(--green-lt);color:var(--green)}
+.quiz-feedback.incorrect{background:var(--red-lt);color:var(--red)}
+.quiz-score-box{text-align:center;font-weight:800;color:var(--indigo-dk)}
+
+/* CONCLUSION */
+.conclusion-list{list-style:none;counter-reset:concl;display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.conclusion-list li{counter-increment:concl;padding-left:38px;position:relative;font-size:1rem}
+.conclusion-list li::before{content:counter(concl);position:absolute;left:0;top:-2px;width:26px;height:26px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+.svc-link{color:var(--indigo);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+
+/* SCROLL REVEAL */
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.fade.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.fade{opacity:1;transform:none;transition:none}}
+@media (max-width:900px){.sec{padding:56px 18px}}
+
+
+/* ДОПОЛНИТЕЛЬНЫЕ БЛОКИ УЧЕБНОЙ СТРАНИЦЫ */
+.legend-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:-14px 0 30px;max-width:900px}
+.legend-row span{font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:var(--card);color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.card h3{font-size:1.02rem;font-weight:800;margin-bottom:8px}
+.card p,.card li{font-size:.94rem;line-height:1.7}
+.card ul,.card ol{padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.lecture-tag,.extra-tag,.practice-tag,.trap-tag,.opinion-tag{display:inline-block;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:100px;margin-bottom:8px}
+.lecture-tag{background:var(--indigo-lt);color:var(--indigo-dk)}
+.extra-tag{background:var(--cyan-lt);color:#0369a1}
+.practice-tag{background:var(--green-lt);color:var(--green)}
+.trap-tag{background:var(--red-lt);color:var(--red)}
+.opinion-tag{background:var(--amber-lt);color:#92400e}
+.extra{background:linear-gradient(180deg,#f0f9ff,#fff);border:1px solid #bae6fd;border-left:5px solid var(--cyan);border-radius:16px;padding:18px 22px}
+.practice{background:linear-gradient(180deg,var(--green-lt),#fff);border:1px solid #bbf7d0;border-left:5px solid var(--green);border-radius:16px;padding:18px 22px}
+.trap{background:var(--red-lt);border:1px solid #fecaca;border-left:5px solid var(--red);border-radius:16px;padding:16px 22px}
+.opinion{background:var(--amber-lt);border:1px solid #fcd34d;border-left:5px solid var(--amber);border-radius:16px;padding:18px 22px}
+.extra h3,.practice h3,.trap h3,.opinion h3{font-size:1rem;font-weight:800;margin-bottom:6px}
+.extra p,.extra li,.practice p,.practice li,.trap p,.trap li,.opinion p,.opinion li{font-size:.93rem;line-height:1.7}
+.extra ul,.practice ul,.practice ol,.trap ul,.opinion ul{padding-left:20px;display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.src{font-size:.8rem;color:var(--muted);margin-top:8px}
+.src a{color:#0369a1}
+.def{background:var(--card);border:1px solid #c7d2fe;border-left:5px solid var(--indigo);border-radius:14px;padding:14px 20px;font-size:1rem;line-height:1.7}
+.def b{color:var(--indigo-dk)}
+.formula{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:clamp(1.2rem,2.6vw,1.7rem);font-weight:800;text-align:center;padding:16px;background:var(--indigo-lt);border-radius:14px;color:var(--indigo-dk);letter-spacing:.5px}
+details.ref{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0 18px}
+details.ref + details.ref{margin-top:8px}
+details.ref summary{cursor:pointer;padding:12px 0;font-weight:800;font-size:.93rem;list-style:none;display:flex;gap:8px;align-items:center}
+details.ref summary::before{content:"🧭"}
+details.ref summary::-webkit-details-marker{display:none}
+details.ref[open] summary{border-bottom:1px dashed var(--border)}
+details.ref .ref-body{padding:10px 0 14px;font-size:.92rem;line-height:1.7;color:#334155}
+details.ref .ref-body p + p{margin-top:6px}
+table.cmp{width:100%;border-collapse:collapse;background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--border);font-size:.92rem}
+table.cmp th{background:var(--indigo-lt);color:var(--indigo-dk);text-align:left;padding:10px 14px;font-size:.84rem}
+table.cmp td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top;line-height:1.6}
+table.cmp td:first-child{font-weight:700}
+.table-wrap{overflow-x:auto}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.flow .step{flex:1 1 140px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;position:relative}
+.flow .step b{display:block;color:var(--indigo-dk);font-size:.92rem}
+.flow .step span{font-size:.84rem;color:var(--muted)}
+.flow .step .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.78rem;font-weight:800;align-items:center;justify-content:center;margin-bottom:6px}
+.quiz-feedback .explain{display:block;margin-top:6px;color:var(--text);font-weight:500}
+
+footer{text-align:center;padding:32px 20px 48px;color:var(--muted);font-size:.85rem}
+/* podcast */
+.podcast{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;max-width:760px;width:100%;margin:0 auto 28px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 10px rgba(15,23,42,.06);text-align:left}
+.podcast-head{flex:1 1 220px}
+.podcast-title{font-weight:800;font-size:1rem;color:var(--indigo-dk)}
+.podcast-meta{font-size:.82rem;color:var(--muted)}
+.podcast audio{flex:1 1 280px;height:40px}
+.podcast-dl{padding:9px 16px;border-radius:10px;background:var(--indigo);color:#fff;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap}
+.podcast-dl:hover{filter:brightness(1.1)}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Навигация по странице">
+  <a class="nav-link" href="../index.html">← Все уроки</a>
+  <span class="nav-sep"></span>
+  <span class="nav-logo">Экономика · занятие 6</span>
+  <span class="nav-sep"></span>
+  <a class="nav-link" href="#s1">Разбор ДЗ</a>
+  <a class="nav-link" href="#s2">Таблица рынков</a>
+  <a class="nav-link" href="#s3">Конкуренция</a>
+  <a class="nav-link" href="#s4">Фирма и рынок</a>
+  <a class="nav-link" href="#s5">Монополия</a>
+  <a class="nav-link" href="#s6">Виды монополий</a>
+  <a class="nav-link" href="#s7">Бренды</a>
+  <a class="nav-link" href="#s8">Дискриминация</a>
+  <a class="nav-link" href="#s9">Олигополия</a>
+  <a class="nav-link" href="#s10">Дилемма</a>
+  <a class="nav-link" href="#dz">Тест</a>
+  <a class="nav-link" href="#checklist">Чек-лист</a>
+  <a class="nav-link" href="#quiz">Квиз</a>
+</nav>
+
+<header id="hero">
+  <div class="hero-badges">
+    <span class="hero-badge">Занятие 6 · 28.10.2026</span>
+    <span class="hero-badge">Теория отраслевых рынков</span>
+    <span class="hero-badge">Последнее занятие и тест — 05.11</span>
+  </div>
+  <h1 class="hero-title">Кто на рынке <em>назначает цену</em> — и почему этого не может никто в одиночку</h1>
+  <p class="hero-sub">После этой страницы вы по любому рынку определите его структуру по шести признакам, нарисуете типичную фирму рядом с рынком, найдёте цену и объём монополиста и объясните, почему двое рациональных игроков без сговора приходят к худшему для обоих исходу. Это последняя тема микроэкономики — и она «есть во всех заданиях».</p>
+  <!-- podcast:start -->
+  <!-- podcast:end -->
+  <div class="legend-row" aria-label="Обозначения на странице">
+    <span>📘 Из лекции</span>
+    <span>➕ Дополнение: не из лекции, с источником</span>
+    <span>🧭 Справка: кто это и в чём суть</span>
+    <span>🛠 На практике</span>
+    <span>⚠️ Ловушка теста</span>
+    <span>💬 Мнение преподавателя</span>
+  </div>
+  <figure class="img-card hero-img" data-lightbox>
+    <img src="../png/zanyatie_06/00_karta_zanyatiya.webp" width="1672" height="941" alt="Карта занятия: дорога через рыночный город — от площади с одинаковыми лотками через улицу брендовых бутиков и промзону с тремя заводами к замку; десять остановок с вопросами" loading="eager" fetchpriority="high" onerror="this.closest('.img-card').classList.add('img-missing')">
+    <figcaption class="img-missing-caption">Карта занятия: 10 разделов и их вопросы (промпт 00)</figcaption>
+  </figure>
+  <nav class="hero-nav" aria-label="Разделы страницы">
+    <a href="#s1">1 · Ловушки теста</a>
+    <a href="#s2">2 · Таблица рынков</a>
+    <a href="#s3">3 · Совершенная конкуренция</a>
+    <a href="#s4">4 · Фирма и рынок</a>
+    <a href="#s5">5 · Монополия</a>
+    <a href="#s6">6 · Виды монополий</a>
+    <a href="#s7">7 · Монополистическая конкуренция</a>
+    <a href="#s8">8 · Ценовая дискриминация</a>
+    <a href="#s9">9 · Олигополия</a>
+    <a href="#s10">10 · Дилемма заключённых</a>
+    <a href="#dz">Тест по рынкам</a>
+    <a href="#quiz">Проверить себя</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ══════════ 1 ══════════ -->
+<section class="sec" id="s1">
+  <div class="sec-head fade">
+    <div class="num-badge n1">1</div>
+    <h2 class="sec-title">Разбор домашней работы: три ловушки</h2>
+    <p class="sec-desc">Занятие началось с проверки теста по издержкам. На одном вопросе «слетела» вся группа — запомните его.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_06/01_lovushki_dz.webp" width="1672" height="941" alt="Капканы в тесте: чек «факт оплаты» не равен облаку «если бы да кабы»; часы с тремя стрелками-периодами; две линейки — производная 17,8 и дискретный шаг 15,7" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Три ловушки ДЗ (промпт 01)</figcaption>
+    </figure>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>«Явные издержки — альтернативные издержки в денежной форме» — НЕВЕРНО</h3>
+      <p>«Явные — это <b>факт оплаты ресурсов</b>. При чём тут альтернативные издержки? Альтернативные возникают, когда мы оцениваем норму отдачи на труд и на капитал. Я вас хотела поймать — вас поймала». Формулировка взята из учебника, но по курсу явные (бухгалтерские) издержки — фактическая цена приобретения, а альтернативная оценка — признак неявных.</p>
+      <p><b>Альтернативные издержки — это «если бы да кабы»</b>, сослагательное наклонение (формулировка слушателя, преподаватель её одобрила).</p>
+    </div>
+    <div class="two fade">
+      <div class="def"><b>Периодов три, а не два</b>: мгновенный, краткосрочный, долгосрочный. «В учебниках говорят неправильно. Верим себе».</div>
+      <div class="def"><b>Постоянные издержки — слагаемое без Q.</b> TC = Q² − 10Q + 320 → FC = 320: «если подставим ноль — total cost 320, постоянная часть есть даже в нуле».</div>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · производная или дискретно</span>
+      <h3>MC(4) = 17,8 или 15,7?</h3>
+      <p>Для TC = 48 + 5Q + Q² + 0,1Q³ слушатели получили два ответа. Через производную MC = 5 + 2Q + 0,3Q² = <b>17,8</b>; дискретно TC(4) − TC(3) = 90,4 − 74,7 = <b>15,7</b>. «Оба решения правильные. Производная точнее, но в реальной хозяйственной практике считают дискретно — мало кто выводит функцию».</p>
+      <p>Отсюда и ответ на вопрос о MR = MC: математически оптимум — равенство, а на практике выбирают последнюю единицу, для которой MR ещё не меньше MC.</p>
+    </div>
+    <p class="fade" style="font-size:.9rem">Все ответы теста с разбором — на странице <a href="dz_05.html">домашнего задания 5</a>; они совпали с ключом преподавателя.</p>
+  </div>
+</section>
+
+<!-- ══════════ 2 ══════════ -->
+<section class="sec" id="s2">
+  <div class="sec-head fade">
+    <div class="num-badge n2">2</div>
+    <h2 class="sec-title">Теория отраслевых рынков: четыре модели, шесть параметров</h2>
+    <p class="sec-desc">«Моя самая любимая тема». Разверните лист альбомом и заполняйте таблицу по столбцам — к концу страницы она будет готова.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_06/02_chetyre_modeli.webp" width="1672" height="941" alt="Шкала от «много продавцов» до «один продавец»: толпа лотков, бутики брендов, три завода, замок; совершенная конкуренция слева, три вида несовершенной справа; шесть параметров сравнения" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Четыре модели рынка (промпт 02)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="def"><b>Совершенная конкуренция</b> — идеальная модель рынка, в которой выполнены все условия. Если не выполнено <b>хотя бы одно</b> — это <b>несовершенная конкуренция</b>: монополистическая конкуренция, олигополия, монополия.</div>
+      <div class="def"><b>Главный критерий несовершенной конкуренции: у фирмы есть рыночная власть</b> — возможность устанавливать цену.</div>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · шесть параметров модели (строки таблицы)</span>
+      <ol style="padding-left:20px;display:flex;flex-direction:column;gap:4px">
+        <li><b>Количество продавцов.</b></li>
+        <li><b>Тип продукции</b> — однородная (гомогенная) или дифференцированная (гетерогенная).</li>
+        <li><b>Рыночные барьеры</b> — ограничения, которые не дают войти на рынок.</li>
+        <li><b>Доступ к экономической информации.</b></li>
+        <li><b>Степень влияния на цену.</b></li>
+        <li><b>Примеры рынков.</b></li>
+      </ol>
+      <p style="margin-top:8px">В каждом столбце выделите заливкой «флажок» — главную черту, на которую смотрят в тестах. Флажки собраны в шпаргалке в конце страницы.</p>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Это модели, а не реальные рынки</h3>
+      <p>«В чистом виде такого рынка, возможно, и нет, но большую часть рыночных структур можно распределить по этим типам» — как модели поведения потребителя: у одного человека могут быть черты двух. В тесте ищите <b>признак</b>, а не «похожесть».</p>
+    </div>
+    <details class="ref fade"><summary>🧭 Теория отраслевых рынков и Нобелевские премии</summary><div class="ref-body">
+      <p>Теория отраслевых рынков (industrial organization) изучает, как структура рынка влияет на поведение фирм и цены. ➕ За работы в этой области Нобелевскую премию по экономике получили, в частности, Джордж Стиглер (1982 — регулирование и структура рынков) и Жан Тироль (2014 — «анализ рыночной власти и регулирования»). Источник: <a href="https://www.nobelprize.org/prizes/economic-sciences/2014/summary/" target="_blank" rel="noopener">nobelprize.org</a>.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ══════════ 3 ══════════ -->
+<section class="sec" id="s3">
+  <div class="sec-head fade">
+    <div class="num-badge n3">3</div>
+    <h2 class="sec-title">Совершенная конкуренция: цену диктует рынок</h2>
+    <p class="sec-desc">Первый столбец таблицы. Флажок — price-taker.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_06/03_sovershennaya.webp" width="1672" height="941" alt="Сельская площадь у пожарной части: на всех столах одинаковые огурцы и общая цена 80 ₽; продавец с табличкой 100 ₽ остаётся без покупателей; на заднем плане биржа" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Совершенная конкуренция (промпт 03)</figcaption>
+    </figure>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Параметр</th><th>Совершенная конкуренция</th></tr></thead>
+        <tbody>
+          <tr><td>Продавцы</td><td>очень много, неограниченно; доля одного — <b>меньше 1 %</b> рынка</td></tr>
+          <tr><td>Продукция</td><td><b>однородная, стандартизированная</b> (гомогенная)</td></tr>
+          <tr><td>Барьеры</td><td><b>отсутствуют</b>: легко стать и продавцом, и покупателем</td></tr>
+          <tr><td>Информация</td><td><b>полная</b>: известны цена и объём рынка</td></tr>
+          <tr><td>Влияние на цену</td><td><b>нет — фирма price-taker</b> (ценополучатель, пишется через дефис)</td></tr>
+          <tr><td>Примеры</td><td>идеальная модель, в чистом виде не существует; близко — биржи (зерно, чай, хлопок), валютный рынок, сельский рынок</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · примеры</span>
+      <ul>
+        <li><b>Хлебная биржа в Рыбинске</b>: торговали не хлебом, а зерном — биржевой однородный товар.</li>
+        <li><b>Село Вятское</b>: площадь у пожарки, столы по периметру, «огурцы у всех одинаковые — сорта проверены поколениями». Любой может стать продавцом и покупателем, торг идёт в реальном времени.</li>
+        <li><b>Морепродукты</b> у рыбацкой деревни: ловят все в одном месте, ассортимент одинаковый.</li>
+        <li><b>Валютный обменник</b>, если бы он был просто коммерческой фирмой: курс на бирже 80 — обменник не поставит 100. «Может, конечно, но у него не будет покупателей».</li>
+      </ul>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Маркетплейс — не совершенная конкуренция</h3>
+      <p>Слушатель спросил про Wildberries и Ozon. Если рассматривать конкретный товар — нет: товары брендированы, то есть дифференцированы, а это уже монополистическая конкуренция (раздел 7). «На рынке совершенной конкуренции каждая фирма может самостоятельно устанавливать цену» — <b>неверно</b>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 4 ══════════ -->
+<section class="sec" id="s4">
+  <div class="sec-head fade">
+    <div class="num-badge n1">4</div>
+    <h2 class="sec-title">Типичная фирма и рынок: букашка на спине слона</h2>
+    <p class="sec-desc">Тема «со звёздочкой»: два графика рядом. Рынок задаёт цену, фирма выбирает только объём.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_06/04_firma_i_rynok.webp" width="1672" height="941" alt="Слон «Рынок» и букашка «Фирма» на его спине; два графика: у фирмы горизонтальная линия P = MR и кривая MC, у рынка спрос D и предложение S с равновесием E" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Типичная фирма и рынок (промпт 04)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="def"><b>Рынок (график Б):</b> спрос D и предложение S, равновесие E, P* и Q*. «Вот в таком виде, в каком вы рисовали, — это <b>исключительно рынок совершенной конкуренции</b>. Нигде больше линии предложения S в таком виде нет».</div>
+      <div class="def"><b>Фирма (график А):</b> «букашка видит только горизонт спины» — горизонтальную линию цены. Спрос на продукцию фирмы совершенно эластичен: любое количество — по одной цене.</div>
+    </div>
+    <div class="def fade"><b>P = MR.</b> MR = TR′ = (P · q)′ = P, потому что P — константа: «продали первый доллар — он принёс 80; продали 99-й — по сравнению с 98-м он принёс те же 80». Значит, правило <b>MR = MC</b> для конкурентной фирмы превращается в <b>P = MC</b> → оптимальный объём <b>q*</b>. Закон 26 в <a href="zakony.html#law-26">реестре</a>.</div>
+    <div class="two fade">
+      <div class="def"><b>MC одинакова для любой рыночной структуры</b>: «издержки всегда одинаковые — у тираннозавра и у букашки». Меняется только линия выручки.</div>
+      <div class="def"><b>Число фирм в отрасли: N = Q* / q*</b> — рыночный объём, делённый на объём типичной фирмы. Задача 5 теста: Qd = 9 000 − 60 · 90 = 3 600; 3 600 / 36 = <b>100 фирм</b>.</div>
+    </div>
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · букашка на спине слона</span>
+        <button type="button" class="viz-fs" data-fs-src="konkurenciya_trenazher.html" data-fs-title="Тренажёр: типичная фирма и рынок совершенной конкуренции">⛶ На весь экран</button>
+      </div>
+      <iframe src="konkurenciya_trenazher.html" height="640" loading="lazy" title="Тренажёр: типичная фирма и рынок совершенной конкуренции"></iframe>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · маски</span>
+      <p>Маски близки к совершенной конкуренции: «нас не интересует их дифференциация, главное — гигиеническая функция». Спрос резко вырос → цена пошла вверх → типичная фирма увидела сигнал → барьеров нет, производители насыщают рынок → предложение растёт → <b>цена вернулась к прежнему значению</b>. В тренажёре: кнопка «Маски», затем «Долгий период».</p>
+    </div>
+    <details class="ref fade"><summary>➕ Дополнение: почему прибыль исчезает</summary><div class="ref-body">
+      <p>В долгосрочном периоде вход и выход фирм продолжаются, пока цена не опустится до <b>минимума средних общих издержек (P = min ATC)</b>. Экономическая прибыль становится нулевой — фирмы получают <b>нормальную прибыль</b> (урок 5, раздел 10). Источник: Н. Г. Мэнкью, «Принципы экономикс», гл. 14 «Фирмы на конкурентных рынках».</p>
+    </div></details>
+    <details class="ref fade"><summary>🧭 Рынок валюты: кто предъявляет спрос и предложение</summary><div class="ref-body">
+      <p>Спрос на доллары: домохозяйства (поездки, сбережения), импортёры, государство (золотовалютные резервы, интервенции). Предложение: домохозяйства, продающие сбережения, <b>экспортёры</b> с валютной выручкой (продают её, чтобы платить в рублях, — рубль укрепляется), государство. «Наш Центральный банк отказался от регулирования этого рынка: какое-то время был коридор, сейчас его нет». ➕ Банк России перешёл к плавающему курсу в ноябре 2014 года. Источник: пресс-релиз Банка России от 10.11.2014 «О параметрах курсовой политики».</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ══════════ 5 ══════════ -->
+<section class="sec" id="s5">
+  <div class="sec-head fade">
+    <div class="num-badge n2">5</div>
+    <h2 class="sec-title">Монополия: меньше товара, выше цена</h2>
+    <p class="sec-desc">Вторая крайность. «Чтобы рассмотреть явление, рассмотрим его крайние позиции». Флажок — единственный продавец.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_06/05_monopoliya.webp" width="1672" height="941" alt="График монополии: спрос D, вдвое более крутая MR, MC; объём Qm по MR = MC, цена Pm в точке M на спросе; конкурентная точка C с бо́льшим объёмом и меньшей ценой; красный треугольник общественных потерь" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Равновесие монополии (промпт 05)</figcaption>
+    </figure>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Параметр</th><th>Монополия</th></tr></thead>
+        <tbody>
+          <tr><td>Продавцы</td><td><b>один</b> («а никак не два: два — уже дуополия»)</td></tr>
+          <tr><td>Продукция</td><td>«уникальная» — <b>нет близких заменителей</b></td></tr>
+          <tr><td>Барьеры</td><td><b>непреодолимые</b>: не хватит мощности или есть государственный запрет</td></tr>
+          <tr><td>Информация</td><td>полная: <b>монополист знает кривую спроса на свой продукт</b> ⚠️</td></tr>
+          <tr><td>Влияние на цену</td><td><b>price-maker</b> (ценообразователь) — но только в пределах кривой спроса</td></tr>
+          <tr><td>Примеры</td><td>глобальные: «Газпром», электроэнергия, железные дороги; локальные: водоканал, ТГК-2, метро, одна аптека в посёлке</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="def fade"><b>Правило монополиста.</b> Объём — там, где <b>MR = MC</b> (Qm). Цена — поднимаемся от Qm <b>до кривой спроса</b> (точка M) → Pm. «Улететь за линию спроса не может себе позволить ни один монополист: люди всё равно будут искать альтернативы».</div>
+    <div class="two fade">
+      <div class="def"><b>MR убывает в два раза быстрее цены</b>: чтобы продать ещё единицу, приходится снижать цену на все. При спросе P = a − bQ: MR = a − 2bQ.</div>
+      <div class="def"><b>Сравнение с конкуренцией:</b> равновесие там, где D пересекает MC (точка C). <b>Qm &lt; Qc, Pm &gt; Pc.</b> Разница — <b>общественные потери</b>: «часть товара просто не создана». Закон 27 в <a href="zakony.html#law-27">реестре</a>.</div>
+    </div>
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · монополия против конкуренции</span>
+        <button type="button" class="viz-fs" data-fs-src="monopoliya_trenazher.html" data-fs-title="Тренажёр: монополия против конкуренции">⛶ На весь экран</button>
+      </div>
+      <iframe src="monopoliya_trenazher.html" height="600" loading="lazy" title="Тренажёр: монополия против конкуренции"></iframe>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Две спорные клетки таблицы</h3>
+      <ul>
+        <li><b>«Уникальная продукция».</b> Преподаватель считает формулировку неточной («продукт либо однородный, либо дифференцированный»), но велела писать как в учебниках: уникальная = <b>нет близких заменителей</b>.</li>
+        <li><b>Информация «полная».</b> «Я считаю это правильным, хотя, возможно, с источниками не совпаду». ➕ Во многих учебных таблицах доступ к информации при монополии — «ограниченный» (закрытость отрасли для посторонних). В тесте курса — «полная: монополист знает кривую спроса».</li>
+      </ul>
+    </div>
+    <details class="ref fade"><summary>➕ Дополнение: «чистые потери» в учебниках</summary><div class="ref-body">
+      <p>Общественные потери монополии в учебниках называют <b>чистыми потерями (deadweight loss)</b> или «треугольником Харбергера» — по имени Арнольда Харбергера, который в 1954 году первым оценил их для экономики США. Это сделки, выгодные и покупателю (он готов платить больше MC), и обществу, но не заключённые, потому что монополисту выгоднее продать меньше и дороже. Источник: Н. Г. Мэнкью, «Принципы экономикс», гл. 15 «Монополия».</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ══════════ 6 ══════════ -->
+<section class="sec" id="s6">
+  <div class="sec-head fade">
+    <div class="num-badge n3">6</div>
+    <h2 class="sec-title">Виды монополий, акт Шермана и монопсония</h2>
+    <p class="sec-desc">Не всякая монополия вредна: одни держатся на эффекте масштаба, другие — на захвате конкурентов.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_06/06_vidy_monopoliy.webp" width="1672" height="941" alt="Спокойный замок на сети труб и рельсов с инспектором — естественная монополия; агрессивный замок, поглощающий домики стартапов, — искусственная; молокозавод над фермерами — монопсония; свиток «Акт Шермана, 1890»" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Виды монополий (промпт 06)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="def"><b>Естественная монополия</b> — состояние рынка, при котором удовлетворение спроса <b>более эффективно при отсутствии конкуренции</b>. Строится на <b>положительном эффекте масштаба</b> (сети, коммуникации: «вложили рубль в ветку метро — отдача в разы больше»). Регулируется государством.</div>
+      <div class="def"><b>Искусственная монополия</b> — агрессивная: рейдерские захваты, скупка конкурентов, демпинг или завышение цен. «Ведёт себя нечестно».</div>
+    </div>
+    <div class="two fade">
+      <div class="def"><b>Глобальные монополии</b> охватывают всю страну: «Газпром», электроэнергия, железные дороги. <b>Локальные</b> — в пределах города или посёлка: водоканал, ТГК-2, вывоз мусора, метрополитен, «одна аптека и одно отделение банка на всё Вятское» («так и пишут в ЕГЭ»).</div>
+      <div class="def"><b>Монопсония — монополия со стороны покупателя</b>: покупатель один, продавцов много. Молокозавод в Рыбинске и окрестные фермеры; <b>градообразующее предприятие на рынке труда</b>; продажа оружия государству.</div>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · первое антимонопольное законодательство</span>
+      <p><b>Акт Шермана, США, 1890 год</b> — против Standard Oil Рокфеллера (добыча, транспортировка и переработка нефти). Компанию принудительно разделили; Рокфеллер сохранил доли во всех частях, «и его состояние только увеличилось». Часть компаний-наследниц работает до сих пор.</p>
+      <p style="margin-top:6px">➕ <b>Уточнение:</b> раздел произошёл в 1911 году по решению Верховного суда США на основании акта Шермана — на 34 компании (среди наследниц — ExxonMobil и Chevron). Источник: решение Верховного суда США <a href="https://supreme.justia.com/cases/federal/us/221/1/" target="_blank" rel="noopener">Standard Oil Co. of New Jersey v. United States, 221 U.S. 1 (1911)</a>.</p>
+    </div>
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Мнение преподавателя</span>
+      <h3>Скупка стартапов — современный способ убрать конкурента</h3>
+      <p>«Многие компании по сей день занимают агрессивную позицию, уничтожая конкурентов всеми доступными способами, в частности скупкой стартапов. Google этим грешит». Конкуренция — двигатель развития: «отсутствие конкуренции — отсутствие стимула». По Адаму Смиту, конкуренция — «невидимая рука».</p>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Естественная монополия ≠ монополистическая конкуренция</h3>
+      <p>На разборе теста на вопрос «состояние рынка, при котором удовлетворение спроса более эффективно при отсутствии конкуренции» слушатель ответил «монополистическая конкуренция». Правильно — <b>естественная монополия</b>. «Мы здесь ради ошибок — я студентам за ошибки плюс ставлю».</p>
+    </div>
+    <details class="ref fade"><summary>🧭 Адам Смит и «невидимая рука»</summary><div class="ref-body">
+      <p>Адам Смит (1723–1790) — шотландский экономист, автор «Исследования о природе и причинах богатства народов» (1776). «Невидимая рука» — образ того, как люди, преследуя собственную выгоду, через конкуренцию на рынке невольно служат интересам общества. Именно этот образ оспаривает дилемма заключённых (раздел 10): без конкуренции и без сговора личная выгода может вести к худшему для всех.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ══════════ 7 ══════════ -->
+<section class="sec" id="s7">
+  <div class="sec-head fade">
+    <div class="num-badge n1">7</div>
+    <h2 class="sec-title">Монополистическая конкуренция: каждый — монополист своего бренда</h2>
+    <p class="sec-desc">«То, что посередине, — то, к чему я себя отношу». Флажок — дифференциация продукта.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_06/07_monopolisticheskaya.webp" width="1672" height="941" alt="Торговая улица, где каждый магазин — маленький замок со своим флагом-брендом и короной владельца; покупатель проходит мимо дешёвых брюк к дорогим брендовым; лупы на внутренних и внешних характеристиках" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Монополистическая конкуренция (промпт 07)</figcaption>
+    </figure>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Параметр</th><th>Монополистическая конкуренция</th></tr></thead>
+        <tbody>
+          <tr><td>Продавцы</td><td><b>много</b></td></tr>
+          <tr><td>Продукция</td><td><b>дифференцированная</b> (гетерогенная)</td></tr>
+          <tr><td>Барьеры</td><td><b>незначительные</b>: бренд, авторские права</td></tr>
+          <tr><td>Влияние на цену</td><td><b>есть</b>: фирма — монополист своего бренда</td></tr>
+          <tr><td>Примеры</td><td>одежда, обувь, мебель, косметология, образовательные услуги, бытовая химия — «всё, что про бренды»</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="def fade"><b>Дифференцированный продукт — товары одного функционального назначения, но различные с точки зрения покупателя.</b> «Кроссовки кроссовкам рознь, джинсы джинсам, футболки футболкам».</div>
+    <div class="two fade">
+      <div class="def"><b>Внутренние характеристики</b> — свойства самого товара: крой, ткань, фурнитура, функции. Пример преподавателя: муж покупает только тактические брюки 5.11 — «одни штаны стоят, сколько вся моя капсула», хотя похожие есть дешевле.</div>
+      <div class="def"><b>Внешние характеристики</b> — условия покупки: «“Пятёрочка” у дома, фитнес-клуб у дома — самый ближайший будет для меня наилучшим».</div>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Одежда — не олигополия, а «монополистическая» — не монополия</h3>
+      <ul>
+        <li>«Примером олигополии могут являться рынки одежды, обуви, косметики» — <b>неверно</b>: продавцов много, «одежда никогда не договорится».</li>
+        <li>«Особенностью монополистической конкуренции является продажа однородной продукции» — <b>неверно</b>: дифференцированной.</li>
+        <li>Названия созвучны, но монополистическая конкуренция и монополия — «вообще не одно и то же».</li>
+      </ul>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · кейс Rifle</span>
+      <p>Компания Rifle нашла подпольное производство «своих» джинсов в Ленинградской области. Представитель разобрал подделку и оригинал: «Мы никогда не пользуемся такими лекалами» (посадка), «таких тканей и дешёвой фурнитуры у нас нет». Ущерб — потеря клиентов: поклонники бренда заказывают вслепую, «раз не сели, два не сели — до свидания». <b>Набор характеристик и делает продукт дифференцированным.</b></p>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Ниша, которую «монстр» не закрывает</h3>
+      <p>Слушатель-предприниматель: «Рынок, который мне интересен, не монополизирован — там конкуренция дифференцированного продукта. В своей нише я могу быть эффективнее огромного неповоротливого монстра: мои процессы запускаются “на коленке”, а там согласовывать до второго пришествия». Вопрос руководителю: по какой внутренней или внешней характеристике покупатель отличает ваш продукт от соседнего — и готов ли он за неё доплатить?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 8 ══════════ -->
+<section class="sec" id="s8">
+  <div class="sec-head fade">
+    <div class="num-badge n2">8</div>
+    <h2 class="sec-title">Ценовая дискриминация: один товар — разные цены</h2>
+    <p class="sec-desc">Возможна только там, где фирма контролирует продажи. На уроке 3 были степени — теперь добавились причины.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_06/08_diskriminaciya.webp" width="1672" height="941" alt="Одна и та же книга в трёх изданиях с разными ценами; касса кинотеатра с ценами днём и вечером; продавец на ступенях кривой спроса называет каждому свою цену" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Ценовая дискриминация (промпт 08)</figcaption>
+    </figure>
+    <div class="def fade"><b>Ценовая дискриминация — продажа одного и того же товара разным потребителям (группам) по разным ценам, если различия цен не обусловлены различиями издержек производства.</b></div>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Степень</th><th>Как назначается цена</th><th>Пример</th></tr></thead>
+        <tbody>
+          <tr><td>Первая</td><td>каждому покупателю — своя цена</td><td>торг, индивидуальный расчёт стоимости</td></tr>
+          <tr><td>Вторая</td><td>в зависимости от объёма покупки</td><td>оптовые скидки, «3 по цене 2»</td></tr>
+          <tr><td>Третья</td><td>в зависимости от категории покупателя</td><td>пенсионеры, студенты, корпоративные клиенты; кино днём и вечером</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · три причины</span>
+      <ol style="padding-left:20px;display:flex;flex-direction:column;gap:4px">
+        <li><b>Разные доходы.</b></li>
+        <li><b>Разная готовность платить</b> — не то же самое, что доход: «кто-то всё время выбирает одну марку одежды, кто-то — всегда новый айфон».</li>
+        <li><b>Разная информированность</b>: подписки и цифровые сервисы позволяют одним платить меньше, чем другим.</li>
+      </ol>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>Где дискриминация возможна, а где нет</h3>
+      <ul>
+        <li><b>При совершенной конкуренции ценовая дискриминация невозможна</b>: цена единая, её устанавливает рынок.</li>
+        <li><b>На рынках несовершенной конкуренции она существует</b> — «там, где фирма контролирует продажу и цену, там, где price-maker».</li>
+        <li>«Фирма на рынке монополистической конкуренции часто осуществляет ценовую дискриминацию» — по курсу <b>верно</b> (бестселлер: сначала коллекционное издание, потом обычное). ➕ В учебниках дискриминацию связывают прежде всего с монополией — но отвечайте по курсу.</li>
+        <li>Ценовая дискриминация — <b>не рыночный барьер</b>: «нормальная хозяйственная практика, все так делают».</li>
+      </ul>
+    </div>
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">В тренажёре монополии — режим «дискриминация 1-й степени»</span>
+        <button type="button" class="viz-fs" data-fs-src="monopoliya_trenazher.html" data-fs-title="Тренажёр: монополия и дискриминация">⛶ На весь экран</button>
+      </div>
+      <p style="padding:12px 16px;font-size:.9rem">Включите «Монополия + дискриминация 1-й степени» в тренажёре раздела 5: объём вырастает до конкурентного, общественных потерь нет, но <b>весь излишек покупателей забирает фирма</b>.</p>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Скидка — это стратегия, а не благотворительность</h3>
+      <p>Тарифы для пенсионеров, корпоративный прайс, утренние сеансы, ранняя продажа билетов — способы продать тот же товар тем, кто не купил бы по общей цене, не снижая цену для остальных. Условие одно: покупатели не должны перепродавать товар друг другу, иначе разница цен исчезнет.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 9 ══════════ -->
+<section class="sec" id="s9">
+  <div class="sec-head fade">
+    <div class="num-badge n3">9</div>
+    <h2 class="sec-title">Олигополия: немногие гиганты</h2>
+    <p class="sec-desc">Несколько крупных фирм, которые не могут сделать ход, не оглядываясь друг на друга. Флажок — взаимозависимость.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_06/09_oligopoliya.webp" width="1672" height="941" alt="Лодка с зайцами — один прыгает, лодка не замечает; плот с тремя слонами — один раскачивает, остальные синхронно смещаются; поле, где деревья растут вровень" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Олигополия (промпт 09)</figcaption>
+    </figure>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Параметр</th><th>Олигополия</th></tr></thead>
+        <tbody>
+          <tr><td>Продавцы</td><td><b>несколько крупных</b>: 3–5 фирм контролируют более 50 % рынка; по мощности примерно одинаковые</td></tr>
+          <tr><td>Продукция</td><td><b>однородная или дифференцированная</b>: нефть, бензин, дизель — стандарт; автомобили, бытовая электроника — дифференцированный продукт</td></tr>
+          <tr><td>Барьеры</td><td><b>значительные</b>, главный — <b>величина капитала</b></td></tr>
+          <tr><td>Влияние на цену</td><td>есть, но каждый зависит от ходов соперников — <b>взаимозависимость</b></td></tr>
+          <tr><td>Примеры</td><td>ОПЕК, «большая тройка» сотовых операторов, авиаперевозки, автопроизводство</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · две метафоры взаимозависимости</span>
+      <ul>
+        <li><b>Зайцы и слоны.</b> Дед Мазай везёт зайцев — один скачет, «никакого влияния на лодку, мы даже не заметим». А на плоту три слона: один начинает раскачивать — «другие должны действовать синхронно, распределять свои туши, иначе потонут все».</li>
+        <li><b>Деревья</b> (олимпиадная задача). На участке растут деревья; одно вырывается вверх и закрывает другим солнце и влагу — они не дают ему вырваться. Рост останавливается у всех одновременно: дополнительные издержки роста становятся выше выгод.</li>
+      </ul>
+    </div>
+    <div class="two fade">
+      <div class="def"><b>Без сговора</b> олигополисты конкурируют — работает «невидимая рука». <b>Со сговором (картель)</b> «они становятся монополией и действуют как монополизированный рынок». ОПЕК — картельный сговор. Картели раскрывают антимонопольные органы, в России — ФАС.</div>
+      <div class="def"><b>Олигополия — это те, кто может договориться.</b> Сотовых операторов можно перечесть по пальцам одной руки — у них сговор возможен. Одежда «никогда не договорится»: масса крупных и мелких, иностранных и отечественных производителей.</div>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Ловушка теста</span>
+      <h3>«Олигополия — только однородная продукция» — неверно</h3>
+      <p>У олигополии продукт бывает любым: автопроизводители — «дифференцированная олигополия». Решает число фирм и барьер-капитал, а не тип продукта.</p>
+    </div>
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Мнение преподавателя</span>
+      <h3>Гибель «Локомотива» — экономика олигополии</h3>
+      <p>«Это моё субъективное мнение». 7 сентября 2011 года под Ярославлем разбился самолёт с хоккейной командой «Локомотив». Авиаперевозки — отрасль, которой нужен большой капитал. Маленькая компания с четырьмя самолётами «экономит на топливе, на обучении сотрудников, на техническом обеспечении, на всём» — и это вылилось в ошибку пилота («взлетали на тормозах»). Вывод преподавателя: <b>величина капитала в олигополии — не формальный барьер, а условие безопасной работы</b>.</p>
+      <p style="margin-top:6px">➕ <b>Официально:</b> Межгосударственный авиационный комитет назвал причиной катастрофы ошибочные действия экипажа — нажатие на тормозные педали при разбеге — и указал на нарушения в подготовке и допуске экипажа авиакомпанией «Як-Сервис». Источник: окончательный отчёт МАК (2012).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 10 ══════════ -->
+<section class="sec" id="s10">
+  <div class="sec-head fade">
+    <div class="num-badge n1">10</div>
+    <h2 class="sec-title">Теория игр: дилемма заключённых</h2>
+    <p class="sec-desc">Сначала сыграйте сами — как группа на занятии. Картинка с ответом — после игры.</p>
+  </div>
+  <div class="stack">
+    <div class="card fade">
+      <span class="lecture-tag">📘 Условие · решите сами</span>
+      <p>Бонни и Клайд попались на мелком преступлении — каждому грозит год. Их посадили в разные камеры, <b>договориться нельзя</b>. Полицейский каждому отдельно: «Мы знаем про ваши прежние ограбления. Сознаетесь — срок зависит и от того, что скажет партнёр». Оба молчат — по году. Оба сознались — по 8 лет. Один сознался, другой нет — сознавшийся выходит на свободу, молчавший получает 25 лет.</p>
+      <p style="margin-top:6px"><b>Что выберете вы?</b> Сделайте ход в тренажёре, прежде чем читать дальше.</p>
+    </div>
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · дилемма заключённых</span>
+        <button type="button" class="viz-fs" data-fs-src="dilemma_trenazher.html" data-fs-title="Тренажёр: дилемма заключённых">⛶ На весь экран</button>
+      </div>
+      <iframe src="dilemma_trenazher.html" height="600" loading="lazy" title="Тренажёр: дилемма заключённых"></iframe>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · как играла группа</span>
+      <p>Девушки играли за Бонни, мужчины — за Клайда, совещались в разных комнатах. Мужская команда начала с «не сдадим», потом посчитала: «если сознаемся — 0 или −8, если молчим — −1 или −25; минус 8 и минус 25 — это разные вещи», «не хочу играть в рулетку». <b>Обе команды сознались — по 8 лет.</b></p>
+      <p style="margin-top:6px">Потом — та же игра на деньги: Дед Мороз предлагает каждому «согласиться — получишь миллион» или «отказаться — тогда твои 2 миллиона уйдут партнёру». Оба отказались — по 2 млн, оба согласились — по 1 млн, согласился один — 3 и 0. «Нужен всегда контекст»: на деньгах группа просчитала игру мгновенно.</p>
+    </div>
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_06/10_dilemma.webp" width="1672" height="941" alt="Две камеры за толстой стеной и матрица 2×2: оба молчат −1; −1 — лучше для обоих; один сознался 0 и −25; оба сознались −8; −8 — в золотой рамке, сюда приходят рациональные игроки; портрет Джона Нэша" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Дилемма заключённых (промпт 10)</figcaption>
+    </figure>
+    <div class="two fade">
+      <div class="def"><b>Доминирующая стратегия</b> — ход, который выгоднее при любом ходе партнёра. Здесь — <b>сознаться</b>: если партнёр молчит, 0 лучше −1; если сознаётся, −8 лучше −25.</div>
+      <div class="def"><b>Равновесие по Нэшу</b> — ситуация, в которой <b>никто в одиночку (без сговора) не может улучшить своё положение</b>. В дилемме это «оба сознались».</div>
+    </div>
+    <div class="def fade"><b>Главный вывод:</b> если сговора нет и все рациональны — действуют в собственных интересах (<b>субъективный рационализм</b>), — все «улетают в клетку», которая хуже для всех. Молчать было бы выгоднее обоим, но каждому по отдельности выгоднее сознаться. Это и объясняет поведение олигополистов. Закон 28 в <a href="zakony.html#law-28">реестре</a>.</div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · картель Ирак — Иран</span>
+      <p>Два производителя нефти договорились сократить добычу: предложение падает, цена растёт — «за те же объёмы больше денег». Но у каждого «фига в кармане»: «ничем особо не рискую, если чуть-чуть открою хранилище». Оба потихоньку наращивают добычу — и цена сползает к исходной. Кейс «разбирается во всех учебниках». В тренажёре — сюжет «Картель ОПЕК».</p>
+    </div>
+    <details class="ref fade"><summary>🧭 Джон Нэш и «Игры разума»</summary><div class="ref-body">
+      <p>Джон Нэш (1928–2015) — американский математик, лауреат Нобелевской премии по экономике 1994 года (вместе с Джоном Харсаньи и Райнхардом Зельтеном) за анализ равновесия в некооперативных играх. Фильм «Игры разума» (2001, Рассел Кроу) рассказывает о его жизни и борьбе с шизофренией.</p>
+      <p>Преподаватель показала сцену в баре: Нэш доказывает друзьям, что если все бросятся к самой яркой девушке, все проиграют. Критики замечают, что это <b>не равновесие по Нэшу</b>: если все пошли к подругам, одному выгодно в одиночку пойти к блондинке. «Нас про это не спросят».</p>
+      <p>➕ Саму игру придумали Меррилл Флуд и Мелвин Дрешер (корпорация RAND, 1950), название «дилемма заключённых» дал математик Альберт Таккер. Нэш и его жена Алисия погибли в автокатастрофе в такси 23 мая 2015 года. Источник: <a href="https://www.nobelprize.org/prizes/economic-sciences/1994/nash/biographical/" target="_blank" rel="noopener">nobelprize.org</a>.</p>
+    </div></details>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 На практике</span>
+      <h3>Где дилемма встречается руководителю</h3>
+      <ul>
+        <li><b>Ценовая война</b>: двум сетям выгоднее держать цены, но каждой — снизить первой.</li>
+        <li><b>Реклама</b>: обе фирмы тратятся, доли рынка не меняются.</li>
+        <li><b>Внутри организации</b>: отделам выгодно делиться ресурсами, но каждому — придержать свои.</li>
+      </ul>
+      <p>Выход из дилеммы — повторяющаяся игра и репутация («зеркало» в тренажёре), договоры с проверкой исполнения, общие цели. Но помните: сговор конкурентов о ценах запрещён антимонопольным законом.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ДОМАШНЕЕ ЗАДАНИЕ ══════════ -->
+<section class="sec" id="dz">
+  <div class="sec-head fade">
+    <div class="num-badge n2">✎</div>
+    <h2 class="sec-title">Тест по рыночным структурам</h2>
+    <p class="sec-desc">Тот же лист, что был выдан домой: на занятии его решили заново «осознанно, глядя на таблицу» и разобрали с преподавателем.</p>
+  </div>
+  <div class="card fade">
+    <p>Пять суждений «верно/неверно», пять вопросов с одним ответом, пять — с несколькими и пять задач. Ответы сверены с ключом преподавателя; где учебники отвечают иначе, это разобрано в пояснении.</p>
+    <p style="margin-top:14px"><a class="podcast-dl" href="dz_rynochnye_struktury.html">Открыть тест →</a></p>
+  </div>
+</section>
+
+<!-- ══════════ ЧЕК-ЛИСТ ══════════ -->
+<section class="sec" id="checklist">
+  <div class="sec-head fade">
+    <div class="num-badge n1">✓</div>
+    <h2 class="sec-title">Что выучить к аттестации</h2>
+    <p class="sec-desc">Отмечайте пункт, когда можете объяснить его своими словами без подсказки. Отметки сохраняются в браузере.</p>
+  </div>
+  <div class="card fade">
+    <div class="checklist-progress-bar"><div class="checklist-progress-fill" id="checklist-progress"></div></div>
+    <ul class="checklist-items">
+      <li><label><input type="checkbox" data-checklist-item="c1"> Явные издержки — факт оплаты, не альтернативные; периодов три</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c2"> Совершенная и несовершенная конкуренция; главный критерий — рыночная власть</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c3"> Шесть параметров модели; рынки — модели, а не реальность</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c4"> Совершенная конкуренция: признаки, price-taker, примеры</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c5"> Два графика: рынок D и S, фирма — горизонталь P = MR; оптимум P = MC</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c6"> N = Q* / q*; вход фирм возвращает цену (маски)</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c7"> Монополия: один продавец, нет заменителей, непреодолимые барьеры, price-maker</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c8"> MR = MC → Qm, цена по кривой спроса; Qm &lt; Qc, Pm &gt; Pc; общественные потери</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c9"> Естественная и искусственная монополия; глобальные и локальные</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c10"> Акт Шермана, 1890, Standard Oil</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c11"> Монопсония — монополия покупателя; примеры</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c12"> Монополистическая конкуренция: дифференциация, незначительные барьеры, примеры</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c13"> Ценовая дискриминация: определение, три степени, три причины, где возможна</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c14"> Олигополия: несколько крупных, любой продукт, барьер — капитал, взаимозависимость</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c15"> Картель = монополия; почему картели распадаются</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c16"> Дилемма заключённых: матрица, доминирующая стратегия, равновесие по Нэшу</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c17"> Рыночные барьеры: что относится и что нет</label></li>
+    </ul>
+    <p class="checklist-done" id="checklist-done" hidden>Шестое занятие готово к аттестации.</p>
+  </div>
+</section>
+
+<!-- ══════════ КВИЗ ══════════ -->
+<section class="sec" id="quiz">
+  <div class="sec-head fade">
+    <div class="num-badge n2">?</div>
+    <h2 class="sec-title">Проверьте себя</h2>
+    <p class="sec-desc">Пятнадцать вопросов в формате теста. После ответа — правильный вариант и короткий разбор.</p>
+  </div>
+  <div class="quiz fade">
+    <div class="quiz-question" data-quiz="1" data-explain="Неверно: явные издержки — факт оплаты ресурсов по цене приобретения. Альтернативная оценка — признак неявных издержек. На этом вопросе «слетела» вся группа.">
+      <p class="quiz-text">1. «Явные (денежные) издержки — альтернативные издержки, которые принимают форму денежных платежей». По курсу это суждение…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q1" value="wrong"> верно</label>
+        <label><input type="radio" name="q1" value="right"> неверно</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="1">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="1" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="2" data-explain="Совершенная конкуренция — идеальная модель, где выполнены все условия. Нарушено хотя бы одно — несовершенная конкуренция, у фирмы появляется рыночная власть.">
+      <p class="quiz-text">2. Рынок относится к несовершенной конкуренции, если…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q2" value="wrong"> на нём меньше ста продавцов</label>
+        <label><input type="radio" name="q2" value="right"> не выполнено хотя бы одно условие совершенной конкуренции</label>
+        <label><input type="radio" name="q2" value="wrong"> товар продаётся через посредников</label>
+        <label><input type="radio" name="q2" value="wrong"> цена меняется каждый день</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="2">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="2" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="3" data-explain="Price-taker, ценополучатель: доля фирмы ничтожна, цену задаёт рынок. Поставит выше — останется без покупателей.">
+      <p class="quiz-text">3. Фирма на рынке совершенной конкуренции…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q3" value="wrong"> устанавливает цену с учётом спроса</label>
+        <label><input type="radio" name="q3" value="right"> является price-taker: принимает цену рынка</label>
+        <label><input type="radio" name="q3" value="wrong"> договаривается о цене с конкурентами</label>
+        <label><input type="radio" name="q3" value="wrong"> назначает разные цены разным покупателям</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="3">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="3" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="4" data-explain="MR = (P · q)′ = P, потому что цена — константа: каждая следующая единица приносит ту же цену. Поэтому оптимум конкурентной фирмы — P = MC.">
+      <p class="quiz-text">4. Для фирмы на рынке совершенной конкуренции предельный доход MR…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q4" value="wrong"> больше цены</label>
+        <label><input type="radio" name="q4" value="right"> равен цене</label>
+        <label><input type="radio" name="q4" value="wrong"> вдвое меньше цены</label>
+        <label><input type="radio" name="q4" value="wrong"> равен нулю</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="4">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="4" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="5" data-explain="N = Q* / q* = 3 600 / 36 = 100. Это задача 5 теста по рыночным структурам.">
+      <p class="quiz-text">5. Рыночный спрос при равновесной цене — 3 600 единиц, типичная фирма выпускает 36. Сколько фирм в отрасли?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q5" value="wrong"> 36</label>
+        <label><input type="radio" name="q5" value="right"> 100</label>
+        <label><input type="radio" name="q5" value="wrong"> 3 600</label>
+        <label><input type="radio" name="q5" value="wrong"> 60</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="5">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="5" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="6" data-explain="Объём — где MR = MC, цена — поднимаемся от этого объёма до кривой спроса (точка M). Цену выше спроса монополист назначить не может.">
+      <p class="quiz-text">6. Монополист выбирает объём выпуска по правилу…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q6" value="wrong"> P = MC</label>
+        <label><input type="radio" name="q6" value="right"> MR = MC, а цену — по кривой спроса</label>
+        <label><input type="radio" name="q6" value="wrong"> P = ATC</label>
+        <label><input type="radio" name="q6" value="wrong"> максимальной цены спроса</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="6">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="6" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="7" data-explain="Qm &lt; Qc, Pm &gt; Pc. Часть товара, за который покупатели готовы платить больше его предельных издержек, не создана — это общественные потери.">
+      <p class="quiz-text">7. По сравнению с конкурентным рынком монополия…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q7" value="wrong"> производит больше и продаёт дешевле</label>
+        <label><input type="radio" name="q7" value="right"> производит меньше и продаёт дороже</label>
+        <label><input type="radio" name="q7" value="wrong"> производит столько же, но дороже</label>
+        <label><input type="radio" name="q7" value="wrong"> производит меньше, но дешевле</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="7">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="7" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="8" data-explain="Естественная монополия держится на положительном эффекте масштаба (сети, трубопроводы, метро). Ошибку «монополистическая конкуренция» на занятии сделал слушатель.">
+      <p class="quiz-text">8. Состояние рынка, при котором удовлетворение спроса более эффективно при отсутствии конкуренции, — это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q8" value="wrong"> монополистическая конкуренция</label>
+        <label><input type="radio" name="q8" value="right"> естественная монополия</label>
+        <label><input type="radio" name="q8" value="wrong"> искусственная монополия</label>
+        <label><input type="radio" name="q8" value="wrong"> олигополия</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="8">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="8" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="9" data-explain="Монопсония — монополия со стороны покупателя: здесь единственный покупатель труда. Другие примеры — молокозавод и окрестные фермеры, закупка оружия государством.">
+      <p class="quiz-text">9. Градообразующее предприятие — единственный работодатель в городе. Это пример…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q9" value="wrong"> монополии</label>
+        <label><input type="radio" name="q9" value="right"> монопсонии</label>
+        <label><input type="radio" name="q9" value="wrong"> олигополии</label>
+        <label><input type="radio" name="q9" value="wrong"> совершенной конкуренции</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="9">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="9" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="10" data-explain="Акт Шермана принят в 1890 году; на его основании Standard Oil Рокфеллера разделили на части (решение Верховного суда — 1911).">
+      <p class="quiz-text">10. Первое антимонопольное законодательство…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q10" value="right"> акт Шермана, США, 1890, против Standard Oil</label>
+        <label><input type="radio" name="q10" value="wrong"> закон о конкуренции, Великобритания, 1776</label>
+        <label><input type="radio" name="q10" value="wrong"> акт Шермана, 1911, против Ford</label>
+        <label><input type="radio" name="q10" value="wrong"> закон о ФАС, Россия, 1991</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="10">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="10" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="11" data-explain="Много продавцов, каждый — монополист своего бренда. Дифференцированный продукт — товары одного назначения, но различные с точки зрения покупателя.">
+      <p class="quiz-text">11. Главная отличительная черта монополистической конкуренции:</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q11" value="wrong"> один продавец</label>
+        <label><input type="radio" name="q11" value="wrong"> однородная продукция</label>
+        <label><input type="radio" name="q11" value="right"> дифференциация продукта</label>
+        <label><input type="radio" name="q11" value="wrong"> непреодолимые барьеры</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="11">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="11" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="12" data-explain="Продавцов много, продукт дифференцирован брендами. Олигополия — те, кто может договориться; одежда «никогда не договорится».">
+      <p class="quiz-text">12. Рынки одежды, обуви и косметики — пример…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q12" value="wrong"> олигополии</label>
+        <label><input type="radio" name="q12" value="right"> монополистической конкуренции</label>
+        <label><input type="radio" name="q12" value="wrong"> совершенной конкуренции</label>
+        <label><input type="radio" name="q12" value="wrong"> монополии</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="12">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="12" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="13" data-explain="При совершенной конкуренции цена единая, её задаёт рынок, фирма — price-taker. Дискриминация возможна только там, где фирма контролирует продажи и цену.">
+      <p class="quiz-text">13. Ценовая дискриминация невозможна…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q13" value="wrong"> при монополии</label>
+        <label><input type="radio" name="q13" value="wrong"> при монополистической конкуренции</label>
+        <label><input type="radio" name="q13" value="right"> при совершенной конкуренции</label>
+        <label><input type="radio" name="q13" value="wrong"> при олигополии</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="13">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="13" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="14" data-explain="Олигополии нужен масштаб — авиаперевозки, автопром, сотовая связь. Барьеры значительные, главный — капитал.">
+      <p class="quiz-text">14. Главный барьер входа в олигополию:</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q14" value="wrong"> авторские права</label>
+        <label><input type="radio" name="q14" value="right"> величина капитала</label>
+        <label><input type="radio" name="q14" value="wrong"> государственный запрет</label>
+        <label><input type="radio" name="q14" value="wrong"> отсутствие информации</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="14">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="14" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="15" data-explain="Сознаться выгоднее при любом ходе партнёра (0 лучше −1, −8 лучше −25). Итог — равновесие по Нэшу (−8; −8), хотя молчание (−1; −1) было бы лучше обоим.">
+      <p class="quiz-text">15. В дилемме заключённых оба игрока сознаются, потому что…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q15" value="wrong"> они договорились заранее</label>
+        <label><input type="radio" name="q15" value="right"> признание — доминирующая стратегия каждого</label>
+        <label><input type="radio" name="q15" value="wrong"> молчание даёт больший срок обоим</label>
+        <label><input type="radio" name="q15" value="wrong"> так велит полицейский</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="15">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="15" hidden></p>
+    </div>
+
+  </div>
+  <p class="quiz-score-box fade" id="quiz-score" style="margin-top:18px">Отвечено: 0 / 15</p>
+</section>
+
+<!-- ══════════ ЗАКЛЮЧЕНИЕ ══════════ -->
+<section class="sec" id="final">
+  <div class="sec-head fade">
+    <div class="num-badge n3">★</div>
+    <h2 class="sec-title">Шпаргалка: четыре рыночные структуры</h2>
+  </div>
+  <figure class="img-card fade" data-lightbox style="margin-bottom:28px">
+    <img src="../png/zanyatie_06/11_shpargalka.webp" width="1672" height="941" alt="Таблица четырёх рыночных структур: продавцы, продукт, барьеры, цена, примеры и золотая строка флажков — price-taker, дифференциация, взаимозависимость, единственный продавец" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+    <figcaption class="img-missing-caption">Шпаргалка к аттестации (промпт 11)</figcaption>
+  </figure>
+  <div class="table-wrap fade" style="margin-bottom:24px">
+    <table class="cmp">
+      <thead><tr><th>Параметр</th><th>Совершенная конкуренция</th><th>Монополистическая конкуренция</th><th>Олигополия</th><th>Монополия</th></tr></thead>
+      <tbody>
+        <tr><td>Продавцы</td><td>очень много (&lt; 1 % у одного)</td><td>много</td><td>несколько; 3–5 &gt; 50 %</td><td>один</td></tr>
+        <tr><td>Продукция</td><td>однородная</td><td>дифференцированная</td><td>однородная или дифференцированная</td><td>нет близких заменителей</td></tr>
+        <tr><td>Барьеры</td><td>нет</td><td>незначительные</td><td>значительные (капитал)</td><td>непреодолимые</td></tr>
+        <tr><td>Информация</td><td>полная</td><td>—</td><td>—</td><td>полная (знает кривую спроса)</td></tr>
+        <tr><td>Цена</td><td>price-taker</td><td>власть над своим брендом</td><td>взаимозависимость</td><td>price-maker</td></tr>
+        <tr><td>Примеры</td><td>биржи, сельский рынок, валюта</td><td>одежда, обувь, мебель, услуги</td><td>ОПЕК, сотовая связь, авиа, авто</td><td>«Газпром», РЖД, водоканал, метро</td></tr>
+        <tr><td><b>Флажок</b></td><td><b>price-taker</b></td><td><b>дифференциация</b></td><td><b>взаимозависимость</b></td><td><b>единственный продавец</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ol class="conclusion-list fade">
+    <li><strong>Несовершенная конкуренция</strong> — нарушено хоть одно условие идеала; у фирмы есть рыночная власть.</li>
+    <li><strong>Конкурентная фирма — price-taker:</strong> P = MR, выпуск до P = MC, N = Q* / q*.</li>
+    <li><strong>Монополист — price-maker:</strong> объём по MR = MC, цена по кривой спроса; товара меньше, цена выше, есть общественные потери.</li>
+    <li><strong>Естественная монополия</strong> держится на эффекте масштаба и регулируется; <strong>монопсония</strong> — монополия покупателя.</li>
+    <li><strong>Монополистическая конкуренция</strong> — много монополистов своих брендов; флажок — дифференциация.</li>
+    <li><strong>Ценовая дискриминация</strong> возможна только у price-maker; причины — доходы, готовность платить, информированность.</li>
+    <li><strong>Олигополия</strong> — взаимозависимость немногих; картель превращает их в монополию.</li>
+    <li><strong>Дилемма заключённых:</strong> без сговора рациональные игроки приходят к худшему для всех исходу.</li>
+  </ol>
+  <div class="card fade" style="margin-top:20px">
+    <span class="lecture-tag">📘 Что дальше</span>
+    <p>Микроэкономика закончена. <b>5 ноября — последнее занятие</b>: макроэкономика, инфляция и безработица, и тест такого же формата, который сдаётся как экзаменационная работа. «Делайте по-честному сначала — проверим, подпишете и сдадите».</p>
+  </div>
+</section>
+
+</main>
+
+
+<div class="overlay" id="lightbox" aria-hidden="true">
+  <a class="overlay-download" id="lightbox-download" download aria-label="Скачать изображение">⬇ Скачать</a>
+  <button class="overlay-close" id="lightbox-close" aria-label="Закрыть">✕</button>
+  <img id="lightbox-img" alt="">
+</div>
+
+<div id="fs-overlay" aria-hidden="true">
+  <div id="fs-bar">
+    <span id="fs-title"></span>
+    <button type="button" id="fs-close" aria-label="Закрыть полноэкранный режим">✕</button>
+  </div>
+  <iframe id="fs-frame" title="Полноэкранная визуализация"></iframe>
+</div>
+
+<footer>
+  <p>Президентская программа · «Экономика для менеджеров» · преподаватель И. Г. Переломова · материалы с пометкой «Дополнение» добавлены к лекции</p>
+</footer>
+
+<script>
+/* Префикс имени файла при скачивании инфографики */
+const BRAND = "ekonomika-z6";
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (!reduceMotion && "IntersectionObserver" in window) {
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in");
+        reveal.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.06, rootMargin: "0px 0px -24px"});
+  document.querySelectorAll(".fade").forEach((element) => reveal.observe(element));
+} else {
+  document.querySelectorAll(".fade").forEach((element) => element.classList.add("in"));
+}
+
+/* Подсветка активной секции в навбаре */
+const navLinks = [...document.querySelectorAll(".nav-link")];
+const sections = [...document.querySelectorAll("main section[id]")];
+if ("IntersectionObserver" in window) {
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach((link) => {
+        link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`);
+      });
+    });
+  }, {rootMargin: "-35% 0px -55%", threshold: 0});
+  sections.forEach((section) => sectionObserver.observe(section));
+}
+
+/* Лайтбокс */
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const lightboxDownload = document.getElementById("lightbox-download");
+function brandedFilename(url) {
+  const name = url.split("/").pop().split("?")[0];
+  return `${BRAND}_${name}`;
+}
+document.querySelectorAll(".img-card[data-lightbox]").forEach((card) => {
+  card.addEventListener("click", () => {
+    if (card.classList.contains("img-missing")) return;
+    const img = card.querySelector("img");
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightboxDownload.href = img.src;
+    lightboxDownload.download = brandedFilename(img.src);
+    lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
+  });
+});
+function closeLightbox() {
+  if (lightbox.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  lightboxImg.src = "";
+}
+document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (event) => { if (event.target === lightbox) closeLightbox(); });
+
+/* Фуллскрин для iframe-карточек */
+const fsOverlay = document.getElementById("fs-overlay");
+const fsFrame = document.getElementById("fs-frame");
+const fsTitle = document.getElementById("fs-title");
+document.querySelectorAll(".viz-fs").forEach((button) => {
+  button.addEventListener("click", () => {
+    fsFrame.src = button.dataset.fsSrc;
+    fsTitle.textContent = button.dataset.fsTitle;
+    fsOverlay.classList.add("open");
+    fsOverlay.setAttribute("aria-hidden", "false");
+  });
+});
+function closeFs() {
+  if (fsOverlay.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  fsOverlay.classList.remove("open");
+  fsOverlay.setAttribute("aria-hidden", "true");
+  fsFrame.src = "";
+}
+document.getElementById("fs-close").addEventListener("click", closeFs);
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if (fsOverlay.classList.contains("open")) { closeFs(); } else { closeLightbox(); }
+});
+
+/* Копирование промптов */
+document.querySelectorAll("[data-copy]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const code = document.getElementById(button.dataset.copy);
+    if (!code) return;
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(code.innerText);
+      button.textContent = "Скопировано";
+    } catch {
+      button.textContent = "Выделите текст";
+    }
+    window.setTimeout(() => { button.textContent = original; }, 1600);
+  });
+});
+
+/* Чек-лист готовности */
+const CHECKLIST_KEY = "ekonomika-z6-checklist";
+const checklistInputs = [...document.querySelectorAll("[data-checklist-item]")];
+const checklistProgress = document.getElementById("checklist-progress");
+const checklistDone = document.getElementById("checklist-done");
+function loadChecklistState() {
+  try { return JSON.parse(localStorage.getItem(CHECKLIST_KEY) || "{}"); } catch { return {}; }
+}
+function saveChecklistState(state) {
+  try { localStorage.setItem(CHECKLIST_KEY, JSON.stringify(state)); } catch { /* приватный режим */ }
+}
+function renderChecklistProgress() {
+  const checked = checklistInputs.filter((input) => input.checked).length;
+  checklistProgress.style.width = `${Math.round((checked / checklistInputs.length) * 100)}%`;
+  checklistDone.hidden = checked !== checklistInputs.length;
+}
+const savedChecklist = loadChecklistState();
+checklistInputs.forEach((input) => {
+  const key = input.dataset.checklistItem;
+  input.checked = Boolean(savedChecklist[key]);
+  input.addEventListener("change", () => {
+    const state = loadChecklistState();
+    state[key] = input.checked;
+    saveChecklistState(state);
+    renderChecklistProgress();
+  });
+});
+renderChecklistProgress();
+
+/* Квиз */
+const QUIZ_TOTAL = document.querySelectorAll(".quiz-question").length;
+let quizAnswered = 0;
+let quizCorrect = 0;
+const quizScoreEl = document.getElementById("quiz-score");
+document.querySelectorAll(".quiz-check").forEach((button) => {
+  button.addEventListener("click", () => {
+    const index = button.dataset.quizCheck;
+    const question = document.querySelector(`.quiz-question[data-quiz="${index}"]`);
+    const selected = question.querySelector(`input[name="q${index}"]:checked`);
+    const feedback = document.querySelector(`[data-quiz-feedback="${index}"]`);
+    if (!selected) {
+      feedback.textContent = "Выберите вариант ответа.";
+      feedback.className = "quiz-feedback incorrect";
+      feedback.hidden = false;
+      return;
+    }
+    const alreadyAnswered = button.disabled;
+    const isCorrect = selected.value === "right";
+    feedback.textContent = isCorrect ? "Верно!" : "Не совсем — правильный вариант выделен выше.";
+    if (question.dataset.explain) {
+      const explain = document.createElement("span");
+      explain.className = "explain";
+      explain.textContent = question.dataset.explain;
+      feedback.appendChild(explain);
+    }
+    feedback.className = `quiz-feedback ${isCorrect ? "correct" : "incorrect"}`;
+    feedback.hidden = false;
+    question.querySelectorAll("input").forEach((input) => { input.disabled = true; });
+    question.querySelector('input[value="right"]').closest("label").classList.add("quiz-correct-answer");
+    button.disabled = true;
+    if (!alreadyAnswered) {
+      quizAnswered += 1;
+      if (isCorrect) quizCorrect += 1;
+      quizScoreEl.textContent = `Отвечено: ${quizAnswered} / ${QUIZ_TOTAL} · верно: ${quizCorrect}`;
+    }
+  });
+});
+</script>
+</body>
+</html>
