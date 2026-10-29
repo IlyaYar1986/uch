@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: 9-box и распределение премии</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --acc:#0e7490;
+  --acc-dk:#155e75;
+  --acc-lt:#ecfeff;
+  --green:#16a34a;
+  --red:#dc2626;
+  --gold:#b45309;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.back{display:inline-block;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:6px}
+.back:hover{color:var(--acc)}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.8rem}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;align-items:center;font-size:.78rem;font-weight:700;color:var(--muted)}
+.btn{padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;font:inherit;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer}
+.btn:hover,.btn.on{border-color:#a5f3fc;color:var(--acc-dk);background:var(--acc-lt)}
+.btns input{width:110px;padding:3px 6px;border:1px solid var(--border);border-radius:7px;font:inherit;font-weight:700}
+.wrap{display:grid;grid-template-columns:1fr 1.05fr;gap:12px}
+@media (max-width:760px){.wrap{grid-template-columns:1fr}}
+.people{border:1px solid var(--border);border-radius:12px;padding:8px}
+.row{display:grid;grid-template-columns:1fr 70px 18px 70px 18px 78px;gap:5px;align-items:center;font-size:.76rem;margin-bottom:4px}
+.row.head{font-weight:800;color:var(--muted);font-size:.66rem;text-transform:uppercase}
+.row input[type=text]{padding:3px 6px;border:1px solid var(--border);border-radius:6px;font:inherit;min-width:0}
+.row input[type=range]{width:100%;accent-color:var(--acc)}
+.row b{text-align:center}
+.row .money{text-align:right;font-weight:800}
+.gridbox{display:grid;grid-template-columns:22px 1fr;grid-template-rows:1fr 22px;gap:4px}
+.ylab{writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;font-size:.7rem;font-weight:800;color:var(--muted)}
+.xlab{grid-column:2;text-align:center;font-size:.7rem;font-weight:800;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:4px;min-height:300px}
+.cell{border-radius:10px;padding:5px;font-size:.68rem;border:1px solid var(--border);background:#f8fafc;display:flex;flex-direction:column;gap:3px}
+.cell .nm{font-weight:800;color:var(--text)}
+.cell .pc{font-weight:800;color:var(--acc-dk)}
+.cell.star{background:#fef9c3;border-color:#facc15}
+.cell.bad{background:#fef2f2;border-color:#fecaca}
+.chip{display:inline-block;background:var(--acc);color:#fff;border-radius:6px;padding:1px 5px;font-weight:700;font-size:.66rem;margin:1px 2px 0 0}
+.result{border:1px solid #a5f3fc;border-left:5px solid var(--acc);background:var(--acc-lt);border-radius:12px;padding:8px 12px;font-size:.84rem;margin-top:8px}
+.result b{color:var(--acc-dk)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html" target="_top">← Все уроки</a>
+<div class="top">
+  <h1>9-box: оцените команду и разделите премию</h1>
+  <span class="sub">Двигайте баллы 1–5 — сотрудник переезжает в свою коробку, премия пересчитывается</span>
+</div>
+<div class="btns">
+  <button type="button" class="btn" data-p="lecture">Пример с занятия: по одному в коробке</button>
+  <button type="button" class="btn" data-p="team">Обычная команда</button>
+  <button type="button" class="btn" data-p="stars">Все стремятся в звёзды</button>
+  <label>Фонд премии, ₽ <input type="number" id="fund" value="500000" step="10000" min="0"></label>
+</div>
+<div class="wrap">
+  <div class="people">
+    <div class="row head"><span>Сотрудник</span><span>Производит.</span><span></span><span>Потенциал</span><span></span><span style="text-align:right">Премия</span></div>
+    <div id="rows"></div>
+  </div>
+  <div class="gridbox">
+    <div class="ylab">Потенциал →</div>
+    <div class="grid" id="grid"></div>
+    <div class="xlab">Производительность →</div>
+  </div>
+</div>
+<div class="result" id="result" aria-live="polite"></div>
+
+<script>
+/* Баллы 1–2 — низкий уровень, 3 — средний, 4–5 — высокий.
+   Доля премии на коробку (схема со слайда): звёзды 25 %; основа команды, высокопроизводительные,
+   высокопотенциальные — по 15 %; проблемные гении и рабочие лошадки — по 10 %; зоны особого внимания — по 5 %;
+   ошибки подбора — 0. Если в коробке несколько человек, доля коробки — это вес каждого, фонд делится пропорционально весам. */
+const BOX = {
+  "2,2": { name: "Звёзды", pct: 25, cls: "star", tip: "удерживать, давать сложные задачи и рост" },
+  "1,2": { name: "Высокопотенциальные", pct: 15, tip: "развивать до звёзд" },
+  "2,1": { name: "Высокопроизводительные", pct: 15, tip: "поощрять и развивать" },
+  "1,1": { name: "Основа команды", pct: 15, tip: "поддерживать стабильность" },
+  "0,2": { name: "Проблемные гении", pct: 10, tip: "помочь раскрыться: наставник, адаптация" },
+  "2,0": { name: "Рабочие лошадки", pct: 10, tip: "ценить, не перегружать" },
+  "0,1": { name: "Зона особого внимания", pct: 5, tip: "разобраться в причинах" },
+  "1,0": { name: "Зона особого внимания", pct: 5, tip: "разобраться в причинах" },
+  "0,0": { name: "Ошибки подбора", pct: 0, cls: "bad", tip: "перевести или переобучить" },
+};
+const lvl = (s) => (s <= 2 ? 0 : s === 3 ? 1 : 2);
+const PRESETS = {
+  lecture: [["Сотрудник 1", 5, 5], ["Сотрудник 2", 3, 5], ["Сотрудник 3", 5, 3], ["Сотрудник 4", 3, 3], ["Сотрудник 5", 2, 5], ["Сотрудник 6", 5, 2], ["Сотрудник 7", 2, 3], ["Сотрудник 8", 3, 2], ["Сотрудник 9", 1, 1]],
+  team: [["Анна", 4, 4], ["Борис", 3, 3], ["Вера", 3, 3], ["Глеб", 4, 2], ["Дарья", 2, 4], ["Егор", 3, 2], ["Жанна", 5, 4], ["Захар", 1, 2], ["Инна", 3, 4]],
+  stars: [["Анна", 5, 5], ["Борис", 4, 5], ["Вера", 5, 4], ["Глеб", 4, 4], ["Дарья", 3, 3], ["Егор", 5, 5], ["Жанна", 2, 2], ["Захар", 4, 5], ["Инна", 5, 4]],
+};
+let people = PRESETS.lecture.map((p) => [...p]);
+const $ = (id) => document.getElementById(id);
+const fmt = (x) => Math.round(x).toLocaleString("ru-RU");
+
+function drawRows() {
+  $("rows").innerHTML = people.map((p, i) => `<div class="row">
+    <input type="text" value="${p[0]}" data-i="${i}" aria-label="Имя сотрудника ${i + 1}">
+    <input type="range" min="1" max="5" value="${p[1]}" data-i="${i}" data-k="1" aria-label="Производительность"><b>${p[1]}</b>
+    <input type="range" min="1" max="5" value="${p[2]}" data-i="${i}" data-k="2" aria-label="Потенциал"><b>${p[2]}</b>
+    <span class="money" id="m${i}"></span></div>`).join("");
+  $("rows").querySelectorAll("input[type=range]").forEach((el) => el.addEventListener("input", () => {
+    people[el.dataset.i][el.dataset.k] = Number(el.value);
+    el.nextElementSibling.textContent = el.value;
+    render();
+  }));
+  $("rows").querySelectorAll("input[type=text]").forEach((el) => el.addEventListener("input", () => {
+    people[el.dataset.i][0] = el.value || `Сотрудник ${Number(el.dataset.i) + 1}`;
+    render();
+  }));
+}
+
+function render() {
+  const fund = Math.max(0, Number($("fund").value) || 0);
+  const placed = people.map((p) => ({ name: p[0], key: `${lvl(p[1])},${lvl(p[2])}` }));
+  const totalW = placed.reduce((s, p) => s + BOX[p.key].pct, 0);
+  placed.forEach((p, i) => {
+    p.money = totalW ? fund * BOX[p.key].pct / totalW : 0;
+    $(`m${i}`).textContent = `${fmt(p.money)} ₽`;
+  });
+  let g = "";
+  for (let pot = 2; pot >= 0; pot--) for (let perf = 0; perf <= 2; perf++) {
+    const key = `${perf},${pot}`, b = BOX[key];
+    const who = placed.filter((p) => p.key === key);
+    g += `<div class="cell ${b.cls || ""}"><span class="nm">${b.name}</span><span class="pc">${b.pct} % на человека</span><span>${who.map((p) => `<span class="chip">${p.name}</span>`).join("")}</span></div>`;
+  }
+  $("grid").innerHTML = g;
+
+  const star = placed.filter((p) => p.key === "2,2");
+  const bad = placed.filter((p) => p.key === "0,0");
+  let msg = `Доли коробок — веса: сумма весов команды ${totalW} %, фонд ${fmt(fund)} ₽ делится пропорционально. `;
+  if (totalW === 100 && star.length === 1) msg += `Как в задаче с занятия: по одному в коробке, звезда получает <b>25 % = ${fmt(star[0].money)} ₽</b>. `;
+  else if (star.length) msg += `Звёзд: ${star.length}, каждой — <b>${fmt(star[0].money)} ₽</b>. `;
+  if (star.length >= 4) msg += `Когда «звёзд» много, доля каждой тает: 9-box — инструмент <b>объяснения</b>, за что платим, а не способ раздать всем поровну. `;
+  if (bad.length) msg += `${bad.map((p) => p.name).join(", ")} — <b>ошибка подбора</b>: премии нет, рекомендация — ${BOX["0,0"].tip}. `;
+  msg += `Помните: баллы — субъективная оценка; объективнее, когда оценивает внешний эксперт (ассесмент-центр).`;
+  $("result").innerHTML = msg;
+}
+
+document.querySelectorAll("[data-p]").forEach((b) => b.addEventListener("click", () => {
+  people = PRESETS[b.dataset.p].map((p) => [...p]);
+  document.querySelectorAll("[data-p]").forEach((x) => x.classList.toggle("on", x === b));
+  drawRows(); render();
+}));
+$("fund").addEventListener("input", render);
+document.querySelector('[data-p="lecture"]').classList.add("on");
+drawRows(); render();
+</script>
+</body>
+</html>
