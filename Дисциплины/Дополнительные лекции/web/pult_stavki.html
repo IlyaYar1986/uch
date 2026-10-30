@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: пульт ключевой ставки</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --acc:#be185d;
+  --acc-dk:#9d174d;
+  --acc-lt:#fdf2f8;
+  --green:#16a34a;
+  --red:#c2410c;
+  --gold:#b45309;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.4;padding:12px 16px}
+.back{display:inline-block;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:6px}
+.back:hover{color:var(--acc)}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.8rem}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.btn{padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;font:inherit;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer}
+.btn:hover,.btn.on{border-color:#fbcfe8;color:var(--acc-dk);background:var(--acc-lt)}
+.wrap{display:grid;grid-template-columns:300px 1fr;gap:14px}
+@media (max-width:760px){.wrap{grid-template-columns:1fr}}
+.ctrl{display:flex;flex-direction:column;gap:9px}
+.ctrl label{display:block;font-size:.78rem;font-weight:700}
+.ctrl .val{float:right;color:var(--acc-dk);font-weight:800}
+.ctrl input[type=range]{width:100%;accent-color:var(--acc)}
+.ctrl .hint{font-size:.7rem;color:var(--muted);font-weight:500}
+svg{width:100%;height:auto;border:1px solid var(--border);border-radius:12px;background:#fffdfb}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.72rem;color:var(--muted);margin-top:4px}
+.legend i{display:inline-block;width:18px;height:3px;vertical-align:middle;margin-right:4px}
+.result{border:1px solid #fbcfe8;border-left:5px solid var(--acc);background:var(--acc-lt);border-radius:12px;padding:8px 12px;font-size:.84rem;margin-top:8px}
+.result b{color:var(--acc-dk)}
+.result .warn{color:var(--red);font-weight:700}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html" target="_top">← Все встречи</a>
+<div class="top">
+  <h1>Пульт ключевой ставки: доведите инфляцию до 4 %</h1>
+  <span class="sub">Учебная модель, не прогноз Банка России. Ставка действует с лагом — смотрите, через сколько кварталов отзовётся решение</span>
+</div>
+<div class="btns">
+  <button type="button" class="btn" data-p="oct26">Как в октябре 2026</button>
+  <button type="button" class="btn" data-p="soft">Снизить ставку слишком рано</button>
+  <button type="button" class="btn" data-p="hard">Резко поднять до 21 %</button>
+  <button type="button" class="btn" data-p="shock">Разовый шок: тарифы и топливо</button>
+  <button type="button" class="btn" data-p="calm">Ожидания заякорены</button>
+</div>
+<div class="wrap">
+  <div class="ctrl">
+    <div><label>Ключевая ставка <span class="val" id="v-rate"></span><input type="range" id="rate" min="4" max="24" step="0.5" value="14"></label></div>
+    <div><label>Бюджетный импульс <span class="val" id="v-fiscal"></span><input type="range" id="fiscal" min="0" max="3" step="0.5" value="1.5"></label><span class="hint">0 — бюджет нейтрален, 3 — много денег в экономику</span></div>
+    <div><label>Инфляционные ожидания <span class="val" id="v-exp"></span><input type="range" id="exp" min="4" max="14" step="0.5" value="9"></label><span class="hint">какую инфляцию ждут люди и бизнес через год</span></div>
+    <div><label>Разовый шок цен <span class="val" id="v-shock"></span><input type="range" id="shock" min="0" max="3" step="0.5" value="0"></label><span class="hint">тарифы, топливо, урожай — в первом квартале</span></div>
+    <div><label>Лаг трансмиссии <span class="val" id="v-lag"></span><input type="range" id="lag" min="3" max="6" step="1" value="4"></label><span class="hint">Банк России: 3–6 кварталов</span></div>
+  </div>
+  <div>
+    <svg id="chart" viewBox="0 0 640 300" role="img" aria-label="График инфляции по кварталам"></svg>
+    <div class="legend"><span><i style="background:#be185d"></i>инфляция, % г/г</span><span><i style="background:#16a34a"></i>цель 4 %</span><span><i style="background:#94a3b8"></i>нейтральная ставка (учебная, 8 %)</span><span><i style="background:#b45309"></i>момент, когда ставка «доходит» до спроса</span></div>
+  </div>
+</div>
+<div class="result" id="result" aria-live="polite"></div>
+
+<script>
+/* Учебная модель инфляции по кварталам (12 кварталов = 3 года).
+   Спрос давит на цены через «жёсткость» политики: ставка выше нейтральной охлаждает спрос,
+   но лишь после лага; до этого действует только сигнал (небольшая доля эффекта через ожидания).
+   Ожидания постепенно подтягиваются к фактической инфляции и сами её разгоняют. */
+const NEUTRAL = 8;
+const START = 6.8;
+const Q = 12;
+const el = (id) => document.getElementById(id);
+const inputs = ["rate", "fiscal", "exp", "shock", "lag"].map(el);
+
+const PRESETS = {
+  oct26: {rate: 14, fiscal: 1.5, exp: 9, shock: 0, lag: 4},
+  soft: {rate: 9, fiscal: 2, exp: 10, shock: 0, lag: 4},
+  hard: {rate: 21, fiscal: 1.5, exp: 9, shock: 0, lag: 4},
+  shock: {rate: 14, fiscal: 1, exp: 8, shock: 2.5, lag: 4},
+  calm: {rate: 14, fiscal: 1, exp: 5, shock: 0, lag: 4},
+};
+
+function simulate(p) {
+  const out = [START];
+  let infl = START;
+  let exp = p.exp;
+  for (let q = 1; q <= Q; q++) {
+    const tight = p.rate - NEUTRAL - infl / 2;            /* реальная жёсткость: ставка против инфляции */
+    const share = q >= p.lag ? 1 : q / p.lag * 0.35;       /* до лага действует только сигнал */
+    const demand = p.fiscal * 0.9 - tight * 0.55 * share;  /* давление спроса на цены, п. п. */
+    const shock = q === 1 ? p.shock : q === 2 ? p.shock * 0.4 : 0; /* разовый шок и короткий вторичный эффект */
+    const target = 4 + 0.45 * (exp - 4) + demand;
+    infl = infl + 0.45 * (target - infl) + shock * (q <= 2 ? 1 : 0) * 0.6;
+    infl = Math.max(-2, Math.min(25, infl));
+    exp = exp + 0.3 * (infl - exp);
+    out.push(infl);
+  }
+  return out;
+}
+
+const W = 640, H = 300, L = 44, R = 14, T = 14, B = 34;
+const yMin = -2, yMax = 16;
+const x = (q) => L + (W - L - R) * q / Q;
+const y = (v) => T + (H - T - B) * (1 - (Math.max(yMin, Math.min(yMax, v)) - yMin) / (yMax - yMin));
+
+function draw(p, series) {
+  let s = "";
+  for (let v = 0; v <= yMax; v += 2) {
+    s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#eef2f7"/>`;
+    s += `<text x="${L - 6}" y="${y(v) + 4}" font-size="11" text-anchor="end" fill="#64748b">${v}%</text>`;
+  }
+  for (let q = 0; q <= Q; q++) {
+    s += `<text x="${x(q)}" y="${H - 16}" font-size="10" text-anchor="middle" fill="#64748b">${q === 0 ? "сейчас" : "к" + q}</text>`;
+  }
+  s += `<text x="${(L + W - R) / 2}" y="${H - 2}" font-size="10" text-anchor="middle" fill="#94a3b8">кварталы после решения</text>`;
+  s += `<rect x="${L}" y="${y(4.5)}" width="${W - L - R}" height="${y(3.5) - y(4.5)}" fill="#dcfce7" opacity=".7"/>`;
+  s += `<line x1="${L}" x2="${W - R}" y1="${y(4)}" y2="${y(4)}" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 4"/>`;
+  s += `<line x1="${L}" x2="${W - R}" y1="${y(NEUTRAL)}" y2="${y(NEUTRAL)}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="2 4"/>`;
+  s += `<line x1="${L}" x2="${W - R}" y1="${y(p.rate)}" y2="${y(p.rate)}" stroke="#be185d" stroke-width="1" opacity=".35"/>`;
+  s += `<text x="${W - R - 4}" y="${y(p.rate) - 4}" font-size="10" text-anchor="end" fill="#9d174d">ставка ${p.rate}%</text>`;
+  s += `<line x1="${x(p.lag)}" x2="${x(p.lag)}" y1="${T}" y2="${H - B}" stroke="#b45309" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+  const pts = series.map((v, q) => `${x(q)},${y(v)}`).join(" ");
+  s += `<polyline points="${pts}" fill="none" stroke="#be185d" stroke-width="3" stroke-linejoin="round"/>`;
+  series.forEach((v, q) => { s += `<circle cx="${x(q)}" cy="${y(v)}" r="3.5" fill="#be185d"/>`; });
+  el("chart").innerHTML = s;
+}
+
+function fmt(v) { return v.toFixed(1).replace(".", ","); }
+
+function render() {
+  const p = {};
+  inputs.forEach((i) => { p[i.id] = Number(i.value); });
+  el("v-rate").textContent = fmt(p.rate) + " %";
+  el("v-fiscal").textContent = fmt(p.fiscal);
+  el("v-exp").textContent = fmt(p.exp) + " %";
+  el("v-shock").textContent = "+" + fmt(p.shock) + " п. п.";
+  el("v-lag").textContent = p.lag + " кв.";
+  const series = simulate(p);
+  draw(p, series);
+  const end = series[Q];
+  const y4 = series[4];
+  const hit = series.findIndex((v, q) => q > 0 && Math.abs(v - 4) <= 0.5);
+  let msg = `Через год (к4) инфляция ≈ <b>${fmt(y4)} %</b>, через три года ≈ <b>${fmt(end)} %</b>. `;
+  if (end > 6) msg += `<span class="warn">Перегрев не остановлен: ставка мягче, чем требуют спрос и ожидания.</span> Так выглядит «инфляционная спираль».`;
+  else if (end < 2) msg += `<span class="warn">Переохлаждение: инфляция ушла ниже цели — спрос задавлен, бизнес откладывает инвестиции.</span>`;
+  else if (hit > 0) msg += `Инфляция впервые входит в коридор 3,5–4,5 % в квартале <b>${hit}</b> — не раньше, чем через лаг.`;
+  else msg += `Близко к цели, но ещё не в коридоре — нужна ещё пара кварталов.`;
+  if (p.shock > 0) msg += ` Разовый шок поднял инфляцию в первые кварталы и ушёл — поэтому ЦБ на разовые факторы ставку не меняет, если нет вторичных эффектов.`;
+  el("result").innerHTML = msg;
+}
+
+inputs.forEach((i) => i.addEventListener("input", () => {
+  document.querySelectorAll(".btn").forEach((b) => b.classList.remove("on"));
+  render();
+}));
+document.querySelectorAll("[data-p]").forEach((b) => b.addEventListener("click", () => {
+  const p = PRESETS[b.dataset.p];
+  inputs.forEach((i) => { i.value = p[i.id]; });
+  document.querySelectorAll(".btn").forEach((x) => x.classList.toggle("on", x === b));
+  render();
+}));
+render();
+</script>
+</body>
+</html>

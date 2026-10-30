@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дополнительные лекции — встреча 1: Банк России и инфляция</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --indigo:#be185d;
+  --indigo-dk:#9d174d;
+  --indigo-lt:#fdf2f8;
+  --cyan:#0ea5e9;
+  --cyan-lt:#e0f2fe;
+  --amber:#f59e0b;
+  --amber-lt:#fffbeb;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#c2410c;
+  --red-lt:#fff7ed;
+  --text:#0f172a;
+  --muted:#64748b;
+  --nav-h:56px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(190,24,93,.14),transparent 32%),
+    radial-gradient(circle at 85% 6%,rgba(14,165,233,.13),transparent 34%),
+    linear-gradient(180deg,#f8fafc 0%,#fdf2f8 30%,#f8fafc 100%);
+  color:var(--text);
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;z-index:900;
+  gap:2px;overflow-x:auto;scrollbar-width:none;
+}
+nav.top::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:.93rem;color:var(--indigo-dk);white-space:nowrap;margin:0 10px 0 4px;flex-shrink:0}
+.nav-sep{width:1px;height:18px;background:var(--border);margin:0 6px;flex-shrink:0}
+.nav-link{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;transition:color .2s,background .2s;flex-shrink:0}
+.nav-link:hover,.nav-link.active{color:var(--indigo);background:var(--indigo-lt)}
+.nav-link:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* HERO */
+#hero{
+  min-height:100vh;padding:calc(var(--nav-h) + 56px) 24px 64px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
+.hero-badge{padding:5px 14px;background:var(--indigo-lt);border:1px solid #fbcfe8;border-radius:100px;font-size:.78rem;font-weight:700;color:var(--indigo-dk)}
+.hero-title{font-size:clamp(2rem,5.5vw,3.6rem);font-weight:900;line-height:1.12;letter-spacing:-1.5px;margin-bottom:16px;max-width:900px}
+.hero-title em{color:var(--indigo);font-style:normal}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:660px;margin-bottom:36px}
+.hero-img{max-width:900px;width:100%;margin-bottom:40px}
+.hero-nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:820px}
+.hero-nav a{padding:8px 16px;border-radius:10px;background:var(--card);border:1px solid var(--border);font-size:.82rem;font-weight:600;color:var(--text);text-decoration:none;box-shadow:0 2px 8px rgba(15,23,42,.05);transition:transform .15s,box-shadow .15s}
+.hero-nav a:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(190,24,93,.15)}
+
+/* SECTIONS */
+.sec{max-width:1180px;margin:0 auto;padding:72px 24px}
+.sec-head{margin-bottom:36px}
+.num-badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:13px;font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:14px}
+.n1{background:linear-gradient(135deg,#be185d,#ec4899)}
+.n2{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
+.n3{background:linear-gradient(135deg,#8b5cf6,#a78bfa)}
+.n4{background:linear-gradient(135deg,#16a34a,#4ade80)}
+.n5{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+.n6{background:linear-gradient(135deg,#ec4899,#f472b6)}
+.n7{background:linear-gradient(135deg,#dc2626,#f87171)}
+.n8{background:linear-gradient(135deg,#0891b2,#22d3ee)}
+.n9{background:linear-gradient(135deg,#9d174d,#be185d)}
+.sec-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.sec-desc{font-size:1rem;color:var(--muted);max-width:760px;line-height:1.75}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+
+/* CARD GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.grid .c-name{font-weight:800;margin-bottom:8px;font-size:.96rem}
+.grid p:not(.c-name){color:var(--muted);font-size:.88rem;line-height:1.6}
+
+/* CALLOUTS */
+.note-callout{background:var(--indigo-lt);border:1px solid #fbcfe8;border-radius:14px;padding:16px 20px;margin-bottom:24px}
+.note-callout p{color:var(--indigo-dk);font-size:.92rem;line-height:1.7}
+.warn-callout{background:var(--amber-lt);border:1px solid #fcd34d;border-radius:16px;padding:20px 24px;margin-top:20px}
+.warn-callout p{color:#78350f;line-height:1.7;font-size:.93rem}
+
+/* IMAGE CARD + PLACEHOLDER */
+.img-card{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.12);cursor:zoom-in}
+.img-card img{display:block;width:100%;height:auto}
+.img-card .img-missing-caption{display:none}
+.img-card.img-missing{border:2px dashed var(--border);background:var(--indigo-lt);min-height:220px;display:flex;align-items:center;justify-content:center;box-shadow:none;cursor:default}
+.img-card.img-missing img{display:none}
+.img-card.img-missing .img-missing-caption{display:block;color:var(--muted);font-size:.85rem;text-align:center;padding:24px;max-width:340px}
+
+/* VIZ CARD (iframe) */
+.viz{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.viz-bar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#f8fafc;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#febb2c}.dg{background:#27c840}
+.viz-lbl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);flex:1}
+.viz-fs{display:flex;align-items:center;gap:5px;padding:4px 10px;background:transparent;border:1px solid var(--border);border-radius:6px;font-size:.71rem;font-weight:600;color:var(--muted);cursor:pointer;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+.viz-fs:hover{background:var(--indigo-lt);color:var(--indigo);border-color:#fbcfe8}
+.viz iframe{width:100%;border:none;display:block}
+
+/* PROMPT BOX */
+.prompt-box{background:#0f172a;border-radius:14px;overflow:hidden;margin-bottom:18px}
+.prompt-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#1e293b;color:#e2e8f0;font-size:.82rem;font-weight:700}
+.copy-btn{padding:5px 12px;border-radius:8px;border:1px solid #475569;background:transparent;color:#e2e8f0;font-size:.76rem;font-weight:700;cursor:pointer;transition:background .2s}
+.copy-btn:hover{background:#334155}
+.prompt-box pre{margin:0;padding:18px 16px;color:#e2e8f0;font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+
+/* LIGHTBOX */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.92);z-index:2000;display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:auto}
+.overlay img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.overlay-close{position:absolute;top:18px;right:22px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.overlay-close:hover{background:rgba(255,255,255,.22)}
+.overlay-download{position:absolute;top:18px;right:72px;height:40px;padding:0 16px;border-radius:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;z-index:2}
+.overlay-download:hover{background:rgba(255,255,255,.22)}
+
+/* FULLSCREEN IFRAME OVERLAY */
+#fs-overlay{position:fixed;inset:0;background:rgba(2,6,23,.94);z-index:2100;display:none;flex-direction:column}
+#fs-overlay.open{display:flex}
+#fs-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(255,255,255,.08)}
+#fs-title{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.65);flex:1}
+#fs-close{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.8);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#fs-close:hover{background:rgba(255,255,255,.2)}
+#fs-frame{flex:1;border:none;background:#fff}
+
+/* CHECKLIST */
+.checklist-progress-bar{height:10px;border-radius:100px;background:var(--indigo-lt);overflow:hidden;margin-bottom:20px}
+.checklist-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--indigo),var(--cyan));border-radius:100px;transition:width .3s ease}
+.checklist-items{list-style:none;display:flex;flex-direction:column;gap:12px}
+.checklist-items label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.95rem}
+.checklist-items input{width:18px;height:18px;accent-color:var(--indigo);cursor:pointer;flex-shrink:0}
+.checklist-done{margin-top:18px;padding:12px 16px;background:var(--green-lt);color:var(--green);border-radius:10px;font-weight:700}
+
+/* QUIZ */
+.quiz{display:flex;flex-direction:column;gap:18px}
+.quiz-question{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.quiz-text{font-weight:700;margin-bottom:12px}
+.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.quiz-options label{display:flex;align-items:center;gap:8px;font-size:.92rem;cursor:pointer}
+.quiz-options label.quiz-correct-answer{color:var(--green);font-weight:700}
+.quiz-options input{accent-color:var(--indigo)}
+.quiz-check{padding:8px 16px;border-radius:9px;border:none;background:var(--indigo);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer}
+.quiz-check:hover{background:var(--indigo-dk)}
+.quiz-feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem}
+.quiz-feedback.correct{background:var(--green-lt);color:var(--green)}
+.quiz-feedback.incorrect{background:var(--red-lt);color:var(--red)}
+.quiz-score-box{text-align:center;font-weight:800;color:var(--indigo-dk)}
+
+/* CONCLUSION */
+.conclusion-list{list-style:none;counter-reset:concl;display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.conclusion-list li{counter-increment:concl;padding-left:38px;position:relative;font-size:1rem}
+.conclusion-list li::before{content:counter(concl);position:absolute;left:0;top:-2px;width:26px;height:26px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+.svc-link{color:var(--indigo);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+
+/* SCROLL REVEAL */
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.fade.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.fade{opacity:1;transform:none;transition:none}}
+@media (max-width:900px){.sec{padding:56px 18px}}
+
+
+/* ДОПОЛНИТЕЛЬНЫЕ БЛОКИ УЧЕБНОЙ СТРАНИЦЫ */
+.legend-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:-14px 0 30px;max-width:900px}
+.legend-row span{font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:var(--card);color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.card h3{font-size:1.02rem;font-weight:800;margin-bottom:8px}
+.card p,.card li{font-size:.94rem;line-height:1.7}
+.card ul,.card ol{padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.lecture-tag,.extra-tag,.practice-tag,.trap-tag,.opinion-tag{display:inline-block;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:100px;margin-bottom:8px}
+.lecture-tag{background:var(--indigo-lt);color:var(--indigo-dk)}
+.extra-tag{background:var(--cyan-lt);color:#0369a1}
+.practice-tag{background:var(--green-lt);color:var(--green)}
+.trap-tag{background:var(--red-lt);color:var(--red)}
+.opinion-tag{background:var(--amber-lt);color:#92400e}
+.extra{background:linear-gradient(180deg,#f0f9ff,#fff);border:1px solid #bae6fd;border-left:5px solid var(--cyan);border-radius:16px;padding:18px 22px}
+.practice{background:linear-gradient(180deg,var(--green-lt),#fff);border:1px solid #bbf7d0;border-left:5px solid var(--green);border-radius:16px;padding:18px 22px}
+.trap{background:var(--red-lt);border:1px solid #fed7aa;border-left:5px solid var(--red);border-radius:16px;padding:16px 22px}
+.opinion{background:var(--amber-lt);border:1px solid #fcd34d;border-left:5px solid var(--amber);border-radius:16px;padding:18px 22px}
+.extra h3,.practice h3,.trap h3,.opinion h3{font-size:1rem;font-weight:800;margin-bottom:6px}
+.extra p,.extra li,.practice p,.practice li,.trap p,.trap li,.opinion p,.opinion li{font-size:.93rem;line-height:1.7}
+.extra ul,.practice ul,.practice ol,.trap ul,.opinion ul{padding-left:20px;display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.src{font-size:.8rem;color:var(--muted);margin-top:8px}
+.src a{color:#0369a1}
+.def{background:var(--card);border:1px solid #fbcfe8;border-left:5px solid var(--indigo);border-radius:14px;padding:14px 20px;font-size:1rem;line-height:1.7}
+.def b{color:var(--indigo-dk)}
+.formula{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:clamp(1.2rem,2.6vw,1.7rem);font-weight:800;text-align:center;padding:16px;background:var(--indigo-lt);border-radius:14px;color:var(--indigo-dk);letter-spacing:.5px}
+details.ref{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0 18px}
+details.ref + details.ref{margin-top:8px}
+details.ref summary{cursor:pointer;padding:12px 0;font-weight:800;font-size:.93rem;list-style:none;display:flex;gap:8px;align-items:center}
+details.ref summary::before{content:"🧭"}
+details.ref summary::-webkit-details-marker{display:none}
+details.ref[open] summary{border-bottom:1px dashed var(--border)}
+details.ref .ref-body{padding:10px 0 14px;font-size:.92rem;line-height:1.7;color:#334155}
+details.ref .ref-body p + p{margin-top:6px}
+table.cmp{width:100%;border-collapse:collapse;background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--border);font-size:.92rem}
+table.cmp th{background:var(--indigo-lt);color:var(--indigo-dk);text-align:left;padding:10px 14px;font-size:.84rem}
+table.cmp td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top;line-height:1.6}
+table.cmp td:first-child{font-weight:700}
+.table-wrap{overflow-x:auto}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.flow .step{flex:1 1 140px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;position:relative}
+.flow .step b{display:block;color:var(--indigo-dk);font-size:.92rem}
+.flow .step span{font-size:.84rem;color:var(--muted)}
+.flow .step .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.78rem;font-weight:800;align-items:center;justify-content:center;margin-bottom:6px}
+.quiz-feedback .explain{display:block;margin-top:6px;color:var(--text);font-weight:500}
+
+footer{text-align:center;padding:32px 20px 48px;color:var(--muted);font-size:.85rem}
+/* exam */
+.exam-tag{display:inline-block;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:100px;margin-bottom:8px;background:#cffafe;color:#155e75}
+.exam{background:linear-gradient(180deg,#ecfeff,#fff);border:1px solid #a5f3fc;border-left:5px solid #0e7490;border-radius:16px;padding:18px 22px}
+.exam h3{font-size:1rem;font-weight:800;margin-bottom:6px}
+.exam p,.exam li{font-size:.93rem;line-height:1.7}
+.exam ul{padding-left:20px;display:flex;flex-direction:column;gap:4px;margin-top:4px}
+/* podcast */
+.podcast{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;max-width:760px;width:100%;margin:0 auto 28px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 10px rgba(15,23,42,.06);text-align:left}
+.podcast-head{flex:1 1 220px}
+.podcast-title{font-weight:800;font-size:1rem;color:var(--indigo-dk)}
+.podcast-meta{font-size:.82rem;color:var(--muted)}
+.podcast audio{flex:1 1 280px;height:40px}
+.podcast-dl{padding:9px 16px;border-radius:10px;background:var(--indigo);color:#fff;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap}
+.podcast-dl:hover{filter:brightness(1.1)}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Навигация по странице">
+  <a class="nav-link" href="../index.html">← Все встречи</a>
+  <span class="nav-sep"></span>
+  <span class="nav-logo">Банк России · встреча 1</span>
+  <span class="nav-sep"></span>
+  <a class="nav-link" href="#s1">Цель политики</a>
+  <a class="nav-link" href="#s2">Тиски</a>
+  <a class="nav-link" href="#s3">Инфляция</a>
+  <a class="nav-link" href="#s4">Корабль и ветер</a>
+  <a class="nav-link" href="#s5">Цель 4 %</a>
+  <a class="nav-link" href="#s6">Ключевая ставка</a>
+  <a class="nav-link" href="#s7">Трансмиссия</a>
+  <a class="nav-link" href="#s8">Ожидания</a>
+  <a class="nav-link" href="#s9">Решение</a>
+  <a class="nav-link" href="#s10">Отделение</a>
+  <a class="nav-link" href="#checklist">Чек-лист</a>
+  <a class="nav-link" href="#quiz">Квиз</a>
+</nav>
+
+<header id="hero">
+  <div class="hero-badges">
+    <span class="hero-badge">Встреча 1 · 29.10.2026</span>
+    <span class="hero-badge">Отделение Ярославль Банка России</span>
+    <span class="hero-badge">Дополнительная лекция</span>
+    <span class="hero-badge">Цифры сверены с cbr.ru</span>
+  </div>
+  <h1 class="hero-title">Банк России: зачем <em>управлять инфляцией</em></h1>
+  <p class="hero-sub">После этой страницы вы объясните, что такое инфляция и кто её считает, почему цель — 4 %, а не ноль, как ключевая ставка через банки доходит до цен и почему ЦБ решает по прогнозу и ожиданиям, а не по вчерашней цифре. И поймёте, что означает для вашего бизнес-плана решение 23 октября 2026 года.</p>
+  <!-- podcast:start -->
+  <div class="podcast" aria-label="Подкаст по уроку">
+    <div class="podcast-head">
+      <div class="podcast-title">🎧 Подкаст по уроку</div>
+      <div class="podcast-meta">Беседа по опорному конспекту · 19 мин · MP3, 9 МБ</div>
+    </div>
+    <audio controls preload="none" src="../audio/zanyatie_01.mp3"></audio>
+    <a class="podcast-dl" href="../audio/zanyatie_01.mp3" download>⬇ Скачать</a>
+  </div>
+  <!-- podcast:end -->
+  <div class="legend-row" aria-label="Обозначения на странице">
+    <span>📘 Из лекции</span>
+    <span>🔗 Связь с курсом</span>
+    <span>➕ Дополнение: не из лекции, с источником</span>
+    <span>🧭 Справка: кто это и в чём суть</span>
+    <span>🛠 На практике</span>
+    <span>⚠️ Частая путаница</span>
+    <span>💬 Мнение спикера или слушателей</span>
+  </div>
+  <figure class="img-card hero-img" data-lightbox>
+    <img src="../png/zanyatie_01/00_karta_zanyatiya.webp" width="1672" height="941" alt="Карта встречи: четыре острова — зачем политика, что такое инфляция, как работает ставка, как принимают решения; десять остановок с вопросами" loading="eager" fetchpriority="high" onerror="this.closest('.img-card').classList.add('img-missing')">
+    <figcaption class="img-missing-caption">Карта встречи: 10 разделов и их вопросы (промпт 00)</figcaption>
+  </figure>
+  <nav class="hero-nav" aria-label="Разделы страницы">
+    <a href="#s1">1 · Цель политики</a>
+    <a href="#s2">2 · ЦБ и бюджет</a>
+    <a href="#s3">3 · Инфляция</a>
+    <a href="#s4">4 · Чем плох ноль</a>
+    <a href="#s5">5 · Цель 4 %</a>
+    <a href="#s6">6 · Ключевая ставка</a>
+    <a href="#s7">7 · Трансмиссия</a>
+    <a href="#s8">8 · Ожидания</a>
+    <a href="#s9">9 · Как решают</a>
+    <a href="#s10">10 · Отделение в регионе</a>
+    <a href="#quiz">Проверить себя</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ══════════ О ВСТРЕЧЕ ══════════ -->
+<section class="sec" id="kurs" style="padding-bottom:0">
+  <div class="two fade">
+    <div class="card">
+      <span class="lecture-tag">📘 О встрече</span>
+      <h3>Кто выступал</h3>
+      <p><b>Наталья Андреевна</b>, экономист Отделения Ярославль Банка России (Главное управление по Центральному федеральному округу): региональный экономический анализ, коммуникация, финансовая грамотность. Встреча шла 1 ч 50 мин; почти половина — вопросы слушателей-руководителей.</p>
+      <p style="margin-top:8px">Запись диктофонная, из зала: часть цифр восстановлена по смыслу и сверена с сайтом Банка России. Такие места помечены ➕.</p>
+    </div>
+    <div class="exam">
+      <span class="exam-tag">🔗 Связь с курсом</span>
+      <h3>Что встреча дополняет</h3>
+      <ul>
+        <li>«Экономика для менеджеров», <a href="../../Экономика для менеджеров/web/zanyatie_01.html">урок 1</a>: номинальное и реальное, личная инфляция, модель AD–AS.</li>
+        <li><a href="../../Экономика для менеджеров/web/zanyatie_02.html">Урок 2</a>: экономические циклы, дефицит бюджета, эффект вытеснения.</li>
+        <li>05.11 в курсе экономики — тема «Инфляция и безработица»: эта страница — хорошая подготовка к ней.</li>
+      </ul>
+      <p style="margin-top:6px">Аттестации по дополнительным лекциям нет. Вместо «на экзамене» — «🛠 в работе руководителя».</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 1 ══════════ -->
+<section class="sec" id="s1">
+  <div class="sec-head fade">
+    <div class="num-badge n1">1</div>
+    <h2 class="sec-title">Цель политики: расти у потенциала и не раскачиваться</h2>
+    <p class="sec-desc">С чего начала лектор: прежде чем говорить о ставке, договориться, к чему вообще стремится экономическая политика.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_01/01_potencial_cikly.webp" width="1672" height="941" alt="Дорога-потенциал идёт в гору; волна экономического цикла колеблется вокруг неё; бизнес и государство поднимают дорогу, денежно-кредитная политика сглаживает волну" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Потенциал и циклы (промпт 01)</figcaption>
+    </figure>
+    <div class="def fade"><b>Цель любой экономической политики — благосостояние общества и рост экономики.</b> Рост зависит от количества ресурсов и эффективности их использования. <b>Потенциальный рост (потенциальный ВВП)</b> — темп роста при полном использовании ресурсов и мощностей.</div>
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · выше и ниже потенциала</span>
+        <ul>
+          <li><b>Выше потенциала</b> прыгнуть можно ненадолго: работа «на износ», станок в три смены — потом откат.</li>
+          <li><b>Ниже потенциала</b> — тоже плохо: ресурсы простаивают.</li>
+          <li><b>Экономические циклы</b> (подъём — спад) неизбежны. Задача — сгладить колебания вокруг потенциала, а сам потенциал поднять.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · кто за что отвечает</span>
+        <ul>
+          <li><b>Потенциал</b> поднимают бизнес (инвестиции) и государство (налоги, институты). Пример лектора — <b>МФЦ</b>: «всё в одном окне» экономит время людей и бизнеса.</li>
+          <li><b>Колебания</b> сглаживает денежно-кредитная политика вместе с бюджетной.</li>
+          <li>Политики работают <b>в связке</b> и согласуются на уровне правительства.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 В работе руководителя</span>
+      <p>У компании своя цель — клиенты и прибыль, но она зависит от благосостояния общества: «богатые клиенты — платёжеспособные». Когда экономика выше потенциала, вы видите это у себя как нехватку людей и мощностей и рост зарплат; ниже — как падение заказов. Это сигнал, в какую сторону будет двигаться ставка.</p>
+    </div>
+    <details class="ref fade"><summary>Потенциальный ВВП и разрыв выпуска</summary><div class="ref-body">
+      <p>Потенциальный ВВП — объём производства при «нормальной» загрузке труда и капитала, без разгона инфляции. Разница между фактическим и потенциальным ВВП — <b>разрыв выпуска</b>: положительный означает перегрев, отрицательный — недоиспользование ресурсов. ➕ Банк России оценивает разрыв выпуска в каждом макропрогнозе (документ «Основные направления ДКП»). Подробнее о циклах — в <a href="../../Экономика для менеджеров/web/zanyatie_02.html">уроке 2 по экономике</a>.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ══════════ 2 ══════════ -->
+<section class="sec" id="s2">
+  <div class="sec-head fade">
+    <div class="num-badge n2">2</div>
+    <h2 class="sec-title">Тиски: Центральный банк и бюджет</h2>
+    <p class="sec-desc">Две политики сжимают цикл с двух сторон. Хорошо, когда давят в одну сторону.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_01/02_tiski.webp" width="1672" height="941" alt="Тиски с двумя губками — денежно-кредитная политика и бюджетная политика — вокруг волны цикла; со стороны бюджета в экономику льётся поток денег" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">ЦБ и бюджет (промпт 02)</figcaption>
+    </figure>
+    <div class="def fade"><b>Денежно-кредитная политика (ДКП)</b> — политика центрального банка, которая воздействует на денежную сферу и <b>направлена на управление совокупным спросом</b>. <b>Бюджетная политика</b> — политика правительства: налоги и расходы. Обе должны быть <b>контрциклическими</b>: охлаждать перегрев и поддерживать спад.</div>
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · совокупный спрос</span>
+        <p><b>Совокупный спрос</b> — спрос всей экономики: граждан, предприятий (в том числе на промежуточную продукцию и логистику) и государства (госзаказ). ЦБ не считает его одним числом — видит по статистике кредитов, бюджета, платежей.</p>
+        <p style="margin-top:6px">ДКП влияет на <b>весь спрос в целом</b> и через него — на инфляцию. На предложение и потенциал ставка напрямую не действует.</p>
+      </div>
+      <div class="opinion">
+        <span class="opinion-tag">💬 Спикер</span>
+        <p>С 2022 года <b>бюджетная политика проинфляционная</b>: оборонный заказ → зарплаты → спрос → гонка цен. Бездефицитный бюджет планируется только к 2029 году. Бюджет «очень мешает» денежно-кредитной политике; планы бюджета меняются каждый месяц, и региональное отделение «подвергает их сомнению».</p>
+      </div>
+    </div>
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Дискуссия · откуда в 2022–2024 годах необеспеченный спрос</span>
+      <ul>
+        <li><b>Бюджетный импульс</b>: выплаты семьям участников СВО, зарплаты на оборонных заводах, работающих в несколько смен. Спрос не обеспечен предложением — покупали технику, недвижимость, «всё подряд».</li>
+        <li>Слушатель: «рабочие решили, что зарплата должна быть ×3 — на оборонном заводе платят 150».</li>
+        <li><b>Льготная ипотека</b>, по словам лектора, — не социальная программа, а поддержка девелоперов в кризис; неадресная, её брали как инвестицию, по несколько штук, и она тоже разгоняла цены. «Пример недостаточно продуманной политики».</li>
+        <li>Слушатели-строители: рост зарплат упёрся в неактуальные сметы госзаказа, специалистов найти невозможно.</li>
+      </ul>
+    </div>
+    <div class="extra fade">
+      <span class="extra-tag">🔗 Связь с курсом</span>
+      <p>Когда государство берёт в долг, чтобы финансировать дефицит, оно конкурирует с бизнесом за деньги и поднимает ставки — это <b>эффект вытеснения</b>. Тренажёр — в <a href="../../Экономика для менеджеров/web/vytesnenie_trenazher.html">курсе экономики</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 3 ══════════ -->
+<section class="sec" id="s3">
+  <div class="sec-head fade">
+    <div class="num-badge n3">3</div>
+    <h2 class="sec-title">Инфляция — градусник экономики</h2>
+    <p class="sec-desc">По одному показателю видно состояние всей экономики. Важно правильно его читать.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_01/03_inflyaciya_gradusnik.webp" width="1672" height="941" alt="Градусник экономики с отметкой цели 4 %; рядом корзина ИПЦ, регистратор Росстата, базовая инфляция без сезонных и тарифных факторов и личная инфляция у каждого своя" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Инфляция и ИПЦ (промпт 03)</figcaption>
+    </figure>
+    <div class="def fade"><b>Инфляция — устойчивое повышение общего уровня цен.</b> Ключевые слова: <b>устойчивое</b> (не разовый скачок за месяц) и <b>общего</b> (не отдельные товары). <b>Дефляция — устойчивое снижение цен по широкому кругу товаров.</b></div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Частая путаница</span>
+      <p>Летом дешевеют овощи, в сентябре — сахар (новый урожай свёклы). Это <b>не дефляция</b>, а снижение цен отдельных товаров в определённый период по определённой причине.</p>
+    </div>
+    <div class="table-wrap fade">
+      <table class="cmp">
+        <thead><tr><th>Показатель</th><th>Что это</th><th>Зачем смотреть</th></tr></thead>
+        <tbody>
+          <tr><td>ИПЦ</td><td>индекс потребительских цен по корзине среднестатистического гражданина; считает <b>Росстат</b>, а не ЦБ</td><td>официальная инфляция, по ней ставится цель 4 %</td></tr>
+          <tr><td>Базовая инфляция</td><td>ИПЦ без плодоовощной продукции и тарифов ЖКХ — без сезонных и административных факторов</td><td>видно <b>устойчивое</b> давление цен</td></tr>
+          <tr><td>Личная инфляция</td><td>рост цен вашей собственной корзины (дети, мясо или нет и т. д.)</td><td>у каждого своя — это нормально</td></tr>
+          <tr><td>ИАМ</td><td>информационно-аналитический материал об инфляции в регионе — отделения ЦБ публикуют каждый месяц</td><td>что подорожало именно у вас и почему</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · как считает Росстат</span>
+        <ul>
+          <li>Корзина — около 560 позиций, больше всего весит продовольствие. ➕ Росстат, 2026: 558 позиций.</li>
+          <li>Набор единый для страны; регистраторы ходят в магазины и фиксируют цены <b>одних и тех же</b> товаров; выбывший товар заменяют сопоставимым.</li>
+          <li>Данные выходят с лагом около полутора месяцев.</li>
+          <li>ИАМ за сентябрь 2026 по региону: подорожали яйца — начались занятия в школах; подешевел сахар — новый урожай; выросли услуги и продовольствие.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · пример масок</span>
+        <p>Пандемия: спрос на маски взлетел → цены выросли → производить стало выгодно, цеха перестроились → предложение выросло → после отмены масок спрос упал, предложение осталось → цены вернулись к нормальным.</p>
+        <p style="margin-top:6px">Рынок сам справился с разовым скачком на одном товаре. Инфляция — когда так происходит <b>со всем сразу и устойчиво</b>.</p>
+      </div>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 В работе руководителя</span>
+      <p>Посчитайте <b>инфляцию своей корзины затрат</b>: сырьё, логистика, зарплаты, аренда. Она может сильно отличаться от ИПЦ — и именно её вы перекладываете в цены. Для личной корзины есть калькулятор на <a href="https://fincult.info" target="_blank" rel="noopener">fincult.info</a>, региональный ИАМ — на странице отделения на cbr.ru.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 4 ══════════ -->
+<section class="sec" id="s4">
+  <div class="sec-head fade">
+    <div class="num-badge n4">4</div>
+    <h2 class="sec-title">Чем плохи высокая, нулевая и отрицательная инфляция</h2>
+    <p class="sec-desc">Сначала подумайте сами — картинка с готовым образом после.</p>
+  </div>
+  <div class="stack">
+    <div class="card fade">
+      <span class="lecture-tag">📘 Упражнение · сформулируйте сами</span>
+      <h3>Если высокая инфляция — плохо, почему бы не сделать её нулевой?</h3>
+      <p>Запишите две-три причины, почему <b>нулевая или отрицательная</b> инфляция вредна для экономики и для вашего бизнеса. Подсказка: подумайте, как вы поведёте себя как покупатель, если будете уверены, что через полгода всё подешевеет. Затем сверьтесь с разбором ниже.</p>
+    </div>
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · высокая инфляция</span>
+        <ul>
+          <li>Обесценивает <b>сбережения</b> и <b>реальные доходы</b>, сильнее всего у тех, у кого доход небольшой.</li>
+          <li>Растут <b>издержки</b> бизнеса, их перекладывают в цены.</li>
+          <li><b>Падают инвестиции</b>: эффект проекта трудно просчитать, проект в долг может стать неэффективным.</li>
+          <li>Трудно <b>планировать</b> и принимать решения. Крайний случай — <b>гиперинфляция</b>.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · дефляция и ноль</span>
+        <ul>
+          <li>Ожидая снижения цен, люди <b>откладывают покупки</b>.</li>
+          <li>Спрос падает — производить становится неинтересно, предприятия сокращают выпуск и людей.</li>
+          <li>Экономика стоит на месте или сжимается.</li>
+        </ul>
+      </div>
+    </div>
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_01/04_korabl_veter.webp" width="1672" height="941" alt="Три сцены с кораблём-экономикой: штиль — стоит на месте; шторм встречного ветра — опрокидывается; лёгкий попутный ветер 4 % — плывёт вперёд" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Корабль и ветер (промпт 04)</figcaption>
+    </figure>
+    <div class="def fade"><b>Метафора лектора:</b> экономика — корабль, инфляция — ветер. <b>Штиль</b> (ноль) — стоим на месте. <b>Сильный встречный ветер</b> (высокая инфляция) — опрокинет. Нужен <b>небольшой попутный ветер</b> — низкая стабильная инфляция.</div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 В работе руководителя</span>
+      <p>При высокой инфляции главный вред для бизнеса — горизонт планирования. Проверяйте инвестпроекты по <b>реальной</b> ставке (ставка по кредиту минус ожидаемая инфляция) и на нескольких сценариях инфляции. Тренажёр «Реальная доходность» — в <a href="../../Экономика для менеджеров/web/realnaya_dohodnost.html">курсе экономики</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 5 ══════════ -->
+<section class="sec" id="s5">
+  <div class="sec-head fade">
+    <div class="num-badge n5">5</div>
+    <h2 class="sec-title">Таргетирование: почему цель — 4 %</h2>
+    <p class="sec-desc">Не ноль и не семь. И почему это задача Центрального банка.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_01/05_cel_4.webp" width="1672" height="941" alt="Мишень с яблочком 4 %: стрелы ложатся вблизи центра; рядом подписи — опыт успешных стран, цель ставит Банк России, при цели 7 % разброс ещё выше" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Цель 4 % (промпт 05)</figcaption>
+    </figure>
+    <div class="def fade"><b>Режим таргетирования инфляции</b> — у центрального банка есть количественный ориентир (цель), к которому он ведёт политику. В России цель — <b>4 %</b>, инфляция должна держаться «вблизи 4 %».</div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Частая путаница</span>
+      <p><b>Таргетирование инфляции — задача Центрального банка, а не правительства.</b> Правительство учитывает цель, политики согласуются, но цель ставит и достигает ЦБ.</p>
+    </div>
+    <div class="card fade">
+      <span class="lecture-tag">📘 Из лекции · почему 4 %</span>
+      <ul>
+        <li>4 % — <b>опыт успешных стран</b> с режимом таргетирования, «не с потолка».</li>
+        <li>Инфляция колеблется от месяца к месяцу (огурцы, сахар, яйца после птичьего гриппа) — ровно 4 не будет никогда, поэтому цель «вблизи».</li>
+        <li>Если поднять цель до 6–7 %, инфляция будет колебаться уже вокруг неё и уходить ещё выше — «это ещё хуже».</li>
+        <li>Сейчас средняя инфляция около 6 %: бюджет, топливо (непредвиденно), тарифы ЖКХ не по графику.</li>
+      </ul>
+    </div>
+    <div class="extra fade">
+      <span class="extra-tag">➕ Дополнение</span>
+      <p>Банк России перешёл к режиму таргетирования инфляции в конце 2014 года, одновременно с плавающим курсом рубля; цель 4 % действует с 2017 года. Многие центробанки развитых стран держат цель 2 %; у развивающихся экономик она обычно выше — у них сильнее колебания цен и структурные сдвиги.</p>
+      <p class="src">Источник: Банк России, раздел «Денежно-кредитная политика» (cbr.ru).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 6 ══════════ -->
+<section class="sec" id="s6">
+  <div class="sec-head fade">
+    <div class="num-badge n6">6</div>
+    <h2 class="sec-title">Ключевая ставка: охладить перегрев</h2>
+    <p class="sec-desc">Основной инструмент ДКП. Работает на спрос — и только на спрос.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_01/06_klyuchevaya_stavka.webp" width="1672" height="941" alt="Двигатель экономики перегрет, очередь клиентов к прилавку, где товара на всех не хватает; рычаг ключевой ставки подаёт охлаждающую жидкость в двигатель спроса" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Ключевая ставка (промпт 06)</figcaption>
+    </figure>
+    <div class="def fade"><b>Ключевая ставка</b> — основной инструмент денежно-кредитной политики. Её цель — <b>влиять на спрос</b>. При <b>перегреве</b> спрос обгоняет возможности предложения: «клиенты в очереди, продукта на всех нет» → продавцы поднимают цены → <b>инфляционная спираль</b>. Повышение ставки охлаждает спрос и так снижает инфляцию.</div>
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · одна на всю страну</span>
+        <p>Ставка <b>едина для всей России</b>: регионы связаны цепочками поставок, экономика не закрытая — «ставка для отдельного региона» невозможна. Поэтому ЦБ таргетирует <b>общероссийскую</b> инфляцию.</p>
+      </div>
+      <div class="trap">
+        <span class="trap-tag">⚠️ Частая путаница</span>
+        <p>Ставка охлаждает <b>исключительно спрос</b>. На разовые шоки предложения (неурожай, тариф, топливо) она не направлена: ставкой нельзя вырастить свёклу или проложить трубопровод.</p>
+      </div>
+    </div>
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · пульт ключевой ставки</span>
+        <button type="button" class="viz-fs" data-fs-src="pult_stavki.html" data-fs-title="Тренажёр: пульт ключевой ставки">⛶ На весь экран</button>
+      </div>
+      <iframe src="pult_stavki.html" height="560" loading="lazy" title="Тренажёр: пульт ключевой ставки"></iframe>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 Что попробовать в тренажёре</span>
+      <ul>
+        <li>«Снизить слишком рано» — инфляция уходит вверх и раскручивает ожидания.</li>
+        <li>«Резко поднять до 21 %» — через лаг экономика переохлаждается, инфляция уходит ниже цели.</li>
+        <li>«Ожидания заякорены» — та же ставка даёт цель гораздо быстрее. Это и есть сила коммуникации (раздел 8).</li>
+        <li>Подвигайте лаг: чем он длиннее, тем дольше ставка «не работает» и тем сильнее соблазн её передёрнуть.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 7 ══════════ -->
+<section class="sec" id="s7">
+  <div class="sec-head fade">
+    <div class="num-badge n7">7</div>
+    <h2 class="sec-title">Трансмиссия: как ставка доходит до цен</h2>
+    <p class="sec-desc">Процентный канал по шагам — и почему путь занимает больше года.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_01/07_transmissiya.webp" width="1672" height="941" alt="Цепочка шестерёнок от рычага ключевой ставки: овернайт, ОФЗ, ставки по депозитам и кредитам, кредиты, совокупный спрос, инфляция; на ленте времени — 3–6 кварталов" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Трансмиссия (промпт 07)</figcaption>
+    </figure>
+    <div class="def fade"><b>Трансмиссионный механизм</b> — путь, по которому ключевая ставка влияет на экономику. Главный — <b>процентный канал</b>.</div>
+    <div class="flow fade">
+      <div class="step"><span class="n">1</span><b>Ключевая ставка</b><span>решение Совета директоров</span></div>
+      <div class="step"><span class="n">2</span><b>Овернайт</b><span>межбанк, в тот же день</span></div>
+      <div class="step"><span class="n">3</span><b>Длинные ставки, ОФЗ</b><span>доходности гособлигаций</span></div>
+      <div class="step"><span class="n">4</span><b>Депозиты и кредиты</b><span>ставки банков</span></div>
+      <div class="step"><span class="n">5</span><b>Кредит и сбережения</b><span>занимать дороже, копить выгоднее</span></div>
+      <div class="step"><span class="n">6</span><b>Совокупный спрос</b><span>охлаждается</span></div>
+      <div class="step"><span class="n">7</span><b>Инфляция</b><span>снижается</span></div>
+    </div>
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · лаг</span>
+        <p>Решение по ставке в полной мере сказывается на экономике через <b>4–6 кварталов</b> (по словам лектора). Поэтому решения принимают <b>по прогнозу</b>, на моделях, и иногда они кажутся слишком жёсткими: ЦБ отвечает на инфляцию через год, а не на сегодняшнюю.</p>
+        <p class="src">➕ Банк России: «от трёх до шести кварталов».</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · рынок забегает вперёд</span>
+        <p>Банки меняют ставки по вкладам <b>ещё до решения</b>, если ожидают смягчения. Поэтому важен <b>сигнал</b> — формулировки пресс-релиза о будущей политике.</p>
+        <p style="margin-top:6px">Рост кредитов на фоне жёсткой политики ЦБ разбирает качественно: например, «последний вагон» льготной ипотеки или ожидание подорожания машин.</p>
+      </div>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 В работе руководителя</span>
+      <p>Кредит, который вы берёте сегодня, будете обслуживать на фоне ставки через год. Смотрите на <b>прогноз средней ключевой ставки</b> в опорных решениях ЦБ (на 2027 год — 12,5–13,5 %, ➕ пресс-релиз 23.10.2026) и на сигнал в пресс-релизе, а не только на текущий уровень.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 8 ══════════ -->
+<section class="sec" id="s8">
+  <div class="sec-head fade">
+    <div class="num-badge n8">8</div>
+    <h2 class="sec-title">Ожидания: прогноз, который сбывается сам</h2>
+    <p class="sec-desc">Почему ЦБ смотрит на то, чего люди ждут, не меньше, чем на то, что уже случилось.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_01/08_ozhidaniya.webp" width="1672" height="941" alt="Покупатели закупают впрок, потому что ждут роста цен; петля «ожидание → закупка → спрос → цены → ожидание»; рядом мегафон коммуникации ЦБ разрывает петлю" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Инфляционные ожидания (промпт 08)</figcaption>
+    </figure>
+    <div class="def fade"><b>Инфляционные ожидания</b> — какую инфляцию люди и бизнес ждут в будущем. Ожидают роста цен → закупают впрок → спрос растёт → производители перекладывают издержки в цены → инфляция растёт. Это <b>самосбывающийся прогноз</b>.</div>
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · как их измеряют</span>
+        <ul>
+          <li><b>Опросы населения</b>.</li>
+          <li><b>Мониторинг предприятий</b> нефинансового сектора — около 30 лет; анкета из 14 вопросов, только качественные оценки: «как изменился спрос и как изменится в ближайшие 3 месяца».</li>
+        </ul>
+        <p style="margin-top:6px">Если инфляция выросла, а ожидания снижаются, ЦБ может <b>не ужесточать</b>.</p>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · коммуникация — тоже инструмент</span>
+        <p>Так записано в документах ЦБ: открытость решений и разъяснение политики влияют на ожидания. Сигнал — формулировки пресс-релиза о будущей политике (мягче или жёстче).</p>
+        <p style="margin-top:6px">💬 «Не нужно разглядывать, какая брошь и с какой стороны».</p>
+      </div>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Частая путаница: разовый фактор или устойчивая инфляция</span>
+      <p>На <b>разовые факторы</b> (тарифы ЖКХ, топливо) ставку не меняют: их доля в корзине мала, эффект размывается. Но бывают <b>вторичные эффекты</b>: подорожание топлива долго переносится в цены других товаров и в ожидания — тогда это уже устойчивое давление.</p>
+    </div>
+    <div class="viz fade">
+      <div class="viz-bar">
+        <div class="dots"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span></div>
+        <span class="viz-lbl">Тренажёр · вы — Совет директоров</span>
+        <button type="button" class="viz-fs" data-fs-src="sovet_direktorov.html" data-fs-title="Тренажёр: вы — Совет директоров">⛶ На весь экран</button>
+      </div>
+      <iframe src="sovet_direktorov.html" height="380" loading="lazy" title="Тренажёр: вы — Совет директоров"></iframe>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 В работе руководителя</span>
+      <p>Ожидания ваших клиентов, поставщиков и сотрудников двигают цены сильнее, чем фактическая инфляция. Если в коллективе ждут «зарплату ×3», это давление на фонд оплаты труда раньше, чем у конкурентов. Если ваш поставщик ждёт роста цен, он поднимет их заранее.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 9 ══════════ -->
+<section class="sec" id="s9">
+  <div class="sec-head fade">
+    <div class="num-badge n9">9</div>
+    <h2 class="sec-title">Как принимают решение — и что решили 23 октября</h2>
+    <p class="sec-desc">Восемь заседаний в год, неделя тишины и резюме обсуждения.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_01/09_reshenie.webp" width="1672" height="941" alt="Календарь из восьми заседаний, четыре опорных выделены; неделя тишины; стол Совета директоров с докладами регионов; табло решения 23.10.2026 — 14 %" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Решение по ставке (промпт 09)</figcaption>
+    </figure>
+    <div class="flow fade">
+      <div class="step"><span class="n">1</span><b>Неделя подготовки</b><span>регионы докладывают, чем живут</span></div>
+      <div class="step"><span class="n">2</span><b>Неделя тишины</b><span>представители ЦБ не дают комментариев</span></div>
+      <div class="step"><span class="n">3</span><b>Решение Совета директоров</b><span>8 раз в год, 4 опорных — с новым прогнозом</span></div>
+      <div class="step"><span class="n">4</span><b>Пресс-релиз и пресс-конференция</b><span>председатель — Эльвира Набиуллина</span></div>
+      <div class="step"><span class="n">5</span><b>Коммуникационные сессии</b><span>в регионах, вход свободный</span></div>
+      <div class="step"><span class="n">6</span><b>Резюме обсуждения</b><span>варианты на столе и аргументы</span></div>
+    </div>
+    <div class="trap fade">
+      <span class="trap-tag">⚠️ Частая путаница</span>
+      <p>ЦБ смотрит не только на фактическую инфляцию. Важны её <b>структура</b> (разовый шок или устойчивое давление), <b>инфляционные ожидания</b>, кредит, рынок труда, бюджет.</p>
+    </div>
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · решение 23.10.2026</span>
+        <ul>
+          <li>Ставка <b>сохранена на 14 %</b>. Это более жёсткий сигнал: цикл снижения не продолжили.</li>
+          <li>Заседание опорное: прогноз инфляции на 2026 год <b>повышен</b> — цель в этом году не достигнута.</li>
+          <li>Риски: высокие ожидания, повышенный перенос издержек в цены, <b>зарплаты растут быстрее производительности</b>, дефицит бюджета (бездефицитный — не раньше 2029), рост кредитования.</li>
+        </ul>
+      </div>
+      <div class="extra">
+        <span class="extra-tag">➕ Дополнение · пресс-релиз 23.10.2026</span>
+        <ul>
+          <li>Ставка 14 % сохранена второй раз подряд; до 14 % её снизили в июле 2026.</li>
+          <li>Годовая инфляция ≈ 6,8 %.</li>
+          <li>Прогноз инфляции на конец 2026 года — 7,1–7,6 %, возврат к 4 % — в 2027 году.</li>
+          <li>Средняя ключевая ставка в 2027 году — 12,5–13,5 %.</li>
+          <li>Следующее заседание — <b>18 декабря 2026 года</b>.</li>
+        </ul>
+        <p class="src">Источник: Банк России, пресс-релиз о ключевой ставке, cbr.ru.</p>
+      </div>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 В бизнес-плане</span>
+      <p>Закладывайте в бизнес-план <b>прогноз ЦБ</b>: инфляция около 4 % в 2027 году, средняя ставка 12,5–13,5 %. И сделайте стресс-сценарий, если цель снова не будет достигнута. Почитайте <b>резюме обсуждения</b> — там видно, какие варианты лежали на столе и какие риски ЦБ считает главными.</p>
+    </div>
+    <details class="ref fade"><summary>Эльвира Набиуллина</summary><div class="ref-body">
+      <p>Председатель Банка России с 2013 года. При ней ЦБ перешёл к плавающему курсу рубля и таргетированию инфляции (2014), провёл расчистку банковского сектора. Ведёт пресс-конференции после решений по ключевой ставке.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ══════════ 10 ══════════ -->
+<section class="sec" id="s10">
+  <div class="sec-head fade">
+    <div class="num-badge n1">10</div>
+    <h2 class="sec-title">Отделение в регионе: глаза и голос ЦБ</h2>
+    <p class="sec-desc">Чем занимается отделение в Ярославле и как голос региона доходит до Совета директоров.</p>
+  </div>
+  <div class="stack">
+    <figure class="img-card fade" data-lightbox>
+      <img src="../png/zanyatie_01/10_otdelenie.webp" width="1672" height="941" alt="Отделение Банка России в регионе собирает сигналы — статистику, данные банков, налоги, кассы, мониторинг предприятий, разговоры с руководителями — и передаёт их в Главное управление по ЦФО и в Совет директоров" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+      <figcaption class="img-missing-caption">Региональное отделение (промпт 10)</figcaption>
+    </figure>
+    <div class="def fade">Задачи отделения: <b>региональный экономический анализ</b> (как живут бизнес и предприятия) и <b>коммуникация</b> (разъяснение политики, финансовая грамотность). Цепочка: регион → <b>Главное управление по ЦФО</b> → его руководитель в <b>Совете директоров</b>. Решение принимают для всей страны, но с учётом голоса каждого региона.</div>
+    <div class="two fade">
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · откуда данные</span>
+        <ul>
+          <li>Официальная статистика (с лагом; данные ОПК закрыты).</li>
+          <li>Данные кредитных организаций — кредиты и депозиты, точные.</li>
+          <li>Налоговые данные, кассовая техника, платёжная система.</li>
+          <li><b>Мониторинг предприятий</b>: в Ярославской области ≈300 участников; по России, по словам лектора, более 15 тыс. (➕ по данным ЦБ — более 14 тыс.). Выборку держат репрезентативной по отраслям.</li>
+          <li><b>Прямой диалог</b> с руководителями и отраслевыми союзами, кейсы (визит в лакокрасочный кластер региона).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="lecture-tag">📘 Из лекции · независимость и роль ЦБ</span>
+        <ul>
+          <li>По закону Банк России <b>независим</b> в решениях по ставке; решает Совет директоров. Но политики согласуются с правительством.</li>
+          <li>ЦБ не влияет на ВВП напрямую, но через низкую стабильную инфляцию создаёт условия для роста.</li>
+          <li>Кроме ДКП есть <b>политика финансовой стабильности</b> — устойчивость финансовой системы.</li>
+          <li>Некоторые показатели осмысленны только для всей страны: например, наличные — с ними ездят по регионам.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="opinion fade">
+      <span class="opinion-tag">💬 Вопросы слушателей · цифровой рубль</span>
+      <p>Создан <b>для расчётов</b>; сейчас переводы в цифровых рублях без комиссий. Дешёвого кредита «в цифровых рублях» он не даёт. Спикер: «не может быть выгодным и удобным во всех отношениях»; «это не мой проект».</p>
+    </div>
+    <div class="practice fade">
+      <span class="practice-tag">🛠 Как влиять на решения</span>
+      <ul>
+        <li>Предприятие может стать <b>участником мониторинга</b>: анкета без цифр, 14 качественных вопросов — и ваш голос попадает в доклад Совету директоров.</li>
+        <li>Ходите на <b>коммуникационные сессии</b> после решений — вход свободный, можно задать вопрос.</li>
+        <li>Отделение по запросу приходит на предприятия с лекциями по финансовой грамотности и кибермошенничеству.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ЧЕК-ЛИСТ ══════════ -->
+<section class="sec" id="checklist">
+  <div class="sec-head fade">
+    <div class="num-badge n2">✓</div>
+    <h2 class="sec-title">Что вынести со встречи</h2>
+    <p class="sec-desc">Отмечайте пункт, когда можете объяснить его своими словами без подсказки. Отметки сохраняются в браузере.</p>
+  </div>
+  <div class="card fade">
+    <div class="checklist-progress-bar"><div class="checklist-progress-fill" id="checklist-progress"></div></div>
+    <ul class="checklist-items">
+      <li><label><input type="checkbox" data-checklist-item="c1"> Потенциальный рост, циклы; кто поднимает потенциал, кто сглаживает колебания</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c2"> ДКП и бюджет — «тиски»; почему бюджет сейчас проинфляционный</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c3"> Определения инфляции и дефляции; сезонное удешевление — не дефляция</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c4"> ИПЦ, базовая и личная инфляция; считает Росстат</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c5"> Чем плохи высокая инфляция и дефляция; корабль и ветер</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c6"> Таргетирование, цель 4 % и почему не 0 и не 7; цель ставит ЦБ</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c7"> Ключевая ставка охлаждает спрос, едина для страны, не лечит шоки предложения</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c8"> Процентный канал трансмиссии по шагам; лаг 3–6 кварталов</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c9"> Инфляционные ожидания, самосбывающийся прогноз, коммуникация как инструмент</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c10"> Разовый фактор и вторичные эффекты</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c11"> 8 заседаний, 4 опорных, неделя тишины, резюме обсуждения</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c12"> Решение 23.10.2026: 14 %, прогноз, риски, следующее заседание 18.12</label></li>
+      <li><label><input type="checkbox" data-checklist-item="c13"> Отделение: анализ и коммуникация; мониторинг предприятий</label></li>
+    </ul>
+    <p class="checklist-done" id="checklist-done" hidden>Встреча усвоена — можно объяснять коллегам.</p>
+  </div>
+</section>
+
+<!-- ══════════ КВИЗ ══════════ -->
+<section class="sec" id="quiz">
+  <div class="sec-head fade">
+    <div class="num-badge n3">?</div>
+    <h2 class="sec-title">Проверьте себя</h2>
+    <p class="sec-desc">Четырнадцать вопросов по встрече. После ответа — правильный вариант и разбор.</p>
+  </div>
+  <div class="quiz fade">
+    <div class="quiz-question" data-quiz="1" data-explain="Ключевые слова — «устойчивое» и «общего»: не разовый скачок и не отдельные товары.">
+      <p class="quiz-text">1. Что такое инфляция?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q1" value="right"> устойчивое повышение общего уровня цен</label>
+        <label><input type="radio" name="q1" value="wrong"> любое подорожание товара за месяц</label>
+        <label><input type="radio" name="q1" value="wrong"> рост цен на продовольствие</label>
+        <label><input type="radio" name="q1" value="wrong"> снижение курса рубля</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="1">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="1" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="2" data-explain="Дефляция — устойчивое снижение цен по широкому кругу товаров. Сезонное удешевление к ней не относится.">
+      <p class="quiz-text">2. Летом огурцы подешевели на 20 %. Это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q2" value="wrong"> дефляция</label>
+        <label><input type="radio" name="q2" value="right"> снижение цен отдельного товара по сезонной причине</label>
+        <label><input type="radio" name="q2" value="wrong"> признак переохлаждения экономики</label>
+        <label><input type="radio" name="q2" value="wrong"> повод снизить ключевую ставку</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="2">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="2" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="3" data-explain="Инфляцию (ИПЦ) считает Росстат; ЦБ использует эти данные и анализирует их.">
+      <p class="quiz-text">3. Кто считает официальную инфляцию в России?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q3" value="wrong"> Банк России</label>
+        <label><input type="radio" name="q3" value="wrong"> Минфин</label>
+        <label><input type="radio" name="q3" value="right"> Росстат</label>
+        <label><input type="radio" name="q3" value="wrong"> Минэкономразвития</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="3">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="3" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="4" data-explain="Из базовой инфляции убраны сезонные и административные факторы — по ней видно устойчивое давление цен.">
+      <p class="quiz-text">4. Базовая инфляция — это…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q4" value="wrong"> инфляция по корзине конкретного человека</label>
+        <label><input type="radio" name="q4" value="right"> ИПЦ без плодоовощной продукции и тарифов</label>
+        <label><input type="radio" name="q4" value="wrong"> инфляция за базовый 2017 год</label>
+        <label><input type="radio" name="q4" value="wrong"> цель Банка России</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="4">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="4" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="5" data-explain="Штиль: корабль стоит на месте. Ожидая снижения цен, люди откладывают покупки — производить неинтересно.">
+      <p class="quiz-text">5. Чем плоха нулевая или отрицательная инфляция?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q5" value="wrong"> ничем, это идеал</label>
+        <label><input type="radio" name="q5" value="wrong"> растут издержки бизнеса</label>
+        <label><input type="radio" name="q5" value="right"> люди откладывают покупки, спрос и производство падают</label>
+        <label><input type="radio" name="q5" value="wrong"> обесцениваются сбережения</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="5">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="5" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="6" data-explain="4 % — опыт успешных стран с таргетированием. Более высокая цель — «это ещё хуже»: колебания вокруг неё выше.">
+      <p class="quiz-text">6. Почему цель — 4 %, а не 7 %?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q6" value="wrong"> так проще считать</label>
+        <label><input type="radio" name="q6" value="right"> при цели 7 % инфляция колебалась бы вокруг неё и уходила ещё выше</label>
+        <label><input type="radio" name="q6" value="wrong"> так требует МВФ</label>
+        <label><input type="radio" name="q6" value="wrong"> при 7 % растут сбережения</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="6">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="6" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="7" data-explain="Цель ставит и достигает Центральный банк; правительство учитывает её, политики согласуются.">
+      <p class="quiz-text">7. Таргетирование инфляции — это задача…</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q7" value="wrong"> правительства</label>
+        <label><input type="radio" name="q7" value="right"> Банка России</label>
+        <label><input type="radio" name="q7" value="wrong"> Росстата</label>
+        <label><input type="radio" name="q7" value="wrong"> регионов</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="7">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="7" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="8" data-explain="ДКП управляет совокупным спросом; через него — инфляцией. На предложение ставка напрямую не направлена.">
+      <p class="quiz-text">8. На что прежде всего влияет ключевая ставка?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q8" value="wrong"> на предложение и потенциальный ВВП</label>
+        <label><input type="radio" name="q8" value="right"> на совокупный спрос</label>
+        <label><input type="radio" name="q8" value="wrong"> на тарифы ЖКХ</label>
+        <label><input type="radio" name="q8" value="wrong"> на урожай</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="8">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="8" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="9" data-explain="Экономика не закрытая, регионы связаны поставками. ЦБ таргетирует общероссийскую инфляцию.">
+      <p class="quiz-text">9. Можно ли установить отдельную ключевую ставку для региона с высокой инфляцией?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q9" value="wrong"> да, по решению губернатора</label>
+        <label><input type="radio" name="q9" value="wrong"> да, через региональное отделение</label>
+        <label><input type="radio" name="q9" value="right"> нет: ставка едина для страны, регионы связаны цепочками</label>
+        <label><input type="radio" name="q9" value="wrong"> только для приграничных регионов</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="9">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="9" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="10" data-explain="Лектор назвала 4–6 кварталов; Банк России пишет «от трёх до шести кварталов». Поэтому решения принимают по прогнозу.">
+      <p class="quiz-text">10. Через сколько решение по ставке в полной мере сказывается на экономике (Банк России)?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q10" value="wrong"> через неделю</label>
+        <label><input type="radio" name="q10" value="wrong"> через 1–2 месяца</label>
+        <label><input type="radio" name="q10" value="right"> через 3–6 кварталов</label>
+        <label><input type="radio" name="q10" value="wrong"> через 5 лет</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="10">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="10" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="11" data-explain="Сначала межбанк (овернайт, в тот же день), потом длинные ставки и ОФЗ, ставки по депозитам и кредитам, кредит, спрос, инфляция.">
+      <p class="quiz-text">11. Какой порядок звеньев процентного канала верный?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q11" value="wrong"> ставка → инфляция → кредиты → спрос</label>
+        <label><input type="radio" name="q11" value="right"> ставка → овернайт → ставки банков → кредит → спрос → инфляция</label>
+        <label><input type="radio" name="q11" value="wrong"> ставка → курс → бюджет → инфляция</label>
+        <label><input type="radio" name="q11" value="wrong"> ставка → зарплаты → налоги → спрос</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="11">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="11" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="12" data-explain="Ожидания — самосбывающийся прогноз. Если они снижаются, давление ослабевает, и ужесточать не обязательно.">
+      <p class="quiz-text">12. Инфляция чуть выросла, но инфляционные ожидания снижаются и кредит замедляется. Что, скорее всего, сделает ЦБ?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q12" value="wrong"> резко повысит ставку</label>
+        <label><input type="radio" name="q12" value="right"> может не ужесточать: принятые меры работают</label>
+        <label><input type="radio" name="q12" value="wrong"> обязательно снизит ставку</label>
+        <label><input type="radio" name="q12" value="wrong"> введёт контроль цен</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="12">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="12" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="13" data-explain="Перед решением ЦБ молчит, чтобы не подавать рынку сигналов до заседания.">
+      <p class="quiz-text">13. Что такое «неделя тишины»?</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q13" value="wrong"> неделя без заседаний</label>
+        <label><input type="radio" name="q13" value="right"> неделя перед заседанием, когда представители ЦБ не дают публичных комментариев</label>
+        <label><input type="radio" name="q13" value="wrong"> неделя после решения без пресс-релизов</label>
+        <label><input type="radio" name="q13" value="wrong"> каникулы Совета директоров</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="13">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="13" hidden></p>
+    </div>
+
+    <div class="quiz-question" data-quiz="14" data-explain="Ставка сохранена на 14 % второй раз подряд; прогноз инфляции на 2026 год повышен до 7,1–7,6 %.">
+      <p class="quiz-text">14. Решение Банка России 23 октября 2026 года:</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q14" value="wrong"> снизил ставку до 13 %</label>
+        <label><input type="radio" name="q14" value="right"> сохранил ставку 14 %</label>
+        <label><input type="radio" name="q14" value="wrong"> повысил ставку до 16 %</label>
+        <label><input type="radio" name="q14" value="wrong"> отменил ключевую ставку</label>
+      </div>
+      <button type="button" class="quiz-check" data-quiz-check="14">Проверить</button>
+      <p class="quiz-feedback" data-quiz-feedback="14" hidden></p>
+    </div>
+
+  </div>
+  <p class="quiz-score-box fade" id="quiz-score" style="margin-top:18px">Отвечено: 0 / 14</p>
+</section>
+
+<!-- ══════════ ЗАКЛЮЧЕНИЕ ══════════ -->
+<section class="sec" id="final">
+  <div class="sec-head fade">
+    <div class="num-badge n1">★</div>
+    <h2 class="sec-title">Шпаргалка: ДКП за одну минуту</h2>
+  </div>
+  <figure class="img-card fade" data-lightbox style="margin-bottom:28px">
+    <img src="../png/zanyatie_01/11_shpargalka.webp" width="1672" height="941" alt="Шпаргалка из плиток: инфляция, цель 4 %, ключевая ставка, трансмиссия и лаг, ожидания, решение 23.10.2026" loading="lazy" onerror="this.closest('.img-card').classList.add('img-missing')">
+    <figcaption class="img-missing-caption">Шпаргалка (промпт 11)</figcaption>
+  </figure>
+  <ol class="conclusion-list fade">
+    <li><strong>Цель политики</strong> — расти у потенциала без резких колебаний. Потенциал поднимают бизнес и государство, колебания сглаживают ЦБ и бюджет.</li>
+    <li><strong>Инфляция</strong> — устойчивый рост общего уровня цен. Считает Росстат по ИПЦ; устойчивое давление видно по базовой инфляции.</li>
+    <li><strong>Ноль — тоже плохо:</strong> люди откладывают покупки. Нужен небольшой попутный ветер — <strong>4 %</strong>.</li>
+    <li><strong>Цель ставит и достигает ЦБ</strong> (таргетирование с конца 2014, цель 4 % с 2017).</li>
+    <li><strong>Ключевая ставка</strong> охлаждает спрос, едина для страны, на разовые шоки предложения не направлена.</li>
+    <li><strong>Трансмиссия:</strong> ставка → овернайт → ОФЗ → ставки банков → кредит → спрос → инфляция. Лаг 3–6 кварталов, поэтому решают по прогнозу.</li>
+    <li><strong>Ожидания</strong> — самосбывающийся прогноз; коммуникация ЦБ — тоже инструмент.</li>
+    <li><strong>23.10.2026:</strong> 14 % сохранена, прогноз на 2026 — 7,1–7,6 %, к 4 % — в 2027, следующее заседание 18.12.2026.</li>
+  </ol>
+  <div class="extra fade">
+    <span class="extra-tag">📘 Что почитать — рекомендовал лектор</span>
+    <ul>
+      <li><b>«Основные направления единой государственной денежно-кредитной политики»</b> — «может быть как учебник».</li>
+      <li><b>Резюме обсуждения ключевой ставки</b> — после каждого решения.</li>
+      <li><b>ИАМ об инфляции в регионе</b> — на странице Отделения Ярославль на cbr.ru.</li>
+      <li><a href="https://fincult.info" target="_blank" rel="noopener">fincult.info</a> — калькулятор личной инфляции и материалы по финансовой грамотности.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+
+
+<div class="overlay" id="lightbox" aria-hidden="true">
+  <a class="overlay-download" id="lightbox-download" download aria-label="Скачать изображение">⬇ Скачать</a>
+  <button class="overlay-close" id="lightbox-close" aria-label="Закрыть">✕</button>
+  <img id="lightbox-img" alt="">
+</div>
+
+<div id="fs-overlay" aria-hidden="true">
+  <div id="fs-bar">
+    <span id="fs-title"></span>
+    <button type="button" id="fs-close" aria-label="Закрыть полноэкранный режим">✕</button>
+  </div>
+  <iframe id="fs-frame" title="Полноэкранная визуализация"></iframe>
+</div>
+
+<footer>
+  <p>Президентская программа · Дополнительные лекции · встреча с Отделением Ярославль Банка России · материалы с пометкой «Дополнение» добавлены к лекции</p>
+</footer>
+
+<script>
+/* Префикс имени файла при скачивании инфографики */
+const BRAND = "dop-lekcii-z1";
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (!reduceMotion && "IntersectionObserver" in window) {
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in");
+        reveal.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.06, rootMargin: "0px 0px -24px"});
+  document.querySelectorAll(".fade").forEach((element) => reveal.observe(element));
+} else {
+  document.querySelectorAll(".fade").forEach((element) => element.classList.add("in"));
+}
+
+/* Подсветка активной секции в навбаре */
+const navLinks = [...document.querySelectorAll(".nav-link")];
+const sections = [...document.querySelectorAll("main section[id]")];
+if ("IntersectionObserver" in window) {
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach((link) => {
+        link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`);
+      });
+    });
+  }, {rootMargin: "-35% 0px -55%", threshold: 0});
+  sections.forEach((section) => sectionObserver.observe(section));
+}
+
+/* Лайтбокс */
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const lightboxDownload = document.getElementById("lightbox-download");
+function brandedFilename(url) {
+  const name = url.split("/").pop().split("?")[0];
+  return `${BRAND}_${name}`;
+}
+document.querySelectorAll(".img-card[data-lightbox]").forEach((card) => {
+  card.addEventListener("click", () => {
+    if (card.classList.contains("img-missing")) return;
+    const img = card.querySelector("img");
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightboxDownload.href = img.src;
+    lightboxDownload.download = brandedFilename(img.src);
+    lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
+  });
+});
+function closeLightbox() {
+  if (lightbox.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  lightboxImg.src = "";
+}
+document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (event) => { if (event.target === lightbox) closeLightbox(); });
+
+/* Фуллскрин для iframe-карточек */
+const fsOverlay = document.getElementById("fs-overlay");
+const fsFrame = document.getElementById("fs-frame");
+const fsTitle = document.getElementById("fs-title");
+document.querySelectorAll(".viz-fs").forEach((button) => {
+  button.addEventListener("click", () => {
+    fsFrame.src = button.dataset.fsSrc;
+    fsTitle.textContent = button.dataset.fsTitle;
+    fsOverlay.classList.add("open");
+    fsOverlay.setAttribute("aria-hidden", "false");
+  });
+});
+function closeFs() {
+  if (fsOverlay.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  fsOverlay.classList.remove("open");
+  fsOverlay.setAttribute("aria-hidden", "true");
+  fsFrame.src = "";
+}
+document.getElementById("fs-close").addEventListener("click", closeFs);
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if (fsOverlay.classList.contains("open")) { closeFs(); } else { closeLightbox(); }
+});
+
+/* Копирование промптов */
+document.querySelectorAll("[data-copy]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const code = document.getElementById(button.dataset.copy);
+    if (!code) return;
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(code.innerText);
+      button.textContent = "Скопировано";
+    } catch {
+      button.textContent = "Выделите текст";
+    }
+    window.setTimeout(() => { button.textContent = original; }, 1600);
+  });
+});
+
+/* Чек-лист готовности */
+const CHECKLIST_KEY = "dop-lekcii-z1-checklist";
+const checklistInputs = [...document.querySelectorAll("[data-checklist-item]")];
+const checklistProgress = document.getElementById("checklist-progress");
+const checklistDone = document.getElementById("checklist-done");
+function loadChecklistState() {
+  try { return JSON.parse(localStorage.getItem(CHECKLIST_KEY) || "{}"); } catch { return {}; }
+}
+function saveChecklistState(state) {
+  try { localStorage.setItem(CHECKLIST_KEY, JSON.stringify(state)); } catch { /* приватный режим */ }
+}
+function renderChecklistProgress() {
+  const checked = checklistInputs.filter((input) => input.checked).length;
+  checklistProgress.style.width = `${Math.round((checked / checklistInputs.length) * 100)}%`;
+  checklistDone.hidden = checked !== checklistInputs.length;
+}
+const savedChecklist = loadChecklistState();
+checklistInputs.forEach((input) => {
+  const key = input.dataset.checklistItem;
+  input.checked = Boolean(savedChecklist[key]);
+  input.addEventListener("change", () => {
+    const state = loadChecklistState();
+    state[key] = input.checked;
+    saveChecklistState(state);
+    renderChecklistProgress();
+  });
+});
+renderChecklistProgress();
+
+/* Квиз */
+const QUIZ_TOTAL = document.querySelectorAll(".quiz-question").length;
+let quizAnswered = 0;
+let quizCorrect = 0;
+const quizScoreEl = document.getElementById("quiz-score");
+document.querySelectorAll(".quiz-check").forEach((button) => {
+  button.addEventListener("click", () => {
+    const index = button.dataset.quizCheck;
+    const question = document.querySelector(`.quiz-question[data-quiz="${index}"]`);
+    const selected = question.querySelector(`input[name="q${index}"]:checked`);
+    const feedback = document.querySelector(`[data-quiz-feedback="${index}"]`);
+    if (!selected) {
+      feedback.textContent = "Выберите вариант ответа.";
+      feedback.className = "quiz-feedback incorrect";
+      feedback.hidden = false;
+      return;
+    }
+    const alreadyAnswered = button.disabled;
+    const isCorrect = selected.value === "right";
+    feedback.textContent = isCorrect ? "Верно!" : "Не совсем — правильный вариант выделен выше.";
+    if (question.dataset.explain) {
+      const explain = document.createElement("span");
+      explain.className = "explain";
+      explain.textContent = question.dataset.explain;
+      feedback.appendChild(explain);
+    }
+    feedback.className = `quiz-feedback ${isCorrect ? "correct" : "incorrect"}`;
+    feedback.hidden = false;
+    question.querySelectorAll("input").forEach((input) => { input.disabled = true; });
+    question.querySelector('input[value="right"]').closest("label").classList.add("quiz-correct-answer");
+    button.disabled = true;
+    if (!alreadyAnswered) {
+      quizAnswered += 1;
+      if (isCorrect) quizCorrect += 1;
+      quizScoreEl.textContent = `Отвечено: ${quizAnswered} / ${QUIZ_TOTAL} · верно: ${quizCorrect}`;
+    }
+  });
+});
+</script>
+</body>
+</html>

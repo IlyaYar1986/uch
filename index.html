@@ -28,6 +28,21 @@ h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:900;letter-spacing:-1.2px;line-h
 .team .band{background:linear-gradient(90deg,#9a3412,#fb923c)}
 .org .band{background:linear-gradient(90deg,#5b21b6,#a78bfa)}
 .mgmt .band{background:linear-gradient(90deg,#155e75,#22d3ee)}
+.guest{margin-top:44px}
+.guest-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:14px}
+.guest-head h2{font-size:1.45rem;font-weight:800;letter-spacing:-.3px}
+.guest-head h2 a{color:inherit;text-decoration:none;border-bottom:3px solid #be185d}
+.guest-head h2 a:hover{color:#be185d}
+.guest-head p{color:var(--muted);font-size:.92rem}
+.meet{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;background:var(--card);border:1px solid var(--border);border-left:6px solid #be185d;border-radius:16px;padding:16px 20px;text-decoration:none;color:inherit;box-shadow:0 2px 12px rgba(15,23,42,.04);transition:transform .15s,box-shadow .15s}
+.meet + .meet{margin-top:10px}
+.meet:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(190,24,93,.12)}
+.meet:focus-visible{outline:3px solid #be185d;outline-offset:3px}
+.meet .date{font-weight:900;color:#be185d;font-size:.95rem;white-space:nowrap}
+.meet .t{font-weight:800;font-size:1.05rem}
+.meet .d{color:var(--muted);font-size:.86rem}
+.meet .go{font-size:.8rem;font-weight:800;color:#be185d;white-space:nowrap}
+@media (max-width:600px){.meet{grid-template-columns:1fr}}
 footer{margin-top:48px;color:var(--muted);font-size:.85rem}
 </style>
 </head>
@@ -71,6 +86,18 @@ footer{margin-top:48px;color:var(--muted);font-size:.85rem}
       </div>
     </a>
   </div>
+
+  <section class="guest" aria-labelledby="guest-title">
+    <div class="guest-head">
+      <h2 id="guest-title"><a href="Дисциплины/Дополнительные лекции/index.html">Дополнительные лекции с приглашёнными экспертами</a></h2>
+      <p>Встречи вне расписания дисциплин: спикеры из организаций региона и страны</p>
+    </div>
+    <a class="meet" href="Дисциплины/Дополнительные лекции/web/zanyatie_01.html">
+      <span class="date">29.10.2026</span>
+      <span><span class="t">Банк России: зачем управлять инфляцией</span><br><span class="d">Отделение Ярославль Банка России · инфляция и ИПЦ, цель 4 %, ключевая ставка, трансмиссия, ожидания, решение 23.10.2026</span></span>
+      <span class="go">Открыть →</span>
+    </a>
+  </section>
 
   <footer>Материалы для самостоятельной подготовки. Блоки с пометкой «➕ Дополнение» добавлены к лекциям из открытых источников.</footer>
 </main>

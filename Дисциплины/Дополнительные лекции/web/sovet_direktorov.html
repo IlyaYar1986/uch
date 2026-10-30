@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: вы — Совет директоров</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --border:#e2e8f0;
+  --acc:#be185d;
+  --acc-dk:#9d174d;
+  --acc-lt:#fdf2f8;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#c2410c;
+  --red-lt:#fff7ed;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;color:var(--text);line-height:1.45;padding:12px 16px}
+.back{display:inline-block;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:6px}
+.back:hover{color:var(--acc)}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+h1{font-size:1.05rem;font-weight:800}
+.sub{color:var(--muted);font-size:.8rem}
+.wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:14px}
+@media (max-width:760px){.wrap{grid-template-columns:1fr}}
+.case{border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.case .n{font-size:.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.case h2{font-size:.98rem;font-weight:800;margin:4px 0 8px}
+.facts{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.facts li{background:#f8fafc;border:1px solid var(--border);border-radius:9px;padding:6px 9px;font-size:.78rem}
+.facts b{display:block;font-size:.92rem;color:var(--acc-dk)}
+.choice{display:flex;flex-wrap:wrap;gap:6px}
+.choice button{flex:1 1 120px;padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:#fff;font:inherit;font-size:.82rem;font-weight:800;cursor:pointer}
+.choice button:hover{background:var(--acc-lt);border-color:#fbcfe8}
+.choice button.ok{background:var(--green-lt);border-color:#86efac;color:var(--green)}
+.choice button.no{background:var(--red-lt);border-color:#fdba74;color:var(--red)}
+.side{display:flex;flex-direction:column;gap:8px}
+.why{border:1px solid #fbcfe8;border-left:5px solid var(--acc);background:var(--acc-lt);border-radius:12px;padding:10px 12px;font-size:.84rem;min-height:110px}
+.why b{color:var(--acc-dk)}
+.score{font-size:.84rem;font-weight:800;color:var(--acc-dk)}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.nav button{padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;font:inherit;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer}
+.nav button:hover{color:var(--acc-dk);background:var(--acc-lt)}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dots span{width:14px;height:14px;border-radius:50%;background:#e2e8f0}
+.dots span.ok{background:var(--green)}
+.dots span.no{background:var(--red)}
+.dots span.cur{outline:2px solid var(--acc);outline-offset:1px}
+button:focus-visible,a:focus-visible{outline:2px solid var(--acc-dk);outline-offset:2px}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html" target="_top">← Все встречи</a>
+<div class="top">
+  <h1>Вы — Совет директоров Банка России</h1>
+  <span class="sub">Восемь ситуаций. Решите, что делать со ставкой: смотрите не только на инфляцию, но и на её причину, ожидания и спрос</span>
+</div>
+<div class="wrap">
+  <div class="case">
+    <div class="n" id="num"></div>
+    <h2 id="title"></h2>
+    <ul class="facts" id="facts"></ul>
+    <div class="choice" id="choice">
+      <button type="button" data-a="up">▲ Повысить</button>
+      <button type="button" data-a="hold">■ Сохранить</button>
+      <button type="button" data-a="down">▼ Снизить</button>
+    </div>
+  </div>
+  <div class="side">
+    <div class="why" id="why" aria-live="polite">Выберите решение — здесь появится разбор.</div>
+    <div class="dots" id="dots"></div>
+    <div class="score" id="score"></div>
+    <div class="nav">
+      <button type="button" id="prev">← Назад</button>
+      <button type="button" id="next">Следующая ситуация →</button>
+      <button type="button" id="reset">Начать заново</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Ситуации учебные; логика решений — по лекции и документам Банка России:
+   ставка охлаждает спрос, на разовые шоки предложения не реагируют, важны ожидания и прогноз. */
+const CASES = [
+  {t: "Перегрев: очереди за товаром", f: [["Инфляция", "9 % и растёт"], ["Ожидания", "растут"], ["Кредиты", "бурный рост"], ["Мощности", "загружены полностью"]], a: "up",
+   w: "<b>Повысить.</b> Спрос обгоняет возможности предложения — классический перегрев. Ставка охлаждает спрос, иначе начнётся инфляционная спираль."},
+  {t: "Подорожали тарифы ЖКХ", f: [["Инфляция", "скачок на 0,6 п. п. за месяц"], ["Базовая инфляция", "у цели"], ["Ожидания", "стабильны"], ["Спрос", "в норме"]], a: "hold",
+   w: "<b>Сохранить.</b> Это разовый административный фактор: доля в корзине мала, эффект размывается. Базовая инфляция и ожидания спокойны — повода менять ставку нет."},
+  {t: "Топливо дорожает и тянет за собой всё", f: [["Инфляция", "растёт третий месяц"], ["Базовая инфляция", "тоже растёт"], ["Ожидания", "пошли вверх"], ["Причина", "топливо → логистика → цены"]], a: "up",
+   w: "<b>Повысить (или сигнал ужесточения).</b> Сам шок топлива — разовый, но пошли <b>вторичные эффекты</b>: подорожание переносится в цены других товаров и в ожидания. Это уже устойчивое давление."},
+  {t: "Инфляция выросла, но ожидания падают", f: [["Инфляция", "7 %, чуть выше прошлого месяца"], ["Ожидания", "снижаются"], ["Кредиты", "замедляются"], ["Прогноз", "4 % через год"]], a: "hold",
+   w: "<b>Сохранить.</b> Решения принимают по прогнозу: ставка работает с лагом 3–6 кварталов. Ожидания снижаются, кредит замедляется — уже принятые меры работают, ужесточать не обязательно."},
+  {t: "Инфляция у цели, экономика остывает", f: [["Инфляция", "4,2 % и снижается"], ["Ожидания", "около 4 %"], ["Кредиты", "почти не растут"], ["Спрос", "ниже возможностей"]], a: "down",
+   w: "<b>Снизить.</b> Цель достигнута, спрос слабый, ожидания заякорены. Слишком жёсткая ставка теперь будет давить на экономику ниже потенциала."},
+  {t: "Бюджет резко увеличил выплаты", f: [["Инфляция", "6 %"], ["Бюджет", "дефицит растёт"], ["Зарплаты", "растут быстрее производительности"], ["Ожидания", "растут"]], a: "up",
+   w: "<b>Повысить или дольше держать высокой.</b> Бюджетный импульс добавляет спрос, не обеспеченный предложением, — «тиски» работают в разные стороны. ЦБ компенсирует более жёсткой ДКП."},
+  {t: "Летом подешевели овощи", f: [["Цены", "огурцы −20 % за месяц"], ["Базовая инфляция", "6,5 %"], ["Ожидания", "высокие"], ["Кредиты", "растут"]], a: "hold",
+   w: "<b>Не снижать.</b> Сезонное удешевление — не дефляция и не повод смягчать. Базовая инфляция и ожидания высоки, кредит растёт — устойчивое давление сохраняется."},
+  {t: "Октябрь 2026", f: [["Инфляция", "≈6,8 % г/г"], ["Ожидания", "высокие"], ["Зарплаты", "обгоняют производительность"], ["Бюджет", "дефицит до 2029"]], a: "hold",
+   w: "<b>Сохранить 14 % — так и решили 23.10.2026.</b> Снижать рано (ожидания и перенос издержек высокие), но уже принятая жёсткость работает. Сохранение после цикла снижения — жёсткий сигнал."},
+];
+const LABEL = {up: "повысить", hold: "сохранить", down: "снизить"};
+let idx = 0;
+const answers = new Array(CASES.length).fill(null);
+const el = (id) => document.getElementById(id);
+
+function render() {
+  const c = CASES[idx];
+  el("num").textContent = `Ситуация ${idx + 1} из ${CASES.length}`;
+  el("title").textContent = c.t;
+  el("facts").innerHTML = c.f.map(([k, v]) => `<li>${k}<b>${v}</b></li>`).join("");
+  const given = answers[idx];
+  document.querySelectorAll("#choice button").forEach((b) => {
+    b.className = "";
+    if (given) {
+      if (b.dataset.a === c.a) b.className = "ok";
+      else if (b.dataset.a === given) b.className = "no";
+    }
+  });
+  el("why").innerHTML = given ? (given === c.a ? "✅ Верно. " : `❌ Вы выбрали «${LABEL[given]}». `) + c.w : "Выберите решение — здесь появится разбор.";
+  el("dots").innerHTML = CASES.map((x, i) => {
+    const a = answers[i];
+    const cls = [a ? (a === x.a ? "ok" : "no") : "", i === idx ? "cur" : ""].join(" ");
+    return `<span class="${cls}" title="Ситуация ${i + 1}"></span>`;
+  }).join("");
+  const done = answers.filter(Boolean).length;
+  const right = answers.filter((a, i) => a === CASES[i].a).length;
+  el("score").textContent = `Решено: ${done} из ${CASES.length} · верно: ${right}`;
+}
+
+document.querySelectorAll("#choice button").forEach((b) => b.addEventListener("click", () => {
+  if (answers[idx]) return;
+  answers[idx] = b.dataset.a;
+  render();
+}));
+el("next").addEventListener("click", () => { idx = (idx + 1) % CASES.length; render(); });
+el("prev").addEventListener("click", () => { idx = (idx - 1 + CASES.length) % CASES.length; render(); });
+el("reset").addEventListener("click", () => { answers.fill(null); idx = 0; render(); });
+render();
+</script>
+</body>
+</html>
