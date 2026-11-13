@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сравнительный менеджмент — занятие 2</title>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --indigo:#b45309;
+  --indigo-dk:#92400e;
+  --indigo-lt:#eef2ff;
+  --cyan:#0ea5e9;
+  --cyan-lt:#e0f2fe;
+  --amber:#f59e0b;
+  --amber-lt:#fffbeb;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --red:#dc2626;
+  --red-lt:#fef2f2;
+  --text:#0f172a;
+  --muted:#64748b;
+  --nav-h:56px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(99,102,241,.14),transparent 32%),
+    radial-gradient(circle at 85% 6%,rgba(14,165,233,.13),transparent 34%),
+    linear-gradient(180deg,#f8fafc 0%,#eef2ff 30%,#f8fafc 100%);
+  color:var(--text);
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 10px rgba(0,0,0,.06);
+  display:flex;align-items:center;padding:0 20px;z-index:900;
+  gap:2px;overflow-x:auto;scrollbar-width:none;
+}
+nav.top::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:.93rem;color:var(--indigo-dk);white-space:nowrap;margin:0 10px 0 4px;flex-shrink:0}
+.nav-sep{width:1px;height:18px;background:var(--border);margin:0 6px;flex-shrink:0}
+.nav-link{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;transition:color .2s,background .2s;flex-shrink:0}
+.nav-link:hover,.nav-link.active{color:var(--indigo);background:var(--indigo-lt)}
+.nav-link:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* HERO */
+#hero{
+  min-height:100vh;padding:calc(var(--nav-h) + 56px) 24px 64px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
+.hero-badge{padding:5px 14px;background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:100px;font-size:.78rem;font-weight:700;color:var(--indigo-dk)}
+.hero-title{font-size:clamp(2rem,5.5vw,3.6rem);font-weight:900;line-height:1.12;letter-spacing:-1.5px;margin-bottom:16px;max-width:900px}
+.hero-title em{color:var(--indigo);font-style:normal}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:660px;margin-bottom:36px}
+.hero-img{max-width:900px;width:100%;margin-bottom:40px}
+.hero-nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:820px}
+.hero-nav a{padding:8px 16px;border-radius:10px;background:var(--card);border:1px solid var(--border);font-size:.82rem;font-weight:600;color:var(--text);text-decoration:none;box-shadow:0 2px 8px rgba(15,23,42,.05);transition:transform .15s,box-shadow .15s}
+.hero-nav a:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,.15)}
+
+/* SECTIONS */
+.sec{max-width:1180px;margin:0 auto;padding:72px 24px}
+.sec-head{margin-bottom:36px}
+.num-badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:13px;font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:14px}
+.n1{background:linear-gradient(135deg,#6366f1,#818cf8)}
+.n2{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
+.n3{background:linear-gradient(135deg,#8b5cf6,#a78bfa)}
+.n4{background:linear-gradient(135deg,#16a34a,#4ade80)}
+.n5{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+.n6{background:linear-gradient(135deg,#ec4899,#f472b6)}
+.n7{background:linear-gradient(135deg,#dc2626,#f87171)}
+.n8{background:linear-gradient(135deg,#0891b2,#22d3ee)}
+.n9{background:linear-gradient(135deg,#4338ca,#6366f1)}
+.sec-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.sec-desc{font-size:1rem;color:var(--muted);max-width:760px;line-height:1.75}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+
+/* CARD GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.grid .c-name{font-weight:800;margin-bottom:8px;font-size:.96rem}
+.grid p:not(.c-name){color:var(--muted);font-size:.88rem;line-height:1.6}
+
+/* CALLOUTS */
+.note-callout{background:var(--indigo-lt);border:1px solid #c7d2fe;border-radius:14px;padding:16px 20px;margin-bottom:24px}
+.note-callout p{color:var(--indigo-dk);font-size:.92rem;line-height:1.7}
+.warn-callout{background:var(--amber-lt);border:1px solid #fcd34d;border-radius:16px;padding:20px 24px;margin-top:20px}
+.warn-callout p{color:#78350f;line-height:1.7;font-size:.93rem}
+
+/* IMAGE CARD + PLACEHOLDER */
+.img-card{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.12);cursor:zoom-in}
+.img-card img{display:block;width:100%;height:auto}
+.img-card .img-missing-caption{display:none}
+.img-card.img-missing{border:2px dashed var(--border);background:var(--indigo-lt);min-height:220px;display:flex;align-items:center;justify-content:center;box-shadow:none;cursor:default}
+.img-card.img-missing img{display:none}
+.img-card.img-missing .img-missing-caption{display:block;color:var(--muted);font-size:.85rem;text-align:center;padding:24px;max-width:340px}
+
+/* VIZ CARD (iframe) */
+.viz{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.viz-bar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#f8fafc;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#febb2c}.dg{background:#27c840}
+.viz-lbl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);flex:1}
+.viz-fs{display:flex;align-items:center;gap:5px;padding:4px 10px;background:transparent;border:1px solid var(--border);border-radius:6px;font-size:.71rem;font-weight:600;color:var(--muted);cursor:pointer;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+.viz-fs:hover{background:var(--indigo-lt);color:var(--indigo);border-color:#c7d2fe}
+.viz iframe{width:100%;border:none;display:block}
+
+/* PROMPT BOX */
+.prompt-box{background:#0f172a;border-radius:14px;overflow:hidden;margin-bottom:18px}
+.prompt-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#1e293b;color:#e2e8f0;font-size:.82rem;font-weight:700}
+.copy-btn{padding:5px 12px;border-radius:8px;border:1px solid #475569;background:transparent;color:#e2e8f0;font-size:.76rem;font-weight:700;cursor:pointer;transition:background .2s}
+.copy-btn:hover{background:#334155}
+.prompt-box pre{margin:0;padding:18px 16px;color:#e2e8f0;font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+
+/* LIGHTBOX */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.92);z-index:2000;display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:auto}
+.overlay img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.overlay-close{position:absolute;top:18px;right:22px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.overlay-close:hover{background:rgba(255,255,255,.22)}
+.overlay-download{position:absolute;top:18px;right:72px;height:40px;padding:0 16px;border-radius:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;z-index:2}
+.overlay-download:hover{background:rgba(255,255,255,.22)}
+
+/* FULLSCREEN IFRAME OVERLAY */
+#fs-overlay{position:fixed;inset:0;background:rgba(2,6,23,.94);z-index:2100;display:none;flex-direction:column}
+#fs-overlay.open{display:flex}
+#fs-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(255,255,255,.08)}
+#fs-title{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.65);flex:1}
+#fs-close{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.8);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#fs-close:hover{background:rgba(255,255,255,.2)}
+#fs-frame{flex:1;border:none;background:#fff}
+
+/* CHECKLIST */
+.checklist-progress-bar{height:10px;border-radius:100px;background:var(--indigo-lt);overflow:hidden;margin-bottom:20px}
+.checklist-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--indigo),var(--cyan));border-radius:100px;transition:width .3s ease}
+.checklist-items{list-style:none;display:flex;flex-direction:column;gap:12px}
+.checklist-items label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.95rem}
+.checklist-items input{width:18px;height:18px;accent-color:var(--indigo);cursor:pointer;flex-shrink:0}
+.checklist-done{margin-top:18px;padding:12px 16px;background:var(--green-lt);color:var(--green);border-radius:10px;font-weight:700}
+
+/* QUIZ */
+.quiz{display:flex;flex-direction:column;gap:18px}
+.quiz-question{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.quiz-text{font-weight:700;margin-bottom:12px}
+.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.quiz-options label{display:flex;align-items:center;gap:8px;font-size:.92rem;cursor:pointer}
+.quiz-options label.quiz-correct-answer{color:var(--green);font-weight:700}
+.quiz-options input{accent-color:var(--indigo)}
+.quiz-check{padding:8px 16px;border-radius:9px;border:none;background:var(--indigo);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer}
+.quiz-check:hover{background:var(--indigo-dk)}
+.quiz-feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem}
+.quiz-feedback.correct{background:var(--green-lt);color:var(--green)}
+.quiz-feedback.incorrect{background:var(--red-lt);color:var(--red)}
+.quiz-score-box{text-align:center;font-weight:800;color:var(--indigo-dk)}
+
+/* CONCLUSION */
+.conclusion-list{list-style:none;counter-reset:concl;display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.conclusion-list li{counter-increment:concl;padding-left:38px;position:relative;font-size:1rem}
+.conclusion-list li::before{content:counter(concl);position:absolute;left:0;top:-2px;width:26px;height:26px;border-radius:50%;background:var(--indigo);color:#fff;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+.svc-link{color:var(--indigo);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+
+/* SCROLL REVEAL */
+.fade{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.fade.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.fade{opacity:1;transform:none;transition:none}}
+@media (max-width:900px){.sec{padding:56px 18px}}
+
+footer{text-align:center;padding:32px 20px 48px;color:var(--muted);font-size:.85rem}
+ .lesson-text p,.lesson-text details{margin:0 0 15px}.lesson-text summary{cursor:pointer;font-weight:750;color:#b45309}.lesson-text a{color:#b45309}.img-card img{width:100%;height:auto}.sec{scroll-margin-top:72px}
+/* podcast */
+.podcast{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;max-width:760px;width:100%;margin:0 auto 28px;padding:16px 20px;background:var(--card,#fff);border:1px solid var(--border,#d7e7dd);border-radius:16px;box-shadow:0 2px 10px rgba(15,23,42,.06);text-align:left}
+.podcast-head{flex:1 1 220px}
+.podcast-title{font-weight:800;font-size:1rem;color:var(--indigo-dk,#172d36)}
+.podcast-meta{font-size:.82rem;color:var(--muted,#64748b)}
+.podcast audio{flex:1 1 280px;height:40px}
+.podcast-dl{padding:9px 16px;border-radius:10px;background:var(--indigo,#087b58);color:#fff;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap}
+.podcast-dl:hover{filter:brightness(1.1)}
+</style>
+<meta name="description" content="Экспорт, межкультурная коммуникация и переговоры: учебный лонгрид для руководителя."><meta name="theme-color" content="#b45309"><link rel="icon" href="data:,"></head>
+<body>
+
+<nav class="top" aria-label="Навигация"><a class="nav-link" href="../index.html">← Все уроки</a><span class="nav-logo">Сравнительный менеджмент · 2</span><a class="nav-link" href="#s1">Модели</a><a class="nav-link" href="#s2">Кайдзен</a><a class="nav-link" href="#s3">Китай</a><a class="nav-link" href="#s4">Прохоров</a><a class="nav-link" href="#s5">Гибрид</a><a class="nav-link" href="#checklist">Чек-лист</a><a class="nav-link" href="#quiz">Квиз</a></nav><header id="hero"><div class="hero-badges"><span class="hero-badge">Занятие 2 · 12.11.2026</span><span class="hero-badge">Наталия Авенировна Багрова</span><span class="hero-badge">Для руководителей</span></div><h1 class="hero-title">Модели <em>управления</em></h1><p class="hero-sub">Сравните подходы к решениям, качеству и отношениям — и соберите сочетание для своей команды.</p><!-- podcast:start -->
+  <div class="podcast" aria-label="Подкаст по уроку">
+    <div class="podcast-head">
+      <div class="podcast-title">🎧 Подкаст по уроку</div>
+      <div class="podcast-meta">Беседа по опорному конспекту · 12 мин · MP3, 6 МБ</div>
+    </div>
+    <audio controls preload="none" src="../audio/zanyatie_02.mp3"></audio>
+    <a class="podcast-dl" href="../audio/zanyatie_02.mp3" download>⬇ Скачать</a>
+  </div>
+  <!-- podcast:end -->
+<figure class="img-card fade" data-lightbox><img src="../png/zanyatie_02/00_karta.webp" width="1672" height="941" alt="Карта занятия: четыре вопроса о моделях управления" loading="lazy" decoding="async"><figcaption>Нажмите, чтобы увеличить</figcaption></figure><nav class="hero-nav"><a href="#s1">Сравнить модели</a><a href="#s5">Собрать свою</a><a href="#quiz">Проверить себя</a></nav></header><main><section class="sec" id="s1"><div class="sec-head fade"><div class="num-badge n1">1</div><h2 class="sec-title">США и Япония: два полюса сравнения</h2></div><figure class="img-card fade" data-lightbox><img src="../png/zanyatie_02/01_resheniya.webp" width="1672" height="941" alt="Индивидуальное решение и групповое согласование" loading="lazy" decoding="async"><figcaption>Нажмите, чтобы увеличить</figcaption></figure><div class="card fade lesson-text"><p>В лекции американский подход описан через индивидуальную ответственность, скорость и ориентацию на результат. Японский — через участие группы, долгосрочные отношения и качество. Это <strong>учебные полюса</strong>: внутри каждой страны компании и люди различаются.</p><p>Быстрое решение полезно, когда цена задержки высока и ответственному достаточно информации. Согласование помогает привлечь знания исполнителей и подготовить внедрение, но требует времени. Выбирайте процедуру по задаче.</p><details><summary>🧭 Долгосрочный найм в Японии</summary><p>На лекции речь шла о пожизненном найме как исторической практике. ➕ Дополнение: исследование <a href="https://webapps.ilo.org/public/english/standards/relm/gb/docs/gb286/pdf/tmmei-r.pdf">МОТ</a> указывает, что длительная занятость не охватывала всех работников, особенно в небольших фирмах.</p></details><p>🛠 Перед решением определите срок, того, кто утверждает, и тех, чьи знания действительно нужны.</p><p>⚠️ Групповое решение не гарантирует отсутствия ошибок; быстрый руководитель не обязательно игнорирует команду.</p></div></section><section class="sec" id="s2"><div class="sec-head fade"><div class="num-badge n2">2</div><h2 class="sec-title">Кайдзен, рингисэй и карьера</h2></div><figure class="img-card fade" data-lightbox><img src="../png/zanyatie_02/02_kaizen.webp" width="1672" height="941" alt="Кайдзен — улучшение процесса, рингисэй — согласование" loading="lazy" decoding="async"><figcaption>Нажмите, чтобы увеличить</figcaption></figure><div class="card fade lesson-text"><p><strong>Кайдзен</strong> — постоянное улучшение: заметить проблему, предложить небольшое изменение, проверить результат и закрепить удачное. <strong>Рингисэй</strong> — обсуждаемая на лекции процедура прохождения и согласования предложения через уровни организации.</p><p>В примере наладчик замечает поломки оборудования из-за скачков напряжения и предлагает решение. Его рассматривают исполнители и руководители, после чего утверждённое изменение внедряют. Выигрыш — участие людей, знающих процесс; цена — длительность согласования.</p><details><summary>🧭 Кайдзен на практике</summary><p>➕ Дополнение: Toyota описывает кайдзен как непрерывное улучшение в сочетании с участием сотрудников. <a href="https://www.toyota-global.com/company/history_of_toyota/75years/data/company_information/management_and_finances/management/tqm/change.html">История Toyota</a>.</p></details><details><summary>🧭 Что такое принцип Питера?</summary><p>Лоренс Питер описал риск продвижения за успех на предыдущей работе до должности, где новых навыков уже не хватает. Это повод проверять требования новой роли, а не оценка личности.</p></details><p>🛠 Выберите один повторяющийся сбой: запишите причину, проверяемое изменение, ответственного и дату оценки.</p><p>⚠️ Кайдзен — улучшение, а рингисэй — согласование; это не синонимы.</p></div></section><section class="sec" id="s3"><div class="sec-head fade"><div class="num-badge n3">3</div><h2 class="sec-title">Китай: отношения и управленческое решение</h2></div><figure class="img-card fade" data-lightbox><img src="../png/zanyatie_02/03_guanxi.webp" width="1672" height="941" alt="Гуаньси: доверие, обязательства и долгосрочные связи" loading="lazy" decoding="async"><figcaption>Нажмите, чтобы увеличить</figcaption></figure><div class="card fade lesson-text"><p>Преподаватель обсуждала централизацию, семейный бизнес и <strong>гуаньси</strong> — сеть личных связей и взаимных обязательств. Долгие отношения могут поддерживать доверие и сотрудничество; при этом договорённости и ответственность по конкретной сделке важно формулировать ясно.</p><p>💬 В лекции прозвучало обобщение о патерналистском руководителе. Оно помогает обсуждать определённый стиль, но не описывает все китайские организации.</p><p>🛠 Проверьте, кто действительно принимает решение, какие сроки и критерии важны партнёру и как стороны подтвердят обязательства.</p><p>⚠️ Страна происхождения не доказывает ни стиль руководства, ни надёжность партнёра.</p></div></section><section class="sec" id="s4"><div class="sec-head fade"><div class="num-badge n4">4</div><h2 class="sec-title">Прохоров: стабильность и мобилизация</h2></div><figure class="img-card fade" data-lightbox><img src="../png/zanyatie_02/04_prokhorov.webp" width="1672" height="941" alt="Два режима в концепции Прохорова" loading="lazy" decoding="async"><figcaption>Нажмите, чтобы увеличить</figcaption></figure><div class="card fade lesson-text"><p>Александр Петрович Прохоров в книге «Русская модель управления», изложенной преподавателем, сопоставляет два режима: <strong>стабильность</strong> с инерцией привычных процессов и <strong>мобилизацию</strong> с быстрыми действиями и интенсивным расходом ресурсов. Переход между ними образно сравнивается с маятником.</p><p>💬 Преподаватель связывала концепцию с историей и климатом и одновременно отмечала спорность её объяснений. Это исследовательская интерпретация, а не доказанный закон поведения всех организаций.</p><p>🛠 Посмотрите на свою команду: какие задачи действительно кризисные, какие сроки и ресурсы им выделены и когда команда вернётся к обычной работе?</p><p>⚠️ Аврал может помочь справиться с исключительной ситуацией, но его нельзя считать бесплатным и бесконечным ресурсом.</p></div></section><section class="sec" id="s5"><div class="sec-head fade"><div class="num-badge n5">5</div><h2 class="sec-title">Соберите гибридную модель</h2></div><div class="card fade lesson-text"><p>🛠 <strong>Сначала придумайте сами.</strong> Вы руководите командой, которой нужно быстро повысить качество услуги. Какие три управленческие практики вы выберете? Как поймёте, что они сработали? Запишите ответ до просмотра схемы.</p></div><figure class="img-card fade" data-lightbox><img src="../png/zanyatie_02/05_gibrid.webp" width="1672" height="941" alt="Практики под задачу: скорость, участие, качество и развитие людей" loading="lazy" decoding="async"><figcaption>Нажмите, чтобы увеличить</figcaption></figure><div class="card fade lesson-text"><p>Гибридная модель сочетает практики под конкретную задачу. Например, руководитель быстро назначает владельца проблемы, команда предлагает улучшения, а результат проверяют через две недели. Ни один элемент не обязан приходить в организацию вместе со всей «национальной моделью».</p><p>💬 В лекции Apple, Toyota и Google названы как примеры сочетания различных практик; это иллюстрации преподавателя, а не аудит этих компаний.</p><p>🛠 Опишите текущий процесс → определите цель и ограничения → выберите 2–3 элемента → назначьте срок проверки и измеримый результат → скорректируйте решение.</p><p>⚠️ Если сотрудники участвуют в обсуждении, заранее объясните, кто принимает окончательное решение.</p><div class="viz"><div class="viz-bar"><span class="viz-lbl">Тренажёр: цена согласования</span><button type="button" class="viz-fs" data-fs-src="cena_soglasovaniya.html" data-fs-title="Цена согласования">⛶ На весь экран</button></div><iframe src="cena_soglasovaniya.html" height="570" loading="lazy" title="Цена согласования"></iframe></div><p>Модель условная: она помогает сравнить время встреч при разных настройках, а не предсказывает качество решения.</p></div></section><section class="sec" id="checklist"><div class="sec-head"><h2 class="sec-title">Что выучить к аттестации</h2><p>Отметки сохраняются в браузере.</p></div><div class="card"><div class="checklist-progress-bar"><div class="checklist-progress-fill" id="checklist-progress"></div></div><ul class="checklist-items"><li><label><input type="checkbox" data-checklist-item="c1"> Объясняю отличие полюсов индивидуального и группового решения</label></li><li><label><input type="checkbox" data-checklist-item="c2"> Учитываю границы национальных обобщений</label></li><li><label><input type="checkbox" data-checklist-item="c3"> Объясняю кайдзен и рингисэй</label></li><li><label><input type="checkbox" data-checklist-item="c4"> Понимаю принцип Питера</label></li><li><label><input type="checkbox" data-checklist-item="c5"> Объясняю значение гуаньси</label></li><li><label><input type="checkbox" data-checklist-item="c6"> Описываю два режима в концепции Прохорова и её ограничения</label></li><li><label><input type="checkbox" data-checklist-item="c7"> Выбираю практики под задачу и проверяю результат</label></li></ul><p id="checklist-done" class="checklist-done" hidden>Все пункты отмечены.</p></div></section><section class="sec" id="quiz"><div class="sec-head"><h2 class="sec-title">Проверьте себя</h2></div><div class="quiz"><div class="quiz-question" data-quiz="1" data-explanation="Кайдзен связан с непрерывным улучшением."><p class="quiz-text">1. Что означает кайдзен?</p><div class="quiz-options"><label><input type="radio" name="q1" value="right"> Постоянное улучшение процессов</label><label><input type="radio" name="q1" value="wrong"> Обязательное пожизненное трудоустройство</label><label><input type="radio" name="q1" value="wrong"> Единоличный запрет обсуждения</label></div><button type="button" class="quiz-check" data-quiz-check="1">Проверить</button><p class="quiz-feedback" data-quiz-feedback="1" hidden></p></div><div class="quiz-question" data-quiz="2" data-explanation="Речь о процедуре согласования предложения."><p class="quiz-text">2. Что показывает рингисэй?</p><div class="quiz-options"><label><input type="radio" name="q2" value="wrong"> Оценку национальности сотрудника</label><label><input type="radio" name="q2" value="right"> Прохождение и согласование предложения</label><label><input type="radio" name="q2" value="wrong"> Только премию руководителя</label></div><button type="button" class="quiz-check" data-quiz-check="2">Проверить</button><p class="quiz-feedback" data-quiz-feedback="2" hidden></p></div><div class="quiz-question" data-quiz="3" data-explanation="Гуаньси описывает связи и взаимные обязательства."><p class="quiz-text">3. Что такое гуаньси?</p><div class="quiz-options"><label><input type="radio" name="q3" value="right"> Сеть отношений и взаимных обязательств</label><label><input type="radio" name="q3" value="wrong"> Технический стандарт качества</label><label><input type="radio" name="q3" value="wrong"> Показатель инфляции</label></div><button type="button" class="quiz-check" data-quiz-check="3">Проверить</button><p class="quiz-feedback" data-quiz-feedback="3" hidden></p></div><div class="quiz-question" data-quiz="4" data-explanation="Внутри любой страны компании и люди различаются."><p class="quiz-text">4. Какое утверждение о национальной модели верно?</p><div class="quiz-options"><label><input type="radio" name="q4" value="wrong"> Она предсказывает решения любого гражданина</label><label><input type="radio" name="q4" value="right"> Она упрощает практики и не описывает каждого человека</label><label><input type="radio" name="q4" value="wrong"> Она заменяет изучение компании</label></div><button type="button" class="quiz-check" data-quiz-check="4">Проверить</button><p class="quiz-feedback" data-quiz-feedback="4" hidden></p></div><div class="quiz-question" data-quiz="5" data-explanation="Требования новой роли нужно оценивать отдельно."><p class="quiz-text">5. В чём риск принципа Питера?</p><div class="quiz-options"><label><input type="radio" name="q5" value="right"> Новая должность требует навыков, которых может не хватать</label><label><input type="radio" name="q5" value="wrong"> Успех на прежней должности гарантирует успех на новой</label><label><input type="radio" name="q5" value="wrong"> Повышение автоматически развивает все навыки</label></div><button type="button" class="quiz-check" data-quiz-check="5">Проверить</button><p class="quiz-feedback" data-quiz-feedback="5" hidden></p></div><div class="quiz-question" data-quiz="6" data-explanation="Концепция описывает два режима и остаётся предметом обсуждения."><p class="quiz-text">6. Как использовать концепцию Прохорова?</p><div class="quiz-options"><label><input type="radio" name="q6" value="wrong"> Как непреложный закон для любой команды</label><label><input type="radio" name="q6" value="right"> Как интерпретацию, которую можно критически проверять</label><label><input type="radio" name="q6" value="wrong"> Как точный прогноз кризиса</label></div><button type="button" class="quiz-check" data-quiz-check="6">Проверить</button><p class="quiz-feedback" data-quiz-feedback="6" hidden></p></div><div class="quiz-question" data-quiz="7" data-explanation="Подходы выбирают по условиям и проверяют результат."><p class="quiz-text">7. Зачем формировать гибридную модель?</p><div class="quiz-options"><label><input type="radio" name="q7" value="right"> Подобрать практики к задаче, людям и ограничениям</label><label><input type="radio" name="q7" value="wrong"> Скопировать все обычаи одной страны</label><label><input type="radio" name="q7" value="wrong"> Полностью отменить ответственность</label></div><button type="button" class="quiz-check" data-quiz-check="7">Проверить</button><p class="quiz-feedback" data-quiz-feedback="7" hidden></p></div><div class="quiz-question" data-quiz="8" data-explanation="Обсуждение расширяет круг взглядов, но занимает время."><p class="quiz-text">8. Какой минус возможен при широком согласовании?</p><div class="quiz-options"><label><input type="radio" name="q8" value="wrong"> Гарантированное отсутствие ошибок</label><label><input type="radio" name="q8" value="right"> Затраты времени на обсуждение</label><label><input type="radio" name="q8" value="wrong"> Отмена необходимости внедрения</label></div><button type="button" class="quiz-check" data-quiz-check="8">Проверить</button><p class="quiz-feedback" data-quiz-feedback="8" hidden></p></div></div><p class="quiz-score-box" id="quiz-score">Отвечено: 0 / 8</p></section><section class="sec" id="final"><div class="sec-head"><h2 class="sec-title">Шпаргалка</h2></div><figure class="img-card fade" data-lightbox><img src="../png/zanyatie_02/06_shpargalka.webp" width="1672" height="941" alt="Шпаргалка: кайдзен, рингисэй, гуаньси и Прохоров" loading="lazy"><figcaption>Нажмите, чтобы увеличить</figcaption></figure><div class="card"><ol><li><strong>Кайдзен:</strong> улучшайте процесс постоянно.</li><li><strong>Рингисэй:</strong> согласуйте предложение с теми, кто влияет на результат.</li><li><strong>Гуаньси:</strong> развивайте доверие и выполняйте обязательства.</li><li><strong>Прохоров:</strong> различайте стабильность и мобилизацию, проверяя применимость идеи.</li><li><strong>Гибрид:</strong> выберите практики, измерьте результат, скорректируйте.</li></ol><p>Источник: лекция 12.11.2026. Дополнения отмечены и снабжены ссылками; оценки преподавателя отделены от фактов.</p></div></section></main>
+<div class="overlay" id="lightbox" aria-hidden="true">
+  <a class="overlay-download" id="lightbox-download" download aria-label="Скачать изображение">⬇ Скачать</a>
+  <button class="overlay-close" id="lightbox-close" aria-label="Закрыть">✕</button>
+  <img id="lightbox-img" alt="">
+</div>
+
+<div id="fs-overlay" aria-hidden="true">
+  <div id="fs-bar">
+    <span id="fs-title"></span>
+    <button type="button" id="fs-close" aria-label="Закрыть полноэкранный режим">✕</button>
+  </div>
+  <iframe id="fs-frame" title="Полноэкранная визуализация"></iframe>
+</div>
+
+<footer>
+  <p>Президентская программа · Сравнительный менеджмент · 2026</p>
+</footer>
+
+<script>
+/* Префикс имени файла при скачивании инфографики */
+const BRAND = "sravnitelny-menedzhment-02";
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (!reduceMotion && "IntersectionObserver" in window) {
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in");
+        reveal.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.06, rootMargin: "0px 0px -24px"});
+  document.querySelectorAll(".fade").forEach((element) => reveal.observe(element));
+} else {
+  document.querySelectorAll(".fade").forEach((element) => element.classList.add("in"));
+}
+
+/* Подсветка активной секции в навбаре */
+const navLinks = [...document.querySelectorAll(".nav-link")];
+const sections = [...document.querySelectorAll("main section[id]")];
+if ("IntersectionObserver" in window) {
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach((link) => {
+        link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`);
+      });
+    });
+  }, {rootMargin: "-35% 0px -55%", threshold: 0});
+  sections.forEach((section) => sectionObserver.observe(section));
+}
+
+/* Лайтбокс */
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const lightboxDownload = document.getElementById("lightbox-download");
+function brandedFilename(url) {
+  const name = url.split("/").pop().split("?")[0];
+  return `${BRAND}_${name}`;
+}
+document.querySelectorAll(".img-card[data-lightbox]").forEach((card) => {
+  card.addEventListener("click", () => {
+    if (card.classList.contains("img-missing")) return;
+    const img = card.querySelector("img");
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightboxDownload.href = img.src;
+    lightboxDownload.download = brandedFilename(img.src);
+    lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
+  });
+});
+function closeLightbox() {
+  if (lightbox.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  lightboxImg.src = "";
+}
+document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (event) => { if (event.target === lightbox) closeLightbox(); });
+
+/* Фуллскрин для iframe-карточек */
+const fsOverlay = document.getElementById("fs-overlay");
+const fsFrame = document.getElementById("fs-frame");
+const fsTitle = document.getElementById("fs-title");
+document.querySelectorAll(".viz-fs").forEach((button) => {
+  button.addEventListener("click", () => {
+    fsFrame.src = button.dataset.fsSrc;
+    fsTitle.textContent = button.dataset.fsTitle;
+    fsOverlay.classList.add("open");
+    fsOverlay.setAttribute("aria-hidden", "false");
+  });
+});
+function closeFs() {
+  if (fsOverlay.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  fsOverlay.classList.remove("open");
+  fsOverlay.setAttribute("aria-hidden", "true");
+  fsFrame.src = "";
+}
+document.getElementById("fs-close").addEventListener("click", closeFs);
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if (fsOverlay.classList.contains("open")) { closeFs(); } else { closeLightbox(); }
+});
+
+/* Копирование промптов */
+document.querySelectorAll("[data-copy]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const code = document.getElementById(button.dataset.copy);
+    if (!code) return;
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(code.innerText);
+      button.textContent = "Скопировано";
+    } catch {
+      button.textContent = "Выделите текст";
+    }
+    window.setTimeout(() => { button.textContent = original; }, 1600);
+  });
+});
+
+/* Чек-лист готовности */
+const CHECKLIST_KEY = "sravnitelny-menedzhment-02-checklist";   // уникальный ключ на каждую страницу
+const checklistInputs = [...document.querySelectorAll("[data-checklist-item]")];
+const checklistProgress = document.getElementById("checklist-progress");
+const checklistDone = document.getElementById("checklist-done");
+function loadChecklistState() {
+  try { return JSON.parse(localStorage.getItem(CHECKLIST_KEY) || "{}"); } catch { return {}; }
+}
+function saveChecklistState(state) {
+  try { localStorage.setItem(CHECKLIST_KEY, JSON.stringify(state)); } catch { /* приватный режим */ }
+}
+function renderChecklistProgress() {
+  const checked = checklistInputs.filter((input) => input.checked).length;
+  checklistProgress.style.width = `${Math.round((checked / checklistInputs.length) * 100)}%`;
+  checklistDone.hidden = checked !== checklistInputs.length;
+}
+const savedChecklist = loadChecklistState();
+checklistInputs.forEach((input) => {
+  const key = input.dataset.checklistItem;
+  input.checked = Boolean(savedChecklist[key]);
+  input.addEventListener("change", () => {
+    const state = loadChecklistState();
+    state[key] = input.checked;
+    saveChecklistState(state);
+    renderChecklistProgress();
+  });
+});
+renderChecklistProgress();
+
+/* Квиз */
+const QUIZ_TOTAL = document.querySelectorAll(".quiz-question").length;
+let quizAnswered = 0;
+const quizScoreEl = document.getElementById("quiz-score");
+document.querySelectorAll(".quiz-check").forEach((button) => {
+  button.addEventListener("click", () => {
+    const index = button.dataset.quizCheck;
+    const question = document.querySelector(`.quiz-question[data-quiz="${index}"]`);
+    const selected = question.querySelector(`input[name="q${index}"]:checked`);
+    const feedback = document.querySelector(`[data-quiz-feedback="${index}"]`);
+    if (!selected) {
+      feedback.textContent = "Выберите вариант ответа.";
+      feedback.className = "quiz-feedback incorrect";
+      feedback.hidden = false;
+      return;
+    }
+    const alreadyAnswered = button.disabled;
+    const isCorrect = selected.value === "right";
+    feedback.textContent = (isCorrect ? "Верно. " : "Не совсем. ") + question.dataset.explanation;
+    feedback.className = `quiz-feedback ${isCorrect ? "correct" : "incorrect"}`;
+    feedback.hidden = false;
+    question.querySelectorAll("input").forEach((input) => { input.disabled = true; });
+    question.querySelector('input[value="right"]').closest("label").classList.add("quiz-correct-answer");
+    button.disabled = true;
+    if (!alreadyAnswered) {
+      quizAnswered += 1;
+      quizScoreEl.textContent = `Отвечено: ${quizAnswered} / ${QUIZ_TOTAL}`;
+    }
+  });
+});
+</script>
+</body>
+</html>
